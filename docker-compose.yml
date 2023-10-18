@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tc-01-api
+    hostname: tc-01-api
+    restart: always
+    ports:
+      - 3333:3333
