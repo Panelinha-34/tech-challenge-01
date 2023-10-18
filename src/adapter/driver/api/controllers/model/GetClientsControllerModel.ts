@@ -1,12 +1,20 @@
 import { z } from "zod";
 
-import { Client } from "@/core/domain/entities/Client";
-
-export const paramsSchema = z.object({
+export const getClientsParamsSchema = z.object({
   page: z.coerce.number().default(1),
   pageSize: z.coerce.number().default(20),
 });
 
+export interface GetClientsResponse {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  taxVat: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface GetClientsControllerResponse {
-  clients: Client[];
+  clients: GetClientsResponse[];
 }

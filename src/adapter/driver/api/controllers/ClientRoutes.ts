@@ -1,11 +1,11 @@
 import { FastifyInstance } from "fastify";
 
+import { ClientsPrismaRepository } from "@/adapter/driven/infra/prisma/repositories/ClientsPrismaRepository";
 import { ClientUseCase } from "@/core/application/useCases/ClientUseCase";
-import { InMemoryClientRepository } from "@test/repositories/InMemoryClientRepository";
 
 import { ClientController } from "./ClientController";
 
-const clientRepository = new InMemoryClientRepository();
+const clientRepository = new ClientsPrismaRepository();
 const clientUseCase = new ClientUseCase(clientRepository);
 const clientController = new ClientController(clientUseCase);
 

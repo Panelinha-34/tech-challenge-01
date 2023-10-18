@@ -1,4 +1,6 @@
-# @name get-prompts
-GET http://localhost:3333/client/list
+# @name get-clients
+GET http://localhost:3333/clients
 
 ### 
+
+

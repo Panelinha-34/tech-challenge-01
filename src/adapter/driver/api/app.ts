@@ -6,7 +6,7 @@ import { ZodError } from "zod";
 import Swagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 
-import { env } from "../env";
+import { env } from "../../../env";
 import { ClientRoutes } from "./controllers/ClientRoutes";
 
 const SWAGGER_PATH = "/docs-swagger";

@@ -6,6 +6,8 @@
   "scripts": {
     "ts-check": "tsc --noEmit",
     "dev": "tsx watch src/adapter/driver/api/server.ts",
+    "setup": "yarn install && docker compose up -d && yarn prisma generate && yarn prisma migrate dev",
+    "db-ui": "yarn prisma studio",
     "prod": "node build/server.js",
     "build": "tsup src --out-dir build",
     "lint": "eslint src",
@@ -25,6 +27,7 @@
     "eslint-plugin-unused-imports": "3.0.0",
     "install": "0.13.0",
     "prettier": "3.0.3",
+    "prisma": "5.4.2",
     "tsup": "7.2.0",
     "tsx": "3.13.0",
     "typescript": "5.2.2",
@@ -34,6 +37,7 @@
   "dependencies": {
     "@fastify/swagger": "8.11.0",
     "@fastify/swagger-ui": "1.10.1",
+    "@prisma/client": "5.4.2",
     "dotenv": "16.3.1",
     "eslint": "8.51.0",
     "fastify": "4.24.1",

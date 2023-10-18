@@ -21,25 +21,25 @@ describe("Given the User Use Case", () => {
   });
 
   it("should return the clients correctly", async () => {
-    const paginationParams = new PaginationParams(page, size);
+    const params = new PaginationParams(page, size);
 
     const clientToCreate = makeClient();
 
     inMemoryClientsRepository.items.push(clientToCreate);
 
-    const { clients } = await sut.getClients({ paginationParams });
+    const { clients } = await sut.getClients({ params });
 
     expect(clients).toHaveLength(1);
   });
 
   it("should return the clients from the second pagination correctly", async () => {
-    const paginationParams = new PaginationParams(2, size);
+    const params = new PaginationParams(2, size);
 
     Array.from({ length: 12 }).forEach(() => {
       inMemoryClientsRepository.items.push(makeClient());
     });
 
-    const { clients } = await sut.getClients({ paginationParams });
+    const { clients } = await sut.getClients({ params });
 
     expect(clients).toHaveLength(2);
   });
