@@ -5,7 +5,7 @@ import { ClientRepository } from "@/core/domain/repositories/ClientRepository";
 import { prisma } from "../config/prisma";
 import { PrismaClientToDomainClientMapper } from "../mappers/PrismaClientToDomainClientMapper";
 
-export class ClientsPrismaRepository implements ClientRepository {
+export class PrismaClientRepository implements ClientRepository {
   async findMany({ page, size }: PaginationParams): Promise<Client[]> {
     return prisma.client
       .findMany({
@@ -15,5 +15,15 @@ export class ClientsPrismaRepository implements ClientRepository {
       .then((clients) =>
         clients.map((c) => PrismaClientToDomainClientMapper.convert(c))
       );
+  }
+
+  async create(client: Client): Promise<void> {
+    await prisma.client.create({
+      data: {
+        name: client.name,
+        email: client.email,
+        tax_vat: client.taxVat.number,
+      },
+    });
   }
 }

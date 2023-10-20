@@ -8,7 +8,7 @@ import { PaginationParams } from "@/core/domain/base/PaginationParams";
 
 import {
   GetClientsControllerResponse,
-  getClientsParamsSchema,
+  getClientsQueryParamsSchema,
 } from "../model/GetClientsControllerModel";
 
 export class GetClientsResponseMapper {
@@ -19,7 +19,6 @@ export class GetClientsResponseMapper {
       id: client.id.toString(),
       name: client.name,
       email: client.email,
-      password: client.password,
       taxVat: client.taxVat.number,
       createdAt: client.createdAt.toISOString(),
       updatedAt: client.updatedAt?.toISOString(),
@@ -31,7 +30,7 @@ export class GetClientsResponseMapper {
   }
 
   static convertRequestParams(req: FastifyRequest): GetClientsUseCaseProps {
-    const { page, pageSize } = getClientsParamsSchema.parse(req.query);
+    const { page, pageSize } = getClientsQueryParamsSchema.parse(req.query);
 
     const params = new PaginationParams(page, pageSize);
 

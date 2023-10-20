@@ -8,7 +8,7 @@ import { InMemoryClientRepository } from "@test/repositories/InMemoryClientRepos
 let inMemoryClientsRepository: InMemoryClientRepository;
 let sut: ClientUseCase;
 
-describe("Given the User Use Case", () => {
+describe("Given the Get Clients Use Case", () => {
   const page = 1;
   const size = 10;
 

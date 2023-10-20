@@ -6,7 +6,6 @@ import { Taxvat } from "../valueObjects/Taxvat";
 export interface ClientProps {
   name: string;
   email: string;
-  password: string;
   taxVat: Taxvat;
   createdAt: Date;
   updatedAt?: Date;
@@ -29,10 +28,6 @@ export class Client extends Entity<ClientProps> {
 
   get email() {
     return this.props.email;
-  }
-
-  get password() {
-    return this.props.password;
   }
 
   get taxVat() {
