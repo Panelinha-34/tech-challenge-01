@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import Swagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 
+import { version } from "../../../../package.json";
 import { env } from "../../../env";
 import { ClientRoutes } from "./controllers/ClientRoutes";
 
@@ -16,9 +17,9 @@ export const app = fastify();
 app.register(Swagger, {
   openapi: {
     info: {
-      title: "test title",
-      description: "test description",
-      version: "1.0",
+      title: "Tech Challenge #1 - API",
+      description: "API for the Tech Challenge #1",
+      version,
     },
   },
 });

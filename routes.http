@@ -3,4 +3,14 @@ GET http://localhost:3333/clients
 
 ### 
 
+# @name create-client
+POST http://localhost:3333/clients
+content-type: application/json
+
+{
+    "email": "john.doe@gmail.com",
+    "name": "John Doe",
+    "taxVat": "2313312132122"
+}
+
 

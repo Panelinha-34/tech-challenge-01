@@ -9,10 +9,9 @@ export class PrismaClientToDomainClientMapper {
       {
         name: prismaClient.name,
         email: prismaClient.email,
-        password: prismaClient.password,
         taxVat: new Taxvat({ number: prismaClient.tax_vat }),
         createdAt: prismaClient.created_at,
-        updatedAt: prismaClient.updated_at,
+        updatedAt: prismaClient.updated_at ?? undefined,
       },
       new UniqueEntityId(prismaClient.id)
     );

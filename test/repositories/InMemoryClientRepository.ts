@@ -10,4 +10,8 @@ export class InMemoryClientRepository implements ClientRepository {
 
     return answers;
   }
+
+  async create(client: Client): Promise<void> {
+    this.items.push(client);
+  }
 }
