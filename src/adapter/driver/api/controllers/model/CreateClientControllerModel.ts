@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { convertZodSchemaToDocsTemplate } from "../utils/convertZodSchemaToDocsTemplate";
+
 export const createClientPayloadSchema = z.object({
   name: z.string(),
   email: z.string().email(),
@@ -7,15 +9,11 @@ export const createClientPayloadSchema = z.object({
 });
 
 export const createClientDocSchema = {
-  body: {
-    type: "object",
-    properties: {
-      name: { type: "string" },
-      email: { type: "string" },
-      taxVat: { type: "string" },
-    },
-    required: ["name", "email", "taxVat"],
-  },
+  description: "Create a client",
+  tags: ["Client"],
+  body: convertZodSchemaToDocsTemplate({
+    schema: createClientPayloadSchema,
+  }),
   response: {
     200: {},
   },

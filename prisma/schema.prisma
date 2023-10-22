@@ -9,11 +9,143 @@ datasource db {
 
 model Client {
   id         String    @id @default(uuid())
-  tax_vat    String    @unique
-  email      String
   name       String
+  tax_vat    String    @unique
+  email      String    @unique
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
+
+  orders Order[]
 
   @@map("clients")
+}
+
+model Order {
+  id          String    @id @default(uuid())
+  status      String
+  client_id   String    @map("client_id")
+  total_price Decimal
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  client             Client              @relation(fields: [client_id], references: [id])
+  orderPayments      OrderPayment[]
+  orderNotifications OrderNotification[]
+  orderComboItems    OrderComboItem[]
+  orderProductItems  OrderProductItem[]
+
+  @@map("orders")
+}
+
+model OrderPayment {
+  id             String    @id @default(uuid())
+  order_id       String
+  amount         Decimal
+  payment_method String
+  status         String
+  created_at     DateTime  @default(now())
+  updated_at     DateTime? @updatedAt
+
+  order Order @relation(fields: [order_id], references: [id])
+
+  @@map("order_payments")
+}
+
+model OrderNotification {
+  id         String    @id @default(uuid())
+  order_id   String
+  message    String
+  status     String
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  order Order @relation(fields: [order_id], references: [id])
+
+  @@map("order_notifications")
+}
+
+model OrderComboItem {
+  id          String    @id @default(uuid())
+  order_id    String
+  combo_id    String
+  annotation  String?
+  quantity    Int
+  total_price Decimal
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  order Order @relation(fields: [order_id], references: [id])
+  combo Combo @relation(fields: [combo_id], references: [id])
+
+  @@map("order_combo_items")
+}
+
+model OrderProductItem {
+  id          String    @id @default(uuid())
+  order_id    String
+  product_id  String
+  annotation  String?
+  quantity    Int
+  total_price Decimal
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  order   Order   @relation(fields: [order_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@map("order_product_items")
+}
+
+model Combo {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  price       Decimal
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  orderComboItems OrderComboItem[]
+  comboProducts   ComboProduct[]
+
+  @@map("combos")
+}
+
+model ComboProduct {
+  id         String    @id @default(uuid())
+  product_id String
+  combo_id   String
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  combo   Combo   @relation(fields: [combo_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@map("combo_products")
+}
+
+model Product {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  price       Decimal
+  category_id String    @map("category_id")
+  created_at  DateTime  @default(now())
+  updated_at  DateTime? @updatedAt
+
+  category          Category           @relation(fields: [category_id], references: [id])
+  orderProductItems OrderProductItem[]
+  comboProducts     ComboProduct[]
+
+  @@map("products")
+}
+
+model Category {
+  id         String    @id @default(uuid())
+  name       String
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  products Product[]
+
+  @@map("categories")
 }

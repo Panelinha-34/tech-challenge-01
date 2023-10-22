@@ -23,6 +23,15 @@ export class ClientController {
   async createClient(req: FastifyRequest, res: FastifyReply): Promise<void> {
     return this.clientUseCase
       .createClient(CreateClientMapper.convertPayload(req))
-      .then(() => res.status(200).send());
+      .then(() => res.status(200).send())
+      .catch((error) => {
+        const message = CreateClientMapper.convertErrorMessage(error);
+
+        if (message) {
+          return res.status(400).send({ message });
+        }
+
+        throw error;
+      });
   }
 }

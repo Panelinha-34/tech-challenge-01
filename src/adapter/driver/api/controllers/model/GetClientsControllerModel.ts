@@ -1,4 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 import { z } from "zod";
+
+import { convertZodSchemaToDocsTemplate } from "../utils/convertZodSchemaToDocsTemplate";
 
 export const getClientsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -19,20 +24,11 @@ export interface GetClientsControllerResponse {
 }
 
 export const getClientsDocSchema = {
-  querystring: {
-    type: "object",
-    required: [],
-    properties: {
-      page: {
-        type: "number",
-        description: "page number",
-      },
-      pageSize: {
-        type: "number",
-        description: "page size",
-      },
-    },
-  },
+  tags: ["Client"],
+  description: "List clients",
+  querystring: convertZodSchemaToDocsTemplate({
+    schema: getClientsQueryParamsSchema,
+  }),
   response: {
     200: {
       type: "object",
