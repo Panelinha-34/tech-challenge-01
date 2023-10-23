@@ -6,6 +6,11 @@ import { OrderUseCase } from "@/core/application/useCases/OrderUseCase";
 import { OrderController } from "./OrderController";
 import { GetOrdersControllerMapper } from "./mappers/order/GetOrdersControllerMapper";
 import { CreateOrderControllerMapper } from "./mappers/order/CreateOrderControllerMapper";
+import { getOrdersDocSchema } from "./model/order/GetOrdersControllerModel";
+import {
+  createOrderDocSchema,
+  createOrderPayloadSchema,
+} from "./model/order/CreateOrderControllerModel";
 
 const orderRepository = new PrismaOrderRepository();
 const orderUseCase = new OrderUseCase(orderRepository);
@@ -20,6 +25,12 @@ const orderController = new OrderController(
 );
 
 export async function OrderRoutes(app: FastifyInstance) {
-  app.get("", orderController.getOrders.bind(orderController));
-  app.post("", orderController.createOrder.bind(orderController));
+  app.get("", {
+    schema: getOrdersDocSchema,
+    handler: orderController.getOrders.bind(orderController),
+  });
+  app.post("", {
+    schema: createOrderDocSchema,
+    handler: orderController.createOrder.bind(orderController),
+  });
 }
