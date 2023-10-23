@@ -91,6 +91,13 @@ export class ProductUseCase implements IProductUseCase {
     }
 
     if (name) {
+      const hasProductWithSameName =
+        await this.productRepository.findByName(name);
+
+      if (hasProductWithSameName) {
+        throw new AttributeConflictError("name", "product");
+      }
+
       product.name = name;
     }
 
