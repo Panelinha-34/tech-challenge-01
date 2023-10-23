@@ -2,11 +2,14 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 import { IOrderNotificationUseCase } from "@/core/application/useCases/IOrderNotificationUseCase";
 
-import { GetOrderNotificationsResponseMapper } from "./mappers/GetOrderNotificationsResponseMapper";
-import { GetOrderNotificationsControllerResponse } from "./model/GetOrderNotificationsControllerModel";
+import { GetOrderNotificationsControllerMapper } from "./mappers/orderNotification/GetOrderNotificationsControllerMapper";
+import { GetOrderNotificationsControllerResponse } from "./model/orderNotification/GetOrderNotificationsControllerModel";
 
 export class OrderNotificationController {
-  constructor(private orderNotificationUseCase: IOrderNotificationUseCase) {}
+  constructor(
+    private orderNotificationUseCase: IOrderNotificationUseCase,
+    private getOrderNotificationsControllerMapper: GetOrderNotificationsControllerMapper
+  ) {}
 
   async getOrderNotifications(
     req: FastifyRequest,
@@ -14,12 +17,17 @@ export class OrderNotificationController {
   ): Promise<GetOrderNotificationsControllerResponse> {
     return this.orderNotificationUseCase
       .getOrderNotifications(
-        GetOrderNotificationsResponseMapper.convertRequestParams(req)
+        this.getOrderNotificationsControllerMapper.convertRequestModel(req)
       )
       .then((response) =>
         res
           .status(200)
-          .send(GetOrderNotificationsResponseMapper.convertResponse(response))
+          .send(
+            this.getOrderNotificationsControllerMapper.convertSuccessfullyResponse(
+              res,
+              response
+            )
+          )
       );
   }
 }

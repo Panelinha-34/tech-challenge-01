@@ -1,10 +1,10 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { OrderNotification } from "@/core/domain/entities/OrderNotification";
 
-export interface GetOrderNotificationsUseCaseProps {
+export interface GetOrderNotificationsUseCaseRequestModel {
   params: PaginationParams;
 }
 
-export interface GetOrderNotificationsUseCaseResponse {
+export interface GetOrderNotificationsUseCaseResponseModel {
   orderNotifications: OrderNotification[];
 }

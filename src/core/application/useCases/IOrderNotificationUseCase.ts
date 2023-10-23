@@ -1,10 +1,10 @@
 import {
-  GetOrderNotificationsUseCaseProps,
-  GetOrderNotificationsUseCaseResponse,
-} from "./model/GetOrderNotificationsUseCaseModel";
+  GetOrderNotificationsUseCaseRequestModel,
+  GetOrderNotificationsUseCaseResponseModel,
+} from "./model/orderNotification/GetOrderNotificationsUseCaseModel";
 
 export interface IOrderNotificationUseCase {
   getOrderNotifications(
-    props: GetOrderNotificationsUseCaseProps
-  ): Promise<GetOrderNotificationsUseCaseResponse>;
+    props: GetOrderNotificationsUseCaseRequestModel
+  ): Promise<GetOrderNotificationsUseCaseResponseModel>;
 }

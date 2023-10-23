@@ -2,22 +2,17 @@ import { OrderNotificationRepository } from "@/core/domain/repositories/OrderNot
 
 import { IOrderNotificationUseCase } from "./IOrderNotificationUseCase";
 import {
-  GetOrderNotificationsUseCaseProps,
-  GetOrderNotificationsUseCaseResponse,
-} from "./model/GetOrderNotificationsUseCaseModel";
+  GetOrderNotificationsUseCaseRequestModel,
+  GetOrderNotificationsUseCaseResponseModel,
+} from "./model/orderNotification/GetOrderNotificationsUseCaseModel";
 
 export class OrderNotificationUseCase implements IOrderNotificationUseCase {
   constructor(
     private orderNotificationRepository: OrderNotificationRepository
   ) {}
-  getClients(
-    props: GetOrderNotificationsUseCaseProps
-  ): Promise<GetOrderNotificationsUseCaseResponse> {
-    throw new Error("Method not implemented.");
-  }
   async getOrderNotifications({
     params,
-  }: GetOrderNotificationsUseCaseProps): Promise<GetOrderNotificationsUseCaseResponse> {
+  }: GetOrderNotificationsUseCaseRequestModel): Promise<GetOrderNotificationsUseCaseResponseModel> {
     const orderNotifications =
       await this.orderNotificationRepository.findMany(params);
 

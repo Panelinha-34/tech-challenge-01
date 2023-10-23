@@ -4,13 +4,19 @@ import { OrderNotificationsPrismaRepository } from "@/adapter/driven/infra/prism
 import { OrderNotificationUseCase } from "@/core/application/useCases/OrderNotificationUseCase";
 
 import { OrderNotificationController } from "./OrderNotificationController";
+import { GetOrderNotificationsControllerMapper } from "./mappers/orderNotification/GetOrderNotificationsControllerMapper";
 
 const orderNotificationRepository = new OrderNotificationsPrismaRepository();
 const orderNotificationUseCase = new OrderNotificationUseCase(
   orderNotificationRepository
 );
+
+const getOrderNotificationsControllerMapper =
+  new GetOrderNotificationsControllerMapper();
+
 const orderNotificationController = new OrderNotificationController(
-  orderNotificationUseCase
+  orderNotificationUseCase,
+  getOrderNotificationsControllerMapper
 );
 
 export async function OrderNotificationRoutes(app: FastifyInstance) {
