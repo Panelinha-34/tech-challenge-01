@@ -12,6 +12,7 @@ import { CategoryRoutes } from "./controllers/CategoryRoutes";
 import { ClientRoutes } from "./controllers/ClientRoutes";
 import { OrderRoutes } from "./controllers/OrderRoutes";
 import { OrderNotificationRoutes } from "./controllers/OrderNotificationRoutes";
+import { ProductRoutes } from "./controllers/ProductRoutes";
 
 const SWAGGER_PATH = "/docs-swagger";
 
@@ -38,6 +39,7 @@ app.get("/docs", (request, response) => {
 });
 
 app.register(ClientRoutes, { prefix: "/clients" });
+app.register(ProductRoutes, { prefix: "/products" });
 app.register(OrderRoutes, { prefix: "/orders" });
 app.register(OrderNotificationRoutes, { prefix: "/order_notifications" });
 app.register(CategoryRoutes, { prefix: "/categories" });
