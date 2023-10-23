@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
+
 export const getClientsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
   pageSize: z.coerce.number().default(20),
@@ -19,20 +21,11 @@ export interface GetClientsControllerResponse {
 }
 
 export const getClientsDocSchema = {
-  querystring: {
-    type: "object",
-    required: [],
-    properties: {
-      page: {
-        type: "number",
-        description: "page number",
-      },
-      pageSize: {
-        type: "number",
-        description: "page size",
-      },
-    },
-  },
+  tags: ["Client"],
+  description: "List clients",
+  querystring: convertZodSchemaToDocsTemplate({
+    schema: getClientsQueryParamsSchema,
+  }),
   response: {
     200: {
       type: "object",
