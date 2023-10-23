@@ -1,11 +1,23 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { Order } from "@/core/domain/entities/Order";
-import { OrderRepository } from "@/core/domain/repositories/OrderRepository";
+import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 
 import { prisma } from "../config/prisma";
 import { PrismaOrderToDomainClientConverter } from "../converter/PrismaOrderToDomainClientConverter";
 
-export class OrdersPrismaRepository implements OrderRepository {
+export class PrismaOrderRepository implements IOrderRepository {
+  async create(order: Order): Promise<Order> {
+    return prisma.order
+      .create({
+        data: {
+          status: order.status,
+          total_price: order.totalPrice,
+          client_id: order.clientId,
+        },
+      })
+      .then((c) => PrismaOrderToDomainClientConverter.convert(c));
+  }
+
   async findMany({ page, size }: PaginationParams): Promise<Order[]> {
     return prisma.order
       .findMany({

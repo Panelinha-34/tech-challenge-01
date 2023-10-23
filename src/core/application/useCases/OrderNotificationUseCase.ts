@@ -1,4 +1,4 @@
-import { OrderNotificationRepository } from "@/core/domain/repositories/OrderNotificationRepository";
+import { IOrderNotificationRepository } from "@/core/domain/repositories/IOrderNotificationRepository";
 
 import { IOrderNotificationUseCase } from "./IOrderNotificationUseCase";
 import {
@@ -8,7 +8,7 @@ import {
 
 export class OrderNotificationUseCase implements IOrderNotificationUseCase {
   constructor(
-    private orderNotificationRepository: OrderNotificationRepository
+    private orderNotificationRepository: IOrderNotificationRepository
   ) {}
   async getOrderNotifications({
     params,

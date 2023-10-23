@@ -1,8 +1,18 @@
 import {
-  GetOrdersUseCaseProps,
-  GetOrdersUseCaseResponse,
-} from "./model/GetOrdersUseCaseModel";
+  GetOrdersUseCaseRequestModel,
+  GetOrdersUseCaseResponseModel,
+} from "./model/order/GetOrdersUseCaseModel";
+import {
+  CreateOrderUseCaseRequestModel,
+  CreateOrderUseCaseResponseModel,
+} from "./model/order/CreateOrderUseCaseModel";
 
 export interface IOrderUseCase {
-  getOrders(props: GetOrdersUseCaseProps): Promise<GetOrdersUseCaseResponse>;
+  getOrders(
+    props: GetOrdersUseCaseRequestModel
+  ): Promise<GetOrdersUseCaseResponseModel>;
+
+  createOrder(
+    props: CreateOrderUseCaseRequestModel
+  ): Promise<CreateOrderUseCaseResponseModel>;
 }
