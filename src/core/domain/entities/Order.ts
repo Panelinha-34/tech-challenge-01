@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";

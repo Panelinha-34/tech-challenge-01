@@ -6,7 +6,6 @@ import { Taxvat } from "../valueObjects/Taxvat";
 export interface ClientProps {
   name: string;
   email: string;
-  password: string;
   taxVat: Taxvat;
   createdAt: Date;
   updatedAt?: Date;
@@ -27,12 +26,18 @@ export class Client extends Entity<ClientProps> {
     return this.props.name;
   }
 
+  set name(value: string) {
+    this.props.name = value;
+    this.touch();
+  }
+
   get email() {
     return this.props.email;
   }
 
-  get password() {
-    return this.props.password;
+  set email(value: string) {
+    this.props.email = value;
+    this.touch();
   }
 
   get taxVat() {

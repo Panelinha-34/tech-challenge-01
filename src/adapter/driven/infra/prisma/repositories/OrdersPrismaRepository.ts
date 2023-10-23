@@ -3,7 +3,7 @@ import { Order } from "@/core/domain/entities/Order";
 import { OrderRepository } from "@/core/domain/repositories/OrderRepository";
 
 import { prisma } from "../config/prisma";
-import { PrismaClientToDomainOrderMapper } from "../mappers/PrismaClientToDomainOrderMapper";
+import { PrismaOrderToDomainClientConverter } from "../converter/PrismaOrderToDomainClientConverter";
 
 export class OrdersPrismaRepository implements OrderRepository {
   async findMany({ page, size }: PaginationParams): Promise<Order[]> {
@@ -13,7 +13,7 @@ export class OrdersPrismaRepository implements OrderRepository {
         skip: (page - 1) * size,
       })
       .then((orders) =>
-        orders.map((c) => PrismaClientToDomainOrderMapper.convert(c))
+        orders.map((c) => PrismaOrderToDomainClientConverter.convert(c))
       );
   }
 }

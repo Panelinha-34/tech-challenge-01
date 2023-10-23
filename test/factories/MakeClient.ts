@@ -13,7 +13,6 @@ export function makeClient(
     {
       name: faker.person.fullName(),
       email: faker.internet.email(),
-      password: faker.internet.password(),
       taxVat: new Taxvat({ number: "12345678900" }),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),

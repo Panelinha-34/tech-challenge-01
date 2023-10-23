@@ -6,7 +6,9 @@ import { ZodError } from "zod";
 import Swagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 
+import { version } from "../../../../package.json";
 import { env } from "../../../env";
+import { CategoryRoutes } from "./controllers/CategoryRoutes";
 import { ClientRoutes } from "./controllers/ClientRoutes";
 import { OrderRoutes } from "./controllers/OrderRoutes";
 
@@ -17,9 +19,9 @@ export const app = fastify();
 app.register(Swagger, {
   openapi: {
     info: {
-      title: "test title",
-      description: "test description",
-      version: "1.0",
+      title: "Tech Challenge #1 - API",
+      description: "API for the Tech Challenge #1",
+      version,
     },
   },
 });
@@ -36,20 +38,32 @@ app.get("/docs", (request, response) => {
 
 app.register(ClientRoutes, { prefix: "/clients" });
 app.register(OrderRoutes, { prefix: "/orders" });
+app.register(CategoryRoutes, { prefix: "/categories" });
 
-// Return errors for all routes
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
-    return reply
-      .code(400)
-      .send({ message: "Validation error.", issues: error.format() });
+    // eslint-disable-next-line consistent-return, array-callback-return
+    const errors = error.issues.map((issue) => {
+      if (issue.code === "invalid_type") {
+        return `field(s) '${issue.path.join(
+          ","
+        )}' ${issue.message.toLowerCase()}`;
+      }
+
+      if (issue.code === "unrecognized_keys") {
+        return `field(s) '${issue.keys.join(",")}' not recognized`;
+      }
+    });
+
+    return reply.code(400).send({ message: "Validation error.", errors });
   }
 
   if (env.NODE_ENV !== "prod") {
+    // eslint-disable-next-line no-console
     console.error(error);
   } else {
     // TODO: Add more details to the error
   }
 
-  return reply.code(500).send({ message: "Internal server error." });
+  return reply.code(500).send({ message: error.message });
 });
