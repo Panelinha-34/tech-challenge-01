@@ -8,6 +8,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 
 import { env } from "../../../env";
 import { ClientRoutes } from "./controllers/ClientRoutes";
+import { OrderRoutes } from "./controllers/OrderRoutes";
 
 const SWAGGER_PATH = "/docs-swagger";
 
@@ -34,6 +35,7 @@ app.get("/docs", (request, response) => {
 });
 
 app.register(ClientRoutes, { prefix: "/clients" });
+app.register(OrderRoutes, { prefix: "/orders" });
 
 // Return errors for all routes
 app.setErrorHandler((error, _request, reply) => {

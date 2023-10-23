@@ -17,5 +17,19 @@ model Client {
   created_at DateTime @default(now())
   updated_at DateTime
 
+  orders     Order[] 
+
   @@map("clients")
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  status      String
+  total_price Decimal
+  client_id   String   
+  client      Client   @relation(fields: [client_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime
+
+  @@map("orders")
 }

@@ -1,6 +1,9 @@
 # @name get-clients
 GET http://localhost:3333/clients
 
+# @name get-orders
+GET http://localhost:3333/orders
+
 ### 
 
 
