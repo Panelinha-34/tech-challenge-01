@@ -2,20 +2,30 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 import { IOrderUseCase } from "@/core/application/useCases/IOrderUseCase";
 
-import { GetOrdersResponseMapper } from "./mappers/GetOrdersResponseMapper";
-import { GetOrdersControllerResponse } from "./model/GetOrdersControllerModel";
+import { GetOrdersControllerMapper } from "./mappers/order/GetOrdersControllerMapper";
+import { GetOrdersControllerResponse } from "./model/order/GetOrdersControllerModel";
 
 export class OrderController {
-  constructor(private orderUseCase: IOrderUseCase) {}
+  constructor(
+    private orderUseCase: IOrderUseCase,
+    private getOrdersControllerMapper: GetOrdersControllerMapper
+  ) {}
 
   async getOrders(
     req: FastifyRequest,
     res: FastifyReply
   ): Promise<GetOrdersControllerResponse> {
     return this.orderUseCase
-      .getOrders(GetOrdersResponseMapper.convertRequestParams(req))
+      .getOrders(this.getOrdersControllerMapper.convertRequestModel(req))
       .then((response) =>
-        res.status(200).send(GetOrdersResponseMapper.convertResponse(response))
+        res
+          .status(200)
+          .send(
+            this.getOrdersControllerMapper.convertSuccessfullyResponse(
+              res,
+              response
+            )
+          )
       );
   }
 }
