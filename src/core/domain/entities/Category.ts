@@ -1,18 +1,18 @@
 import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
-import { Taxvat } from "../valueObjects/Taxvat";
 
-export interface ClientProps {
+export interface CategoryProps {
   name: string;
-  email: string;
-  taxVat: Taxvat;
   createdAt: Date;
   updatedAt?: Date;
 }
 
-export class Client extends Entity<ClientProps> {
-  constructor(props: Optional<ClientProps, "createdAt">, id?: UniqueEntityId) {
+export class Category extends Entity<CategoryProps> {
+  constructor(
+    props: Optional<CategoryProps, "createdAt">,
+    id?: UniqueEntityId
+  ) {
     super(
       {
         ...props,
@@ -29,19 +29,6 @@ export class Client extends Entity<ClientProps> {
   set name(value: string) {
     this.props.name = value;
     this.touch();
-  }
-
-  get email() {
-    return this.props.email;
-  }
-
-  set email(value: string) {
-    this.props.email = value;
-    this.touch();
-  }
-
-  get taxVat() {
-    return this.props.taxVat;
   }
 
   get createdAt() {

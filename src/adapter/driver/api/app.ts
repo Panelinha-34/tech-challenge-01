@@ -8,6 +8,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 
 import { version } from "../../../../package.json";
 import { env } from "../../../env";
+import { CategoryRoutes } from "./controllers/CategoryRoutes";
 import { ClientRoutes } from "./controllers/ClientRoutes";
 
 const SWAGGER_PATH = "/docs-swagger";
@@ -35,6 +36,7 @@ app.get("/docs", (request, response) => {
 });
 
 app.register(ClientRoutes, { prefix: "/clients" });
+app.register(CategoryRoutes, { prefix: "/categories" });
 
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {

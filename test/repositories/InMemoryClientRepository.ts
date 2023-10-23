@@ -1,6 +1,6 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { Client } from "@/core/domain/entities/Client";
-import { IClientRepository } from "@/core/domain/repositories/iClientRepository";
+import { IClientRepository } from "@/core/domain/repositories/IClientRepository";
 
 export class InMemoryClientRepository implements IClientRepository {
   public items: Client[] = [];
@@ -29,7 +29,17 @@ export class InMemoryClientRepository implements IClientRepository {
     return answers;
   }
 
-  async create(client: Client): Promise<void> {
+  async create(client: Client): Promise<Client> {
     this.items.push(client);
+
+    return client;
+  }
+
+  async update(client: Client): Promise<Client> {
+    const index = this.items.findIndex((a) => a.id === client.id);
+
+    this.items[index] = client;
+
+    return client;
   }
 }

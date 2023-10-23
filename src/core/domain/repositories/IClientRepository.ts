@@ -10,5 +10,7 @@ export interface IClientRepository {
 
   findByEmail(email: string): Promise<Client | null>;
 
-  create(client: Client): Promise<void>;
+  create(client: Client): Promise<Client>;
+
+  update(client: Client): Promise<Client>;
 }

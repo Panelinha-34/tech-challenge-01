@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { convertZodSchemaToDocsTemplate } from "../utils/convertZodSchemaToDocsTemplate";
+import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
 
 export const createClientPayloadSchema = z.object({
   name: z.string(),
@@ -14,7 +14,4 @@ export const createClientDocSchema = {
   body: convertZodSchemaToDocsTemplate({
     schema: createClientPayloadSchema,
   }),
-  response: {
-    200: {},
-  },
 };

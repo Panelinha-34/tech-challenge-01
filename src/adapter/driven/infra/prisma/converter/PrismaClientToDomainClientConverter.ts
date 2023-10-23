@@ -3,7 +3,7 @@ import { Client } from "@/core/domain/entities/Client";
 import { Taxvat } from "@/core/domain/valueObjects/Taxvat";
 import { Client as PrismaClient } from "@prisma/client";
 
-export class PrismaClientToDomainClientMapper {
+export class PrismaClientToDomainClientConverter {
   static convert(prismaClient: PrismaClient): Client {
     return new Client(
       {

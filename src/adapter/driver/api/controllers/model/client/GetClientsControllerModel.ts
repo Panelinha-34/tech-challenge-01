@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
 import { z } from "zod";
 
-import { convertZodSchemaToDocsTemplate } from "../utils/convertZodSchemaToDocsTemplate";
+import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
 
 export const getClientsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),

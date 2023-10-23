@@ -1,16 +1,32 @@
 # @name get-clients
 GET http://localhost:3333/clients
 
+###
+
+# @name get-client-by-id
+GET http://localhost:3333/clients/1198eaa6-8d4d-450b-8561-ce867c8c88cc
+
 ### 
 
 # @name create-client
-POST http://localhost:3333/clients
+POST http://localhost:3333/clients  
 content-type: application/json
 
 {
-    "email": "john.doe3@gmail.com",
-    "name": "John Doe",
-    "taxVat": "2"
+    "email": "john.doe102@gmail.com",
+    "name": "John Doe2",
+    "taxVat": "1331131"
+}
+
+### 
+
+# @name edit-client
+PUT http://localhost:3333/clients/1198eaa6-8d4d-450b-8561-ce867c8c88cc
+content-type: application/json
+
+{
+    "email": "john.23@gmail.com",
+    "name": "John Doe ALTERED"
 }
 
 
