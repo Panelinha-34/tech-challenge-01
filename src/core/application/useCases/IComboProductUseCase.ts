@@ -2,14 +2,7 @@ import {
   CreateComboProductUseCaseRequestModel,
   CreateComboProductUseCaseResponseModel
 } from "./model/comboProduct/CreateComboProductUseCaseModel";
-import { 
-  GetComboProductsByComboIdUseCaseRequestModel, 
-  GetComboProductsByComboIdUseCaseResponseModel 
-} from './model/comboProduct/GetComboProductsByComboIdUseCaseModel';
-import { 
-  GetComboProductsByProductIdUseCaseRequestModel, 
-  GetComboProductsByProductIdUseCaseResponseModel 
-} from './model/comboProduct/GetComboProductsByProductIdUseCaseModel';
+import { DeleteComboProductUseCaseRequestModel } from './model/comboProduct/DeleteComboProductUseCaseModel';
 import {
   GetComboProductsUseCaseRequestModel,
   GetComboProductsUseCaseResponseModel
@@ -23,4 +16,8 @@ export interface IComboProductUseCase {
   createComboProduct(
     props: CreateComboProductUseCaseRequestModel
   ): Promise<CreateComboProductUseCaseResponseModel>;
+
+  deleteComboProduct(
+    props: DeleteComboProductUseCaseRequestModel
+  ): Promise<void>;
 }

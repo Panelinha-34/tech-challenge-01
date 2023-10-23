@@ -4,6 +4,14 @@ import { ComboProduct } from '@/core/domain/entities/ComboProduct';
 import { IComboProductRepository } from '@/core/domain/repositories/IComboProductRepository';
 
 export class InMemoryComboProductRepository implements IComboProductRepository {
+  async findById(id: string): Promise<ComboProduct | null> {
+    const foundComboProduct = this.items.find((comboProduct) =>
+      comboProduct.id.toString() === id
+    );
+
+    return foundComboProduct || null;
+  }
+
   public items: ComboProduct[] = [];
 
   async findByProductIdAndComboId(productId: string, comboId: string): Promise<ComboProduct | null> {
@@ -15,8 +23,8 @@ export class InMemoryComboProductRepository implements IComboProductRepository {
     return foundComboProduct || null;
   }
 
-  delete(comboProduct: ComboProduct): Promise<ComboProduct> {
-    throw new Error('Method not implemented.');
+  async delete(id: string): Promise<void> {
+    this.items = this.items.filter((item) => item.id.toString() !== id);
   }
 
   async findMany({ page, size }: PaginationParams): Promise<ComboProduct[]> {

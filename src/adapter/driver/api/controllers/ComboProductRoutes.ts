@@ -10,18 +10,22 @@ import { CreateComboProductControllerMapper } from './mappers/comboProduct/Creat
 import { ComboProductController } from './ComboProductController';
 import { getComboProductsDocSchema } from './model/comboProduct/GetComboProductsControllerModel';
 import { createComboProductDocSchema } from './model/comboProduct/CreateComboProductControllerModel';
+import { deleteComboProductDocSchema } from './model/comboProduct/DeleteComboProductControllerModel';
+import { DeleteComboProductControllerMapper } from './mappers/comboProduct/DeleteComboProductControllerMapper';
 
 const comboProductRepository = new PrismaComboProductRepository();
 const comboProductUseCase = new ComboProductUseCase(comboProductRepository);
 
 const getComboProductsControllerMapper = new GetComboProductsControllerMapper();
 const createComboProductControllerMapper = new CreateComboProductControllerMapper();
+const deleteComboProductControllerMapper = new DeleteComboProductControllerMapper();
 
 const comboProductController = new ComboProductController(
   comboProductUseCase,
 
   getComboProductsControllerMapper,
   createComboProductControllerMapper,
+  deleteComboProductControllerMapper
 );
 
 export async function ComboProductRoutes(app: FastifyInstance) {
@@ -33,5 +37,10 @@ export async function ComboProductRoutes(app: FastifyInstance) {
   app.post("", {
     schema: createComboProductDocSchema,
     handler: comboProductController.createComboProduct.bind(comboProductController),
+  });
+  
+  app.delete("/:id", {
+    schema: deleteComboProductDocSchema,
+    handler: comboProductController.deleteComboProduct.bind(comboProductController),
   });
 }

@@ -4,6 +4,7 @@ import { IComboProductUseCase } from '@/core/application/useCases/IComboProductU
 import { GetComboProductsControllerMapper } from './mappers/comboProduct/GetComboProductsControllerMapper';
 import { CreateComboProductControllerMapper } from './mappers/comboProduct/CreateComboProductControllerMapper';
 import { GetComboProductsControllerResponse } from './model/comboProduct/GetComboProductsControllerModel';
+import { DeleteComboProductControllerMapper } from './mappers/comboProduct/DeleteComboProductControllerMapper';
 
 export class ComboProductController {
   constructor(
@@ -11,6 +12,7 @@ export class ComboProductController {
 
     private getComboProductsControllerMapper: GetComboProductsControllerMapper,
     private createComboProductControllerMapper: CreateComboProductControllerMapper,
+    private deleteComboProductControllerMapper: DeleteComboProductControllerMapper,
   ) {}
 
   async getComboProducts(
@@ -41,6 +43,20 @@ export class ComboProductController {
       )
       .catch((error) =>
         this.createComboProductControllerMapper.convertErrorResponse(error, res)
+      );
+  }
+
+  async deleteComboProduct(req: FastifyRequest, res: FastifyReply): Promise<void> {
+    return this.comboProductUseCase
+      .deleteComboProduct(this.deleteComboProductControllerMapper.convertRequestModel(req))
+      .then((response) =>
+        this.deleteComboProductControllerMapper.convertSuccessfullyResponse(
+          res,
+          response
+        )
+      )
+      .catch((error) =>
+        this.deleteComboProductControllerMapper.convertErrorResponse(error, res)
       );
   }
 }

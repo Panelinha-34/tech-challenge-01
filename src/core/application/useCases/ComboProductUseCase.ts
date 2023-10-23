@@ -11,9 +11,24 @@ import {
 } from "./model/comboProduct/CreateComboProductUseCaseModel";
 import { IComboProductUseCase } from './IComboProductUseCase';
 import { GetComboProductsUseCaseRequestModel, GetComboProductsUseCaseResponseModel } from './model/comboProduct/GetComboProductsUseCaseModel';
+import { DeleteComboProductUseCaseRequestModel } from './model/comboProduct/DeleteComboProductUseCaseModel';
+import { ResourceNotFoundError } from './errors/ResourceNotFoundError';
 
 export class ComboProductUseCase implements IComboProductUseCase {
   constructor(private comboProductRepository: IComboProductRepository) {}
+
+  async deleteComboProduct(
+    { id }: DeleteComboProductUseCaseRequestModel
+  ): Promise<void> {
+    const relationshipExists = 
+      await this.comboProductRepository.findById(id);
+
+    if (!relationshipExists) {
+      throw new ResourceNotFoundError("comboProduct");
+    }
+
+    await this.comboProductRepository.delete(id);
+  }
 
   async getComboProducts({
     params,

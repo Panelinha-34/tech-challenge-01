@@ -62,11 +62,11 @@ export class PrismaComboProductRepository implements IComboProductRepository {
       .then((c) => PrismaComboProductToDomainClientConverter.convert(c));
   }
 
-  async delete(comboProduct: ComboProduct): Promise<ComboProduct> {
+  async delete(id: string): Promise<ComboProduct> {
     return prisma.comboProduct
       .delete({
         where: {
-          id: comboProduct.id.toString(),
+          id
         }
       })
       .then((c) => PrismaComboProductToDomainClientConverter.convert(c));
