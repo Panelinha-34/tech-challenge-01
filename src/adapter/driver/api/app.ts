@@ -14,6 +14,7 @@ import { OrderRoutes } from "./controllers/OrderRoutes";
 import { OrderNotificationRoutes } from "./controllers/OrderNotificationRoutes";
 import { ProductRoutes } from "./controllers/ProductRoutes";
 import { ComboRoutes } from "./controllers/ComboRoutes";
+import { ComboProductRoutes } from './controllers/ComboProductRoutes';
 
 const SWAGGER_PATH = "/docs-swagger";
 
@@ -33,7 +34,7 @@ app.register(fastifySwaggerUi, {
   routePrefix: SWAGGER_PATH,
 });
 
-app.get("/docs", (request, response) => {
+app.get("/docs", (_, response) => {
   const stream = fs.createReadStream(`${`${process.cwd()}/index.html`}`);
 
   response.type("text/html").send(stream);
@@ -43,6 +44,7 @@ app.register(ClientRoutes, { prefix: "/clients" });
 app.register(ProductRoutes, { prefix: "/products" });
 app.register(OrderRoutes, { prefix: "/orders" });
 app.register(ComboRoutes, { prefix: "/combos" });
+app.register(ComboProductRoutes, { prefix: "/combo_products" });
 app.register(OrderNotificationRoutes, { prefix: "/order_notifications" });
 app.register(CategoryRoutes, { prefix: "/categories" });
 
