@@ -38,7 +38,6 @@ export const getClientsDocSchema = {
               id: { type: "string" },
               name: { type: "string" },
               email: { type: "string" },
-              password: { type: "string" },
               taxVat: { type: "string" },
               createdAt: { type: "string" },
               updatedAt: { type: "string" },

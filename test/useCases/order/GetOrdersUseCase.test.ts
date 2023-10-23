@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
-import { makeClient } from "@test/factories/MakeClient";
 import { InMemoryOrderRepository } from "@test/repositories/InMemoryOrderRepository";
 import { OrderUseCase } from "@/core/application/useCases/OrderUseCase";
 import { makeOrder } from "@test/factories/MakeOrder";
@@ -33,7 +32,7 @@ describe("Given the Order Use Case", () => {
     expect(orders).toHaveLength(1);
   });
 
-  it("should return the clients from the second pagination correctly", async () => {
+  it("should return the orders from the second pagination correctly", async () => {
     const params = new PaginationParams(2, size);
 
     Array.from({ length: 12 }).forEach(() => {
