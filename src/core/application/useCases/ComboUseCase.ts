@@ -80,6 +80,12 @@ export class ComboUseCase implements IComboUseCase {
     }
 
     if (name) {
+      const hasComboWithSameName = await this.comboRepository.findByName(name);
+
+      if (hasComboWithSameName) {
+        throw new AttributeConflictError("name", "combo");
+      }
+
       combo.name = name;
     }
 
