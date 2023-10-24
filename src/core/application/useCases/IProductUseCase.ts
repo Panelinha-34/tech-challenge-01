@@ -3,17 +3,17 @@ import {
   CreateProductUseCaseResponseModel,
 } from "./model/product/CreateProductUseCaseModel";
 import {
-  GetProductsUseCaseRequestModel,
-  GetProductsUseCaseResponseModel,
-} from "./model/product/GetProductsUseCaseModel";
+  EditProductUseCaseRequestModel,
+  EditProductUseCaseResponseModel,
+} from "./model/product/EditProductUseCaseModel";
 import {
   GetProductByIdUseCaseRequestModel,
   GetProductByIdUseCaseResponseModel,
 } from "./model/product/GetProductByIdUseCaseModel";
 import {
-  EditProductUseCaseRequestModel,
-  EditProductUseCaseResponseModel,
-} from "./model/product/EditProductUseCaseModel";
+  GetProductsUseCaseRequestModel,
+  GetProductsUseCaseResponseModel,
+} from "./model/product/GetProductsUseCaseModel";
 
 export interface IProductUseCase {
   getProducts(

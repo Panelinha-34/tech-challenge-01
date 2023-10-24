@@ -11,7 +11,7 @@ export interface GetProductByIdControllerResponse {
   name: string;
   description: string;
   price: string;
-  categoryId: string;
+  category: string;
   createdAt: string;
   updatedAt?: string;
 }
@@ -30,7 +30,7 @@ export const getProductByIdDocSchema = {
         name: { type: "string" },
         price: { type: "number" },
         description: { type: "string" },
-        categoryId: { type: "string" },
+        category: { type: "string" },
         createdAt: { type: "string" },
         updatedAt: { type: "string" },
       },

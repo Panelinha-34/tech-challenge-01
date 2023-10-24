@@ -9,7 +9,10 @@ export const editComboPathParametersSchema = z.object({
 export const editComboPayloadSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-  price: z.number().optional(),
+  sandwichId: z.string().optional(),
+  sideId: z.string().optional(),
+  drinkId: z.string().optional(),
+  dessertId: z.string().optional(),
 });
 
 export interface EditComboControllerResponse {
@@ -19,6 +22,17 @@ export interface EditComboControllerResponse {
   price: number;
   createdAt: string;
   updatedAt?: string;
+  products: [
+    {
+      id: string;
+      name: string;
+      description: string;
+      price: number;
+      categoryId: string;
+      createdAt: string;
+      updatedAt?: string;
+    },
+  ];
 }
 
 export const editComboDocSchema = {
@@ -32,14 +46,30 @@ export const editComboDocSchema = {
   }),
   response: {
     200: {
+      description: "Successful response",
       type: "object",
       properties: {
         id: { type: "string" },
         name: { type: "string" },
         description: { type: "string" },
-        categoryId: { type: "string" },
+        price: { type: "number" },
         createdAt: { type: "string" },
         updatedAt: { type: "string" },
+        products: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              description: { type: "string" },
+              price: { type: "number" },
+              category: { type: "string" },
+              createdAt: { type: "string" },
+              updatedAt: { type: "string" },
+            },
+          },
+        },
       },
     },
   },

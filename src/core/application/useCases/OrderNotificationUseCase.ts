@@ -10,6 +10,7 @@ export class OrderNotificationUseCase implements IOrderNotificationUseCase {
   constructor(
     private orderNotificationRepository: IOrderNotificationRepository
   ) {}
+
   async getOrderNotifications({
     params,
   }: GetOrderNotificationsUseCaseRequestModel): Promise<GetOrderNotificationsUseCaseResponseModel> {

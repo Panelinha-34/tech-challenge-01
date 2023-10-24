@@ -1,12 +1,13 @@
 import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
+import { Category } from "../valueObjects/Category";
 
 export interface ProductProps {
   name: string;
   description: string;
   price: number;
-  categoryId: string;
+  category: Category;
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -49,12 +50,12 @@ export class Product extends Entity<ProductProps> {
     this.touch();
   }
 
-  get categoryId() {
-    return this.props.categoryId;
+  get category() {
+    return this.props.category;
   }
 
-  set categoryId(value: string) {
-    this.props.categoryId = value;
+  set category(value: Category) {
+    this.props.category = value;
     this.touch();
   }
 

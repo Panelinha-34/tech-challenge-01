@@ -37,7 +37,7 @@ export class GetProductsControllerMapper
       name: product.name,
       description: product.description,
       price: product.price,
-      categoryId: product.categoryId,
+      category: product.category.name,
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt?.toISOString(),
     }));

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
+
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
 
 export const editProductPathParametersSchema = z.object({
@@ -9,7 +11,7 @@ export const editProductPathParametersSchema = z.object({
 export const editProductPayloadSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-  categoryId: z.string().uuid().optional(),
+  category: z.nativeEnum(CategoriesEnum).optional(),
   price: z.number().optional(),
 });
 
@@ -18,7 +20,7 @@ export interface EditProductControllerResponse {
   name: string;
   description: string;
   price: number;
-  categoryId: string;
+  category: string;
   createdAt: string;
   updatedAt?: string;
 }
@@ -29,9 +31,18 @@ export const editProductDocSchema = {
   params: convertZodSchemaToDocsTemplate({
     schema: editProductPathParametersSchema,
   }),
-  body: convertZodSchemaToDocsTemplate({
-    schema: editProductPayloadSchema,
-  }),
+  body: {
+    type: "object",
+    properties: {
+      name: { type: "string" },
+      description: { type: "string" },
+      price: { type: "number" },
+      category: {
+        type: "string",
+        enum: Object.values(CategoriesEnum),
+      },
+    },
+  },
   response: {
     200: {
       type: "object",
@@ -40,7 +51,7 @@ export const editProductDocSchema = {
         name: { type: "string" },
         description: { type: "string" },
         price: { type: "number" },
-        categoryId: { type: "string" },
+        category: { type: "string" },
         createdAt: { type: "string" },
         updatedAt: { type: "string" },
       },

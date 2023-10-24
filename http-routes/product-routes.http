@@ -1,0 +1,33 @@
+# @name get-products
+GET http://localhost:3333/products
+
+### 
+
+# @name get-product-by-id
+GET http://localhost:3333/products/5b8e541c-d18c-4f91-b055-fa8b4de91345
+
+### 
+
+# @name create-product
+POST http://localhost:3333/products
+content-type: application/json
+
+{
+  "name": "pink lemonade2",
+  "description": "pink lemonade",
+  "price": 12,
+  "category": "DRINK"
+}
+
+### 
+
+# @name edit-product
+PUT http://localhost:3333/products/150ee6db-c9b4-4351-990d-1d73046f851d
+content-type: application/json
+
+{
+  "name": "hamburguer de costela 2",
+  "price": 20,
+  "description": "hamburguer de costela",
+  "category": "DESSERT"
+}

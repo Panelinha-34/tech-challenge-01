@@ -18,14 +18,16 @@ export class CreateComboControllerMapper
     >
 {
   convertRequestModel(req: FastifyRequest): CreateComboUseCaseRequestModel {
-    const { name, description, price } = createComboPayloadSchema.parse(
-      req.body
-    );
+    const { name, description, sandwichId, drinkId, sideId, dessertId } =
+      createComboPayloadSchema.parse(req.body);
 
     return {
       name,
       description,
-      price,
+      sandwichId,
+      drinkId,
+      sideId,
+      dessertId,
     };
   }
 
@@ -33,6 +35,16 @@ export class CreateComboControllerMapper
     res: FastifyReply,
     useCaseResponseModel: CreateComboUseCaseResponseModel
   ) {
+    const products = useCaseResponseModel.productDetails.map((product) => ({
+      id: product.id.toString(),
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      category: product.category.name,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt?.toISOString(),
+    }));
+
     const combo = {
       id: useCaseResponseModel.combo.id.toString(),
       name: useCaseResponseModel.combo.name,
@@ -40,8 +52,9 @@ export class CreateComboControllerMapper
       price: useCaseResponseModel.combo.price,
       createdAt: useCaseResponseModel.combo.createdAt.toISOString(),
       updatedAt: useCaseResponseModel.combo.updatedAt?.toISOString(),
+      products,
     };
 
-    return res.status(200).send(combo);
+    return res.status(201).send(combo);
   }
 }

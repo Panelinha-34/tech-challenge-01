@@ -6,11 +6,16 @@ export interface IComboProductRepository {
 
   findMany(params: PaginationParams): Promise<ComboProduct[]>;
 
+  findManyByComboID(comboId: string): Promise<ComboProduct[]>;
+
   findByProductIdAndComboId(
-    productId: string, comboId: string
+    productId: string,
+    comboId: string
   ): Promise<ComboProduct | null>;
 
   create(comboProduct: ComboProduct): Promise<ComboProduct>;
 
-  delete(id: string): Promise<void>;
+  createMany(comboProducts: ComboProduct[]): Promise<number>;
+
+  deleteByComboId(id: string): Promise<void>;
 }

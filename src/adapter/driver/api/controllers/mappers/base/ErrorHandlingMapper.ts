@@ -8,6 +8,7 @@ export abstract class ErrorHandlingMapper {
     if (error instanceof ResourceNotFoundError) {
       return res.status(404).send({
         message: `${error.entity} not found.`,
+        details: error.details ?? [],
       });
     }
 

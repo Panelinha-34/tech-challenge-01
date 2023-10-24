@@ -11,10 +11,15 @@ export interface ComboProps {
 }
 
 export class Combo extends Entity<ComboProps> {
-  constructor(props: Optional<ComboProps, "createdAt">, id?: UniqueEntityId) {
+  constructor(
+    props: Optional<ComboProps, "createdAt" | "name" | "description">,
+    id?: UniqueEntityId
+  ) {
     super(
       {
         ...props,
+        name: props.name ?? `Combo ${new Date().getTime()}`,
+        description: props.name ?? `Combo ${new Date().getTime()}`,
         createdAt: props.createdAt ?? new Date(),
       },
       id

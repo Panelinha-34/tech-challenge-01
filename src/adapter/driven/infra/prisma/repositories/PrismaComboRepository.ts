@@ -1,8 +1,8 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { Combo } from "@/core/domain/entities/Combo";
+import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
 
 import { prisma } from "../config/prisma";
-import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
-import { Combo } from "@/core/domain/entities/Combo";
 import { PrismaComboToDomainClientConverter } from "../converter/PrismaComboToDomainClientConverter";
 
 export class PrismaComboRepository implements IComboRepository {

@@ -22,13 +22,13 @@ export class EditProductControllerMapper
 {
   convertRequestModel(req: FastifyRequest): EditProductUseCaseRequestModel {
     const { id } = editProductPathParametersSchema.parse(req.params);
-    const { name, categoryId, description, price } =
+    const { name, category, description, price } =
       editProductPayloadSchema.parse(req.body);
 
     return {
       id,
       name,
-      categoryId,
+      category,
       description,
       price,
     };
@@ -43,7 +43,7 @@ export class EditProductControllerMapper
       name: useCaseResponseModel.product.name,
       description: useCaseResponseModel.product.description,
       price: useCaseResponseModel.product.price,
-      categoryId: useCaseResponseModel.product.categoryId,
+      category: useCaseResponseModel.product.category.name,
       createdAt: useCaseResponseModel.product.createdAt.toISOString(),
       updatedAt: useCaseResponseModel.product.updatedAt?.toISOString(),
     };

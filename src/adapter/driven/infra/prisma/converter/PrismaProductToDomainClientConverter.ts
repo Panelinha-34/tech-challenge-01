@@ -1,5 +1,7 @@
 import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
 import { Product } from "@/core/domain/entities/Product";
+import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
+import { Category } from "@/core/domain/valueObjects/Category";
 import { Product as PrismaProduct } from "@prisma/client";
 
 export class PrismaProductToDomainClientConverter {
@@ -8,7 +10,9 @@ export class PrismaProductToDomainClientConverter {
       {
         name: prismaClient.name,
         description: prismaClient.description,
-        categoryId: prismaClient.category_id,
+        category: new Category({
+          name: prismaClient.category as CategoriesEnum,
+        }),
         price: prismaClient.price.toNumber(),
         createdAt: prismaClient.created_at,
         updatedAt: prismaClient.updated_at ?? undefined,

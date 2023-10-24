@@ -1,16 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 import { AttributeConflictError } from "@/core/application/useCases/errors/AttributeConflictError";
+import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 import { makeProduct } from "@test/factories/MakeProduct";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
-import { Category } from '@/core/domain/entities/Category';
-import { makeCategory } from '@test/factories/MakeCategory';
 
 let inMemoryProductRepository: InMemoryProductRepository;
 let sut: ProductUseCase;
-
-let category: Category;
 
 describe("Given the Edit Product Use Case", () => {
   const name = "updated name";
@@ -19,8 +15,6 @@ describe("Given the Edit Product Use Case", () => {
     vi.clearAllMocks();
 
     inMemoryProductRepository = new InMemoryProductRepository();
-
-    category = makeCategory();
 
     sut = new ProductUseCase(inMemoryProductRepository);
   });
@@ -32,12 +26,12 @@ describe("Given the Edit Product Use Case", () => {
 
     await sut.editProduct({
       id: createdProduct.id.toString(),
-      name,
+      name: "updated name",
     });
 
     expect(inMemoryProductRepository.items[0]).toEqual(
       expect.objectContaining({
-        name,
+        name: "updated name",
       })
     );
   });

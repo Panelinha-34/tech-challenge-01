@@ -9,7 +9,7 @@ export const createOrderPayloadSchema = z.object({
 });
 
 export const createOrderDocSchema = {
-  tags: ["Order"],
+  tags: ["Order (WIP)"],
   description: "Create Order",
   body: convertZodSchemaToDocsTemplate({
     schema: createOrderPayloadSchema,

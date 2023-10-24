@@ -1,12 +1,12 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { OrderNotification } from "@/core/domain/entities/OrderNotification";
+import { IOrderNotificationRepository } from "@/core/domain/repositories/IOrderNotificationRepository";
 
 import { prisma } from "../config/prisma";
 import { PrismaOrderNotificationToDomainClientConverter } from "../converter/PrismaOrderNotificationToDomainClientConverter";
-import { OrderNotificationRepository } from "@/core/domain/repositories/OrderNotificationRepository";
 
 export class OrderNotificationsPrismaRepository
-  implements OrderNotificationRepository
+  implements IOrderNotificationRepository
 {
   async findMany({
     page,

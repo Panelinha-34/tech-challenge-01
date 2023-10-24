@@ -1,15 +1,15 @@
+import { Order } from "@/core/domain/entities/Order";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 
 import { IOrderUseCase } from "./IOrderUseCase";
 import {
-  GetOrdersUseCaseRequestModel,
-  GetOrdersUseCaseResponseModel,
-} from "./model/order/GetOrdersUseCaseModel";
-import {
   CreateOrderUseCaseRequestModel,
   CreateOrderUseCaseResponseModel,
 } from "./model/order/CreateOrderUseCaseModel";
-import { Order } from "@/core/domain/entities/Order";
+import {
+  GetOrdersUseCaseRequestModel,
+  GetOrdersUseCaseResponseModel,
+} from "./model/order/GetOrdersUseCaseModel";
 
 export class OrderUseCase implements IOrderUseCase {
   constructor(private orderRepository: IOrderRepository) {}

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
+import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
 import { makeProduct } from "@test/factories/MakeProduct";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";

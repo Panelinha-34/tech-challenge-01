@@ -3,11 +3,11 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { IProductUseCase } from "@/core/application/useCases/IProductUseCase";
 
 import { CreateProductControllerMapper } from "./mappers/product/CreateProductControllerMapper";
+import { EditProductControllerMapper } from "./mappers/product/EditProductControllerMapper";
 import { GetProductByIdControllerMapper } from "./mappers/product/GetProductByIdControllerMapper";
 import { GetProductsControllerMapper } from "./mappers/product/GetProductsControllerMapper";
-import { GetProductsControllerResponse } from "./model/product/GetProductsControllerModel";
 import { GetProductByIdControllerResponse } from "./model/product/GetProductByIdControllerModel";
-import { EditProductControllerMapper } from "./mappers/product/EditProductControllerMapper";
+import { GetProductsControllerResponse } from "./model/product/GetProductsControllerModel";
 
 export class ProductController {
   constructor(
@@ -61,13 +61,13 @@ export class ProductController {
         this.createProductControllerMapper.convertRequestModel(req)
       )
       .then((response) =>
-        this.getProductByIdControllerMapper.convertSuccessfullyResponse(
+        this.createProductControllerMapper.convertSuccessfullyResponse(
           res,
           response
         )
       )
       .catch((error) =>
-        this.getProductByIdControllerMapper.convertErrorResponse(error, res)
+        this.createProductControllerMapper.convertErrorResponse(error, res)
       );
   }
 

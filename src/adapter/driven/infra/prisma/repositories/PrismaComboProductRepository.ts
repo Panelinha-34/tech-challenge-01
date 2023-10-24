@@ -3,23 +3,22 @@ import { ComboProduct } from "@/core/domain/entities/ComboProduct";
 import { IComboProductRepository } from "@/core/domain/repositories/IComboProductRepository";
 
 import { prisma } from "../config/prisma";
-import { 
-  PrismaComboProductToDomainClientConverter 
-} from '../converter/PrismaComboProductToDomainClientConverter';
+import { PrismaComboProductToDomainClientConverter } from "../converter/PrismaComboProductToDomainClientConverter";
 
 export class PrismaComboProductRepository implements IComboProductRepository {
   async findByProductIdAndComboId(
-    productId: string, comboId: string
+    productId: string,
+    comboId: string
   ): Promise<ComboProduct | null> {
     return prisma.comboProduct
       .findFirst({
         where: {
           combo_id: comboId,
-          product_id: productId
-        }
+          product_id: productId,
+        },
       })
-      .then((comboProduct) => 
-        comboProduct 
+      .then((comboProduct) =>
+        comboProduct
           ? PrismaComboProductToDomainClientConverter.convert(comboProduct)
           : null
       );
@@ -33,8 +32,8 @@ export class PrismaComboProductRepository implements IComboProductRepository {
         },
       })
       .then((comboProduct) =>
-        comboProduct 
-          ? PrismaComboProductToDomainClientConverter.convert(comboProduct) 
+        comboProduct
+          ? PrismaComboProductToDomainClientConverter.convert(comboProduct)
           : null
       );
   }
@@ -46,8 +45,23 @@ export class PrismaComboProductRepository implements IComboProductRepository {
         skip: (page - 1) * size,
       })
       .then((comboProducts) =>
-        comboProducts.map((c) => 
-          PrismaComboProductToDomainClientConverter.convert(c))
+        comboProducts.map((c) =>
+          PrismaComboProductToDomainClientConverter.convert(c)
+        )
+      );
+  }
+
+  async findManyByComboID(comboId: string): Promise<ComboProduct[]> {
+    return prisma.comboProduct
+      .findMany({
+        where: {
+          combo_id: comboId,
+        },
+      })
+      .then((comboProducts) =>
+        comboProducts.map((c) =>
+          PrismaComboProductToDomainClientConverter.convert(c)
+        )
       );
   }
 
@@ -62,13 +76,22 @@ export class PrismaComboProductRepository implements IComboProductRepository {
       .then((c) => PrismaComboProductToDomainClientConverter.convert(c));
   }
 
-  async delete(id: string): Promise<ComboProduct> {
+  async createMany(comboProducts: ComboProduct[]): Promise<number> {
     return prisma.comboProduct
-      .delete({
-        where: {
-          id
-        }
+      .createMany({
+        data: comboProducts.map((c) => ({
+          combo_id: c.comboId,
+          product_id: c.productId,
+        })),
       })
-      .then((c) => PrismaComboProductToDomainClientConverter.convert(c));
+      .then(({ count }) => count);
+  }
+
+  async deleteByComboId(id: string): Promise<void> {
+    await prisma.comboProduct.deleteMany({
+      where: {
+        combo_id: id,
+      },
+    });
   }
 }

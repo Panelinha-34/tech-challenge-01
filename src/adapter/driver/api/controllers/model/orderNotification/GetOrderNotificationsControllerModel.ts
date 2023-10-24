@@ -21,7 +21,7 @@ export interface GetOrderNotificationsControllerResponse {
 }
 
 export const getOrderNotificationsDocSchema = {
-  tags: ["OrderNotification"],
+  tags: ["Order Notification (WIP)"],
   description: "List order notifications",
   querystring: convertZodSchemaToDocsTemplate({
     schema: getOrderNotificationsQueryParamsSchema,

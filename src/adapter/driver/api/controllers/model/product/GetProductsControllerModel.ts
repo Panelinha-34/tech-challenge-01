@@ -12,7 +12,7 @@ export interface GetProductResponse {
   name: string;
   description: string;
   price: number;
-  categoryId: number;
+  category: number;
   createdAt: string;
   updatedAt?: string;
 }
@@ -40,7 +40,7 @@ export const getProductsDocSchema = {
               name: { type: "string" },
               price: { type: "number" },
               description: { type: "string" },
-              categoryId: { type: "string" },
+              category: { type: "string" },
               createdAt: { type: "string" },
               updatedAt: { type: "string" },
             },

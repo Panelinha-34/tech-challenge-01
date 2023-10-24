@@ -10,7 +10,10 @@ export interface ComboProductProps {
 }
 
 export class ComboProduct extends Entity<ComboProductProps> {
-  constructor(props: Optional<ComboProductProps, "createdAt">, id?: UniqueEntityId) {
+  constructor(
+    props: Optional<ComboProductProps, "createdAt">,
+    id?: UniqueEntityId
+  ) {
     super(
       {
         ...props,

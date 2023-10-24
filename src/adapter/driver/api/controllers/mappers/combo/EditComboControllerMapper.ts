@@ -22,13 +22,17 @@ export class EditComboControllerMapper
 {
   convertRequestModel(req: FastifyRequest): EditComboUseCaseRequestModel {
     const { id } = editComboPathParametersSchema.parse(req.params);
-    const { name, description, price } = editComboPayloadSchema.parse(req.body);
+    const { name, description, sandwichId, drinkId, sideId, dessertId } =
+      editComboPayloadSchema.parse(req.body);
 
     return {
       id,
       name,
       description,
-      price,
+      sandwichId,
+      drinkId,
+      sideId,
+      dessertId,
     };
   }
 
@@ -36,6 +40,16 @@ export class EditComboControllerMapper
     res: FastifyReply,
     useCaseResponseModel: EditComboUseCaseResponseModel
   ) {
+    const products = useCaseResponseModel.productDetails.map((product) => ({
+      id: product.id.toString(),
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      category: product.category.name,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt?.toISOString(),
+    }));
+
     const combo = {
       id: useCaseResponseModel.combo.id.toString(),
       name: useCaseResponseModel.combo.name,
@@ -43,6 +57,7 @@ export class EditComboControllerMapper
       price: useCaseResponseModel.combo.price,
       createdAt: useCaseResponseModel.combo.createdAt.toISOString(),
       updatedAt: useCaseResponseModel.combo.updatedAt?.toISOString(),
+      products,
     };
 
     return res.status(200).send(combo);

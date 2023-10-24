@@ -2,12 +2,12 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 import { IComboUseCase } from "@/core/application/useCases/IComboUseCase";
 
-import { GetCombosControllerMapper } from "./mappers/combo/GetCombosControllerMapper";
-import { GetComboByIdControllerMapper } from "./mappers/combo/GetComboByIdControllerMapper";
 import { CreateComboControllerMapper } from "./mappers/combo/CreateComboControllerMapper";
 import { EditComboControllerMapper } from "./mappers/combo/EditComboControllerMapper";
-import { GetCombosControllerResponse } from "./model/combo/GetCombosControllerModel";
+import { GetComboByIdControllerMapper } from "./mappers/combo/GetComboByIdControllerMapper";
+import { GetCombosControllerMapper } from "./mappers/combo/GetCombosControllerMapper";
 import { GetComboByIdControllerResponse } from "./model/combo/GetComboByIdControllerModel";
+import { GetCombosControllerResponse } from "./model/combo/GetCombosControllerModel";
 
 export class ComboController {
   constructor(

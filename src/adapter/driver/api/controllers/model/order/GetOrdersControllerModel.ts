@@ -21,7 +21,7 @@ export interface GetOrdersControllerResponse {
 }
 
 export const getOrdersDocSchema = {
-  tags: ["Order"],
+  tags: ["Order (WIP)"],
   description: "List orders",
   querystring: convertZodSchemaToDocsTemplate({
     schema: getOrdersQueryParamsSchema,

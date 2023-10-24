@@ -4,7 +4,7 @@ export interface CreateProductUseCaseRequestModel {
   name: string;
   description: string;
   price: number;
-  categoryId: string;
+  category: string;
 }
 
 export interface CreateProductUseCaseResponseModel {

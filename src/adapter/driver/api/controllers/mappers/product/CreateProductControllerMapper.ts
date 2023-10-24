@@ -18,14 +18,14 @@ export class CreateProductControllerMapper
     >
 {
   convertRequestModel(req: FastifyRequest): CreateProductUseCaseRequestModel {
-    const { name, description, price, categoryId } =
+    const { name, description, price, category } =
       createProductPayloadSchema.parse(req.body);
 
     return {
       name,
       description,
       price,
-      categoryId,
+      category,
     };
   }
 
@@ -38,7 +38,7 @@ export class CreateProductControllerMapper
       name: useCaseResponseModel.product.name,
       description: useCaseResponseModel.product.description,
       price: useCaseResponseModel.product.price,
-      categoryId: useCaseResponseModel.product.categoryId,
+      category: useCaseResponseModel.product.category.name,
       createdAt: useCaseResponseModel.product.createdAt.toISOString(),
       updatedAt: useCaseResponseModel.product.updatedAt?.toISOString(),
     };

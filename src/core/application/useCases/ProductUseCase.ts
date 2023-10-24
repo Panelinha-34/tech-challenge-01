@@ -1,5 +1,7 @@
 import { Product } from "@/core/domain/entities/Product";
+import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { Category } from "@/core/domain/valueObjects/Category";
 
 import { AttributeConflictError } from "./errors/AttributeConflictError";
 import { ResourceNotFoundError } from "./errors/ResourceNotFoundError";
@@ -9,25 +11,17 @@ import {
   CreateProductUseCaseResponseModel,
 } from "./model/product/CreateProductUseCaseModel";
 import {
-  EditClientUseCaseRequestModel,
-  EditClientUseCaseResponseModel,
-} from "./model/client/EditClientUseCaseModel";
-import {
-  GetClientsUseCaseRequestModel,
-  GetClientsUseCaseResponseModel,
-} from "./model/client/GetClientsUseCaseModel";
-import {
-  GetProductsUseCaseRequestModel,
-  GetProductsUseCaseResponseModel,
-} from "./model/product/GetProductsUseCaseModel";
+  EditProductUseCaseRequestModel,
+  EditProductUseCaseResponseModel,
+} from "./model/product/EditProductUseCaseModel";
 import {
   GetProductByIdUseCaseRequestModel,
   GetProductByIdUseCaseResponseModel,
 } from "./model/product/GetProductByIdUseCaseModel";
 import {
-  EditProductUseCaseRequestModel,
-  EditProductUseCaseResponseModel,
-} from "./model/product/EditProductUseCaseModel";
+  GetProductsUseCaseRequestModel,
+  GetProductsUseCaseResponseModel,
+} from "./model/product/GetProductsUseCaseModel";
 
 export class ProductUseCase implements IProductUseCase {
   constructor(private productRepository: IProductRepository) {}
@@ -53,7 +47,7 @@ export class ProductUseCase implements IProductUseCase {
   }
 
   async createProduct({
-    categoryId,
+    category,
     description,
     name,
     price,
@@ -69,7 +63,7 @@ export class ProductUseCase implements IProductUseCase {
       new Product({
         name,
         price,
-        categoryId,
+        category: new Category({ name: category as CategoriesEnum }),
         description,
       })
     );
@@ -80,7 +74,7 @@ export class ProductUseCase implements IProductUseCase {
   async editProduct({
     id,
     name,
-    categoryId,
+    category,
     description,
     price,
   }: EditProductUseCaseRequestModel): Promise<EditProductUseCaseResponseModel> {
@@ -94,7 +88,10 @@ export class ProductUseCase implements IProductUseCase {
       const hasProductWithSameName =
         await this.productRepository.findByName(name);
 
-      if (hasProductWithSameName) {
+      if (
+        hasProductWithSameName &&
+        hasProductWithSameName.id.toString() !== product.id.toString()
+      ) {
         throw new AttributeConflictError("name", "product");
       }
 
@@ -105,8 +102,8 @@ export class ProductUseCase implements IProductUseCase {
       product.description = description;
     }
 
-    if (categoryId) {
-      product.categoryId = categoryId;
+    if (category) {
+      product.category = new Category({ name: category as CategoriesEnum });
     }
 
     if (price) {

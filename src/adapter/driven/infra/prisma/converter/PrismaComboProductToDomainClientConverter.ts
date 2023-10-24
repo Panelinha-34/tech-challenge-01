@@ -3,7 +3,7 @@ import { ComboProduct } from "@/core/domain/entities/ComboProduct";
 import { ComboProduct as PrismaComboProduct } from "@prisma/client";
 
 export class PrismaComboProductToDomainClientConverter {
-  static convert(prismaClient: PrismaComboProduct): ComboProduct{
+  static convert(prismaClient: PrismaComboProduct): ComboProduct {
     return new ComboProduct(
       {
         comboId: prismaClient.combo_id,

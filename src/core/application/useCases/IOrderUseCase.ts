@@ -1,11 +1,11 @@
 import {
-  GetOrdersUseCaseRequestModel,
-  GetOrdersUseCaseResponseModel,
-} from "./model/order/GetOrdersUseCaseModel";
-import {
   CreateOrderUseCaseRequestModel,
   CreateOrderUseCaseResponseModel,
 } from "./model/order/CreateOrderUseCaseModel";
+import {
+  GetOrdersUseCaseRequestModel,
+  GetOrdersUseCaseResponseModel,
+} from "./model/order/GetOrdersUseCaseModel";
 
 export interface IOrderUseCase {
   getOrders(

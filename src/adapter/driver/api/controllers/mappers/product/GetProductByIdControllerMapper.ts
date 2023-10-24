@@ -34,7 +34,7 @@ export class GetProductByIdControllerMapper
       name: useCaseResponseModel.product.name,
       price: useCaseResponseModel.product.price,
       description: useCaseResponseModel.product.description,
-      categoryId: useCaseResponseModel.product.categoryId,
+      category: useCaseResponseModel.product.category.name,
       createdAt: useCaseResponseModel.product.createdAt.toISOString(),
       updatedAt: useCaseResponseModel.product.updatedAt?.toISOString(),
     };

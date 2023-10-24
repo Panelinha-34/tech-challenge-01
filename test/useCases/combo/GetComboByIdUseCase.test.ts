@@ -4,9 +4,13 @@ import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
 import { makeCombo } from "@test/factories/MakeCombo";
+import { InMemoryComboProductRepository } from "@test/repositories/InMemoryComboProductRepository";
 import { InMemoryComboRepository } from "@test/repositories/InMemoryComboRepository";
+import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
 
 let inMemoryComboRepository: InMemoryComboRepository;
+let inMemoryComboProductRepository: InMemoryComboProductRepository;
+let inMemoryProductRepository: InMemoryProductRepository;
 let sut: ComboUseCase;
 
 describe("Given the Get Combo By Id Use Case", () => {
@@ -16,8 +20,14 @@ describe("Given the Get Combo By Id Use Case", () => {
     vi.clearAllMocks();
 
     inMemoryComboRepository = new InMemoryComboRepository();
+    inMemoryComboProductRepository = new InMemoryComboProductRepository();
+    inMemoryProductRepository = new InMemoryProductRepository();
 
-    sut = new ComboUseCase(inMemoryComboRepository);
+    sut = new ComboUseCase(
+      inMemoryComboRepository,
+      inMemoryComboProductRepository,
+      inMemoryProductRepository
+    );
   });
 
   it("should return the combo correctly", async () => {
@@ -39,8 +49,8 @@ describe("Given the Get Combo By Id Use Case", () => {
 
     inMemoryComboRepository.items.push(combo);
 
-    await expect(() =>
-      sut.getComboById({ id: "456" })
-    ).rejects.toBeInstanceOf(ResourceNotFoundError);
+    await expect(() => sut.getComboById({ id: "456" })).rejects.toBeInstanceOf(
+      ResourceNotFoundError
+    );
   });
 });

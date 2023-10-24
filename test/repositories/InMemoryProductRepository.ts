@@ -1,6 +1,7 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { Product } from "@/core/domain/entities/Product";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { Category } from "@/core/domain/valueObjects/Category";
 
 export class InMemoryProductRepository implements IProductRepository {
   public items: Product[] = [];
@@ -11,10 +12,27 @@ export class InMemoryProductRepository implements IProductRepository {
     return product || null;
   }
 
+  async findByIdAndCategory(
+    id: string,
+    category: Category
+  ): Promise<Product | null> {
+    const product = this.items.find(
+      (a) => a.id.toString() === id && a.category.name === category.name
+    );
+
+    return product || null;
+  }
+
   async findByName(name: string): Promise<Product | null> {
     const product = this.items.find((a) => a.name === name);
 
-    return product|| null;
+    return product || null;
+  }
+
+  async findManyByIds(ids: string[]): Promise<Product[]> {
+    const products = this.items.filter((a) => ids.includes(a.id.toString()));
+
+    return products;
   }
 
   async findMany({ page, size }: PaginationParams): Promise<Product[]> {

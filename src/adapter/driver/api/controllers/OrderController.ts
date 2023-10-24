@@ -2,9 +2,9 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 import { IOrderUseCase } from "@/core/application/useCases/IOrderUseCase";
 
+import { CreateOrderControllerMapper } from "./mappers/order/CreateOrderControllerMapper";
 import { GetOrdersControllerMapper } from "./mappers/order/GetOrdersControllerMapper";
 import { GetOrdersControllerResponse } from "./model/order/GetOrdersControllerModel";
-import { CreateOrderControllerMapper } from "./mappers/order/CreateOrderControllerMapper";
 
 export class OrderController {
   constructor(
@@ -20,14 +20,13 @@ export class OrderController {
     return this.orderUseCase
       .getOrders(this.getOrdersControllerMapper.convertRequestModel(req))
       .then((response) =>
-        res
-          .status(200)
-          .send(
-            this.getOrdersControllerMapper.convertSuccessfullyResponse(
-              res,
-              response
-            )
-          )
+        this.getOrdersControllerMapper.convertSuccessfullyResponse(
+          res,
+          response
+        )
+      )
+      .catch((error) =>
+        this.getOrdersControllerMapper.convertErrorResponse(error, res)
       );
   }
 
@@ -35,14 +34,13 @@ export class OrderController {
     return this.orderUseCase
       .createOrder(this.createOrderControllerMapper.convertRequestModel(req))
       .then((response) =>
-        res
-          .status(200)
-          .send(
-            this.createOrderControllerMapper.convertSuccessfullyResponse(
-              res,
-              response
-            )
-          )
+        this.createOrderControllerMapper.convertSuccessfullyResponse(
+          res,
+          response
+        )
+      )
+      .catch((error) =>
+        this.createOrderControllerMapper.convertErrorResponse(error, res)
       );
   }
 }

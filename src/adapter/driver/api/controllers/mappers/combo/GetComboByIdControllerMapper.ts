@@ -29,13 +29,24 @@ export class GetComboByIdControllerMapper
     res: FastifyReply,
     useCaseResponseModel: GetComboByIdUseCaseResponseModel
   ) {
+    const products = useCaseResponseModel.productDetails.map((product) => ({
+      id: product.id.toString(),
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      category: product.category.name,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt?.toISOString(),
+    }));
+
     const combo = {
       id: useCaseResponseModel.combo.id.toString(),
       name: useCaseResponseModel.combo.name,
-      price: useCaseResponseModel.combo.price,
       description: useCaseResponseModel.combo.description,
+      price: useCaseResponseModel.combo.price,
       createdAt: useCaseResponseModel.combo.createdAt.toISOString(),
       updatedAt: useCaseResponseModel.combo.updatedAt?.toISOString(),
+      products,
     };
 
     return res.status(200).send(combo);

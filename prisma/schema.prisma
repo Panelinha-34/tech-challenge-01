@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Category {
+  SANDWICH
+  DRINK
+  SIDE_DISH
+  DESSERT
+}
+
 model Client {
   id         String    @id @default(uuid())
   name       String
@@ -112,8 +119,8 @@ model Combo {
 
 model ComboProduct {
   id         String    @id @default(uuid())
-  product_id String
   combo_id   String
+  product_id String
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
@@ -128,24 +135,12 @@ model Product {
   name        String
   description String
   price       Decimal
-  category_id String    @map("category_id")
+  category    Category
   created_at  DateTime  @default(now())
   updated_at  DateTime? @updatedAt
 
-  category          Category           @relation(fields: [category_id], references: [id])
   orderProductItems OrderProductItem[]
   comboProducts     ComboProduct[]
 
   @@map("products")
-}
-
-model Category {
-  id         String    @id @default(uuid())
-  name       String    @unique
-  created_at DateTime  @default(now())
-  updated_at DateTime? @updatedAt
-
-  products Product[]
-
-  @@map("categories")
 }

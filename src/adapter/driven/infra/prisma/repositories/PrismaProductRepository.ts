@@ -1,13 +1,13 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { Product } from "@/core/domain/entities/Product";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { Category } from "@/core/domain/valueObjects/Category";
 
 import { prisma } from "../config/prisma";
-import { PrismaClientToDomainClientConverter } from "../converter/PrismaClientToDomainClientConverter";
 import { PrismaProductToDomainClientConverter } from "../converter/PrismaProductToDomainClientConverter";
 
 export class PrismaProductRepository implements IProductRepository {
-  findByName(name: string): Promise<Product | null> {
+  async findByName(name: string): Promise<Product | null> {
     return prisma.product
       .findFirst({
         where: {
@@ -16,6 +16,36 @@ export class PrismaProductRepository implements IProductRepository {
       })
       .then((product) =>
         product ? PrismaProductToDomainClientConverter.convert(product) : null
+      );
+  }
+
+  async findByIdAndCategory(
+    id: string,
+    category: Category
+  ): Promise<Product | null> {
+    return prisma.product
+      .findFirst({
+        where: {
+          id,
+          category: category.name,
+        },
+      })
+      .then((product) =>
+        product ? PrismaProductToDomainClientConverter.convert(product) : null
+      );
+  }
+
+  async findManyByIds(ids: string[]): Promise<Product[]> {
+    return prisma.product
+      .findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      })
+      .then((products) =>
+        products.map((c) => PrismaProductToDomainClientConverter.convert(c))
       );
   }
 
@@ -49,7 +79,7 @@ export class PrismaProductRepository implements IProductRepository {
           name: product.name,
           description: product.description,
           price: product.price,
-          category_id: product.categoryId,
+          category: product.category.name,
         },
       })
       .then((c) => PrismaProductToDomainClientConverter.convert(c));
@@ -65,7 +95,7 @@ export class PrismaProductRepository implements IProductRepository {
           name: product.name,
           description: product.description,
           price: product.price,
-          category_id: product.categoryId,
+          category: product.category.name,
         },
       })
       .then((c) => PrismaProductToDomainClientConverter.convert(c));

@@ -1,28 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 import { AttributeConflictError } from "@/core/application/useCases/errors/AttributeConflictError";
+import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 import { makeProduct } from "@test/factories/MakeProduct";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
-import { Category } from '@/core/domain/entities/Category';
-import { makeCategory } from '@test/factories/MakeCategory';
 
 let inMemoryProductRepository: InMemoryProductRepository;
 let sut: ProductUseCase;
 
-let category: Category;
-
 describe("Given the Create Product Use Case", () => {
   const name = "hamburger";
   const description = "hamburguer com queijo e salada";
-  const price = 9.50;
+  const category = "SANDWICH";
+  const price = 9.5;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     inMemoryProductRepository = new InMemoryProductRepository();
-
-    category = makeCategory();
 
     sut = new ProductUseCase(inMemoryProductRepository);
   });
@@ -32,7 +27,7 @@ describe("Given the Create Product Use Case", () => {
       name,
       description,
       price,
-      categoryId: category.id.toString()
+      category,
     });
 
     expect(
@@ -52,7 +47,7 @@ describe("Given the Create Product Use Case", () => {
         name,
         description,
         price,
-        categoryId: category.id.toString(),
+        category,
       })
     ).rejects.toBeInstanceOf(AttributeConflictError);
   });
