@@ -2,43 +2,43 @@ import { z } from "zod";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
 
-export const getClientsQueryParamsSchema = z.object({
+export const getCombosQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
   pageSize: z.coerce.number().default(20),
 });
 
-export interface GetClientsResponse {
+export interface GetComboResponse {
   id: string;
   name: string;
-  email: string;
-  taxVat: string;
+  description: string;
+  price: number;
   createdAt: string;
   updatedAt?: string;
 }
 
-export interface GetClientsControllerResponse {
-  clients: GetClientsResponse[];
+export interface GetCombosControllerResponse {
+  combos: GetComboResponse[];
 }
 
-export const getClientsDocSchema = {
-  tags: ["Client"],
-  description: "List clients",
+export const getCombosDocSchema = {
+  tags: ["Combo"],
+  description: "List combos",
   querystring: convertZodSchemaToDocsTemplate({
-    schema: getClientsQueryParamsSchema,
+    schema: getCombosQueryParamsSchema,
   }),
   response: {
     200: {
       type: "object",
       properties: {
-        clients: {
+        combos: {
           type: "array",
           items: {
             type: "object",
             properties: {
               id: { type: "string" },
               name: { type: "string" },
-              email: { type: "string" },
-              taxVat: { type: "string" },
+              description: { type: "string" },
+              categoryId: { type: "string" },
               createdAt: { type: "string" },
               updatedAt: { type: "string" },
             },

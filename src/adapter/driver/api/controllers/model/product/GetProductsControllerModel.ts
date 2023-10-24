@@ -2,43 +2,45 @@ import { z } from "zod";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
 
-export const getClientsQueryParamsSchema = z.object({
+export const getProductsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
   pageSize: z.coerce.number().default(20),
 });
 
-export interface GetClientsResponse {
+export interface GetProductResponse {
   id: string;
   name: string;
-  email: string;
-  taxVat: string;
+  description: string;
+  price: number;
+  category: number;
   createdAt: string;
   updatedAt?: string;
 }
 
-export interface GetClientsControllerResponse {
-  clients: GetClientsResponse[];
+export interface GetProductsControllerResponse {
+  products: GetProductResponse[];
 }
 
-export const getClientsDocSchema = {
-  tags: ["Client"],
-  description: "List clients",
+export const getProductsDocSchema = {
+  tags: ["Product"],
+  description: "List products",
   querystring: convertZodSchemaToDocsTemplate({
-    schema: getClientsQueryParamsSchema,
+    schema: getProductsQueryParamsSchema,
   }),
   response: {
     200: {
       type: "object",
       properties: {
-        clients: {
+        products: {
           type: "array",
           items: {
             type: "object",
             properties: {
               id: { type: "string" },
               name: { type: "string" },
-              email: { type: "string" },
-              taxVat: { type: "string" },
+              price: { type: "number" },
+              description: { type: "string" },
+              category: { type: "string" },
               createdAt: { type: "string" },
               updatedAt: { type: "string" },
             },

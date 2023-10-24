@@ -2,43 +2,43 @@ import { z } from "zod";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
 
-export const getClientsQueryParamsSchema = z.object({
+export const getOrderNotificationsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
   pageSize: z.coerce.number().default(20),
 });
 
-export interface GetClientsResponse {
+export interface GetOrderNotificationsResponse {
   id: string;
-  name: string;
-  email: string;
-  taxVat: string;
+  status: string;
+  message: string;
+  orderId: string;
   createdAt: string;
   updatedAt?: string;
 }
 
-export interface GetClientsControllerResponse {
-  clients: GetClientsResponse[];
+export interface GetOrderNotificationsControllerResponse {
+  orderNotifications: GetOrderNotificationsResponse[];
 }
 
-export const getClientsDocSchema = {
-  tags: ["Client"],
-  description: "List clients",
+export const getOrderNotificationsDocSchema = {
+  tags: ["Order Notification (WIP)"],
+  description: "List order notifications",
   querystring: convertZodSchemaToDocsTemplate({
-    schema: getClientsQueryParamsSchema,
+    schema: getOrderNotificationsQueryParamsSchema,
   }),
   response: {
     200: {
       type: "object",
       properties: {
-        clients: {
+        orderNotifications: {
           type: "array",
           items: {
             type: "object",
             properties: {
               id: { type: "string" },
-              name: { type: "string" },
-              email: { type: "string" },
-              taxVat: { type: "string" },
+              orderId: { type: "string" },
+              message: { type: "number" },
+              status: { type: "string" },
               createdAt: { type: "string" },
               updatedAt: { type: "string" },
             },

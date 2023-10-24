@@ -1,4 +1,7 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 /* eslint-disable no-console */
+
 import fastify from "fastify";
 import fs from "fs";
 import { ZodError } from "zod";
@@ -8,8 +11,11 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 
 import { version } from "../../../../package.json";
 import { env } from "../../../env";
-import { CategoryRoutes } from "./controllers/CategoryRoutes";
-import { ClientRoutes } from "./controllers/ClientRoutes";
+import { ClientRoutes } from "./controllers/routes/ClientRoutes";
+import { ComboRoutes } from "./controllers/routes/ComboRoutes";
+import { OrderNotificationRoutes } from "./controllers/routes/OrderNotificationRoutes";
+import { OrderRoutes } from "./controllers/routes/OrderRoutes";
+import { ProductRoutes } from "./controllers/routes/ProductRoutes";
 
 const SWAGGER_PATH = "/docs-swagger";
 
@@ -29,20 +35,24 @@ app.register(fastifySwaggerUi, {
   routePrefix: SWAGGER_PATH,
 });
 
-app.get("/docs", (request, response) => {
+app.get("/docs", (_, response) => {
   const stream = fs.createReadStream(`${`${process.cwd()}/index.html`}`);
 
   response.type("text/html").send(stream);
 });
 
 app.register(ClientRoutes, { prefix: "/clients" });
-app.register(CategoryRoutes, { prefix: "/categories" });
+app.register(ProductRoutes, { prefix: "/products" });
+app.register(ComboRoutes, { prefix: "/combos" });
+app.register(OrderRoutes, { prefix: "/orders" });
+app.register(OrderNotificationRoutes, { prefix: "/order_notifications" });
 
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
     // eslint-disable-next-line consistent-return, array-callback-return
+
     const errors = error.issues.map((issue) => {
-      if (issue.code === "invalid_type") {
+      if (issue.code.toLowerCase().indexOf("invalid") !== -1) {
         return `field(s) '${issue.path.join(
           ","
         )}' ${issue.message.toLowerCase()}`;

@@ -1,0 +1,35 @@
+# @name get-combos
+GET http://localhost:3333/combos
+
+###
+
+# @name get-combo-by-id
+GET http://localhost:3333/combos/056ec6a0-5418-4e77-a4d4-62d6b64e0483
+
+### 
+
+# @name create-combo
+POST http://localhost:3333/combos  
+content-type: application/json
+
+{
+  "sandwichId": "d70fa2a0-bd1c-48c4-935c-59b821486557",
+  "drinkId": "5b8e541c-d18c-4f91-b055-fa8b4de91345",
+  "sideId": "",
+  "dessertId": ""
+}
+
+### 
+
+# @name edit-combo
+PUT http://localhost:3333/combos/056ec6a0-5418-4e77-a4d4-62d6b64e0483
+content-type: application/json
+
+{
+  "name": "altered",
+  "description": "altered",
+  "sandwichId": "d70fa2a0-bd1c-48c4-935c-59b821486557",
+  "sideId": "",
+  "dessertId": ""
+}
+
