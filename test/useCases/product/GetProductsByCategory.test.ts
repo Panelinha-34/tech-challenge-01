@@ -11,9 +11,6 @@ let inMemoryProductRepository: InMemoryProductRepository;
 let sut: ProductUseCase;
 
 describe("Given the Get Products Use Case", () => {
-  const page = 1;
-  const size = 10;
-
   beforeEach(() => {
     vi.clearAllMocks();
 
