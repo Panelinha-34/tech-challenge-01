@@ -1,5 +1,7 @@
 import { Order } from "@/core/domain/entities/Order";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { OrderStatusEnum } from "@/core/domain/enum/OrderStatusEnum";
+import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
 
 import { IOrderUseCase } from "./IOrderUseCase";
 import {
@@ -29,7 +31,7 @@ export class OrderUseCase implements IOrderUseCase {
   }: CreateOrderUseCaseRequestModel): Promise<CreateOrderUseCaseResponseModel> {
     const order = await this.orderRepository.create(
       new Order({
-        status,
+        status: new OrderStatus({ name: status as OrderStatusEnum }),
         totalPrice,
         clientId,
       })

@@ -1,4 +1,7 @@
 import { Order } from "@/core/domain/entities/Order";
+import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
+
+
 
 export interface CreateOrderUseCaseRequestModel {
   clientId: string;

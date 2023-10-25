@@ -15,6 +15,13 @@ enum Category {
   DESSERT
 }
 
+enum OrderStatus {
+  RECEIVED
+  IN_PREPARATION
+  READY
+  FINISHED
+}
+
 model Client {
   id         String    @id @default(uuid())
   name       String
@@ -30,7 +37,7 @@ model Client {
 
 model Order {
   id          String    @id @default(uuid())
-  status      String
+  status      OrderStatus
   client_id   String    @map("client_id")
   total_price Decimal
   created_at  DateTime  @default(now())

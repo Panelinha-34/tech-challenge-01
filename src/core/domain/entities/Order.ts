@@ -1,9 +1,10 @@
 import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
+import { OrderStatus } from "../valueObjects/OrderStatus";
 
 export interface OrderProps {
-  status: string;
+  status: OrderStatus;
   totalPrice: number;
   clientId: string;
   createdAt: Date;
@@ -23,6 +24,11 @@ export class Order extends Entity<OrderProps> {
 
   get status() {
     return this.props.status;
+  }
+
+  set status(value: OrderStatus) {
+    this.props.status = value;
+    this.touch();
   }
 
   get totalPrice() {

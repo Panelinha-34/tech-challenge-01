@@ -10,7 +10,7 @@ export class PrismaOrderRepository implements IOrderRepository {
     return prisma.order
       .create({
         data: {
-          status: order.status,
+          status: order.status.name,
           total_price: order.totalPrice,
           client_id: order.clientId,
         },
