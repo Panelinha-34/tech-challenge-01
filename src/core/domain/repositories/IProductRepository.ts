@@ -5,6 +5,8 @@ import { Category } from "../valueObjects/Category";
 export interface IProductRepository {
   findMany(params: PaginationParams): Promise<Product[]>;
 
+  findManyByCategory(category: Category): Promise<Product[]>;
+
   findById(id: string): Promise<Product | null>;
 
   findByIdAndCategory(id: string, category: Category): Promise<Product | null>;
