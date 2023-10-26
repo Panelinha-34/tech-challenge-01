@@ -11,7 +11,7 @@ export const getOrdersQueryParamsSchema = z.object({
 export interface GetOrdersResponse {
   id: string;
   status: string;
-  clientId: string;
+  clientId?: string;
   totalPrice: number;
   createdAt: string;
   updatedAt?: string;

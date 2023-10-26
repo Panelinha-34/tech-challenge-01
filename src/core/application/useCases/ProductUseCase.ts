@@ -34,9 +34,9 @@ export class ProductUseCase implements IProductUseCase {
   async getProducts({
     params,
   }: GetProductsUseCaseRequestModel): Promise<GetProductsUseCaseResponseModel> {
-    const products = await this.productRepository.findMany(params);
+    const paginationResponse = await this.productRepository.findMany(params);
 
-    return { products };
+    return { paginationResponse };
   }
 
   async getProductById({
@@ -52,6 +52,7 @@ export class ProductUseCase implements IProductUseCase {
   }
 
   async getProductsByCategory({
+    params,
     category,
   }: GetProductsByCategoryUseCaseRequestModel): Promise<GetProductsByCategoryUseCaseResponseModel> {
     const categories = Object.keys(CategoriesEnum).map((enumCategory) =>
@@ -59,14 +60,15 @@ export class ProductUseCase implements IProductUseCase {
     );
 
     if (!categories.includes(category.toLowerCase())) {
-      throw new UnsupportedArgumentValueError("category");
+      throw new UnsupportedArgumentValueError(Category.name);
     }
 
-    const products = await this.productRepository.findManyByCategory(
-      new Category({ name: category.toUpperCase() as CategoriesEnum })
+    const paginationResponse = await this.productRepository.findManyByCategory(
+      params,
+      new Category({ name: category as CategoriesEnum })
     );
 
-    return { products };
+    return { paginationResponse };
   }
 
   async createProduct({
@@ -79,7 +81,7 @@ export class ProductUseCase implements IProductUseCase {
       await this.productRepository.findByName(name);
 
     if (hasProductWithSameName) {
-      throw new AttributeConflictError("name", "product");
+      throw new AttributeConflictError<Product>("name", Product.name);
     }
 
     const product = await this.productRepository.create(

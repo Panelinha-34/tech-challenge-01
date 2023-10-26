@@ -1,4 +1,5 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Product } from "@/core/domain/entities/Product";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { Category } from "@/core/domain/valueObjects/Category";
@@ -7,16 +8,32 @@ import { prisma } from "../config/prisma";
 import { PrismaProductToDomainClientConverter } from "../converter/PrismaProductToDomainClientConverter";
 
 export class PrismaProductRepository implements IProductRepository {
-  async findManyByCategory(category: Category): Promise<Product[]> {
-    return prisma.product
-      .findMany({
-        where: {
-          category: category.name,
-        },
-      })
-      .then((products) =>
-        products.map((c) => PrismaProductToDomainClientConverter.convert(c))
-      );
+  async findManyByCategory(
+    params: PaginationParams,
+    category: Category
+  ): Promise<PaginationResponse<Product>> {
+    const totalItems = await prisma.product.count({
+      where: {
+        category: category.name,
+      },
+    });
+    const totalPages = Math.ceil(totalItems / params.size);
+
+    const data = await prisma.product.findMany({
+      where: {
+        category: category.name,
+      },
+      take: params.size,
+      skip: (params.page - 1) * params.size,
+    });
+
+    return new PaginationResponse<Product>({
+      data: data.map((c) => PrismaProductToDomainClientConverter.convert(c)),
+      totalItems,
+      currentPage: params.page,
+      pageSize: params.size,
+      totalPages,
+    });
   }
 
   async findByName(name: string): Promise<Product | null> {
@@ -73,15 +90,25 @@ export class PrismaProductRepository implements IProductRepository {
       );
   }
 
-  async findMany({ page, size }: PaginationParams): Promise<Product[]> {
-    return prisma.product
-      .findMany({
-        take: size,
-        skip: (page - 1) * size,
-      })
-      .then((products) =>
-        products.map((c) => PrismaProductToDomainClientConverter.convert(c))
-      );
+  async findMany({
+    page,
+    size,
+  }: PaginationParams): Promise<PaginationResponse<Product>> {
+    const totalItems = await prisma.product.count();
+    const totalPages = Math.ceil(totalItems / size);
+
+    const data = await prisma.product.findMany({
+      take: size,
+      skip: (page - 1) * size,
+    });
+
+    return new PaginationResponse<Product>({
+      data: data.map((c) => PrismaProductToDomainClientConverter.convert(c)),
+      totalItems,
+      currentPage: page,
+      pageSize: size,
+      totalPages,
+    });
   }
 
   async create(product: Product): Promise<Product> {

@@ -1,11 +1,15 @@
 import { PaginationParams } from "../base/PaginationParams";
+import { PaginationResponse } from "../base/PaginationResponse";
 import { Product } from "../entities/Product";
 import { Category } from "../valueObjects/Category";
 
 export interface IProductRepository {
-  findMany(params: PaginationParams): Promise<Product[]>;
+  findMany(params: PaginationParams): Promise<PaginationResponse<Product>>;
 
-  findManyByCategory(category: Category): Promise<Product[]>;
+  findManyByCategory(
+    params: PaginationParams,
+    category: Category
+  ): Promise<PaginationResponse<Product>>;
 
   findById(id: string): Promise<Product | null>;
 

@@ -39,7 +39,7 @@ export class ClientUseCase implements IClientUseCase {
     const client = await this.clientRepository.findById(id);
 
     if (!client) {
-      throw new ResourceNotFoundError("client");
+      throw new ResourceNotFoundError(Client.name);
     }
 
     return { client };
@@ -54,14 +54,14 @@ export class ClientUseCase implements IClientUseCase {
       await this.clientRepository.findByTaxVat(taxVat);
 
     if (hasClientWithSameTaxVat) {
-      throw new AttributeConflictError("taxVat", "client");
+      throw new AttributeConflictError<Client>("taxVat", Client.name);
     }
 
     const hasClientWithSameEmail =
       await this.clientRepository.findByEmail(email);
 
     if (hasClientWithSameEmail) {
-      throw new AttributeConflictError("email", "client");
+      throw new AttributeConflictError<Client>("email", Client.name);
     }
 
     const client = await this.clientRepository.create(
@@ -83,7 +83,7 @@ export class ClientUseCase implements IClientUseCase {
     const client = await this.clientRepository.findById(id);
 
     if (!client) {
-      throw new ResourceNotFoundError("client");
+      throw new ResourceNotFoundError(Client.name);
     }
 
     if (email) {
@@ -91,7 +91,7 @@ export class ClientUseCase implements IClientUseCase {
         await this.clientRepository.findByEmail(email);
 
       if (hasClientWithSameEmail && hasClientWithSameEmail.id !== client.id) {
-        throw new AttributeConflictError("email", "client");
+        throw new AttributeConflictError<Client>("email", Client.name);
       }
       client.email = email;
     }

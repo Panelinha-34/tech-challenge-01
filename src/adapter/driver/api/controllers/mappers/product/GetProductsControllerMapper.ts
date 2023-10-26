@@ -35,7 +35,7 @@ export class GetProductsControllerMapper
   convertUseCaseModelToControllerResponse(
     model: GetProductsUseCaseResponseModel
   ): GetProductsControllerResponse {
-    const products = model.products.map((product) => ({
+    return model.paginationResponse.toResponse((product) => ({
       id: product.id.toString(),
       name: product.name,
       description: product.description,
@@ -44,8 +44,6 @@ export class GetProductsControllerMapper
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt?.toISOString(),
     }));
-
-    return { products };
   }
 
   convertSuccessfullyResponse(

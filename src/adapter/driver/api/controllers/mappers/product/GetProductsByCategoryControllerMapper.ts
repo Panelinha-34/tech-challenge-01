@@ -4,8 +4,13 @@ import {
   GetProductsByCategoryUseCaseRequestModel,
   GetProductsByCategoryUseCaseResponseModel,
 } from "@/core/application/useCases/model/product/GetProductsByCategoryUseCaseModel";
+import { PaginationParams } from "@/core/domain/base/PaginationParams";
 
-import { getProductsByCategoryQueryParamsSchema } from "../../model/product/GetProductsByCategoryControllerModel";
+import {
+  GetProductsByCategoryControllerResponse,
+  getProductsByCategoryPathParametersSchema,
+  getProductsByCategoryQueryParamsSchema,
+} from "../../model/product/GetProductsByCategoryControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,26 +19,33 @@ export class GetProductsByCategoryControllerMapper
   implements
     IControllerMapper<
       GetProductsByCategoryUseCaseRequestModel,
-      GetProductsByCategoryUseCaseResponseModel
+      GetProductsByCategoryUseCaseResponseModel,
+      GetProductsByCategoryControllerResponse
     >
 {
   convertRequestModel(
     req: FastifyRequest
   ): GetProductsByCategoryUseCaseRequestModel {
-    const { category } = getProductsByCategoryQueryParamsSchema.parse(
+    const { page, pageSize } = getProductsByCategoryQueryParamsSchema.parse(
+      req.query
+    );
+
+    const params = new PaginationParams(page, pageSize);
+
+    const { category } = getProductsByCategoryPathParametersSchema.parse(
       req.params
     );
 
     return {
+      params,
       category,
     };
   }
 
-  convertSuccessfullyResponse(
-    res: FastifyReply,
-    useCaseResponseModel: GetProductsByCategoryUseCaseResponseModel
-  ) {
-    const products = useCaseResponseModel.products.map((product) => ({
+  convertUseCaseModelToControllerResponse(
+    model: GetProductsByCategoryUseCaseResponseModel
+  ): GetProductsByCategoryControllerResponse {
+    return model.paginationResponse.toResponse((product) => ({
       id: product.id.toString(),
       name: product.name,
       price: product.price,
@@ -42,7 +54,14 @@ export class GetProductsByCategoryControllerMapper
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt?.toISOString(),
     }));
+  }
 
-    return res.status(200).send({ products });
+  convertSuccessfullyResponse(
+    res: FastifyReply,
+    useCaseResponseModel: GetProductsByCategoryUseCaseResponseModel
+  ) {
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(useCaseResponseModel));
   }
 }

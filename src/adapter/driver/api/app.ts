@@ -14,9 +14,10 @@ import { env } from "../../../env";
 import { ClientRoutes } from "./controllers/routes/ClientRoutes";
 import { ComboRoutes } from "./controllers/routes/ComboRoutes";
 import { OrderNotificationRoutes } from "./controllers/routes/OrderNotificationRoutes";
+import { OrderPaymentRoutes } from "./controllers/routes/OrderPaymentRoutes";
 import { OrderRoutes } from "./controllers/routes/OrderRoutes";
 import { ProductRoutes } from "./controllers/routes/ProductRoutes";
-import { OrderPaymentRoutes } from "./controllers/routes/OrderPaymentRoutes"
+import { SessionRoutes } from "./controllers/routes/SessionRoutes";
 
 const SWAGGER_PATH = "/docs-swagger";
 
@@ -48,6 +49,7 @@ app.register(ComboRoutes, { prefix: "/combos" });
 app.register(OrderRoutes, { prefix: "/orders" });
 app.register(OrderNotificationRoutes, { prefix: "/order_notifications" });
 app.register(OrderPaymentRoutes, { prefix: "/order_payments" });
+app.register(SessionRoutes, { prefix: "/sessions" });
 
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {

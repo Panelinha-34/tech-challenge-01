@@ -19,21 +19,33 @@ export interface GetProductResponse {
 }
 
 export interface GetProductsControllerResponse {
-  products: GetProductResponse[];
+  data: GetProductResponse[];
+  pagination: {
+    totalItems: number;
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+  };
 }
 
 const responseExample: GetProductsControllerResponse = {
-  products: [
+  data: [
     {
       id: "1",
-      name: "Sandwich 1",
-      description: "Sandwich 1",
-      price: 5,
-      category: "SANDWICH",
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
+      name: "Product 1",
+      description: "Description 1",
+      price: 100,
+      category: "Category 1",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     },
   ],
+  pagination: {
+    totalItems: 1,
+    currentPage: 1,
+    pageSize: 20,
+    totalPages: 1,
+  },
 };
 
 export const getProductsDocSchema = {
