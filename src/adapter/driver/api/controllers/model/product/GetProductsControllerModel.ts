@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
+import { generateSchemaFromSampleObject } from "../../utils/generateSchemaFromSampleObject";
 
 export const getProductsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -12,7 +13,7 @@ export interface GetProductResponse {
   name: string;
   description: string;
   price: number;
-  category: number;
+  category: string;
   createdAt: string;
   updatedAt?: string;
 }
@@ -21,6 +22,20 @@ export interface GetProductsControllerResponse {
   products: GetProductResponse[];
 }
 
+const responseExample: GetProductsControllerResponse = {
+  products: [
+    {
+      id: "1",
+      name: "Sandwich 1",
+      description: "Sandwich 1",
+      price: 5,
+      category: "SANDWICH",
+      createdAt: "2021-01-01T00:00:00.000Z",
+      updatedAt: "2021-01-01T00:00:00.000Z",
+    },
+  ],
+};
+
 export const getProductsDocSchema = {
   tags: ["Product"],
   description: "List products",
@@ -28,25 +43,6 @@ export const getProductsDocSchema = {
     schema: getProductsQueryParamsSchema,
   }),
   response: {
-    200: {
-      type: "object",
-      properties: {
-        products: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              name: { type: "string" },
-              price: { type: "number" },
-              description: { type: "string" },
-              category: { type: "string" },
-              createdAt: { type: "string" },
-              updatedAt: { type: "string" },
-            },
-          },
-        },
-      },
-    },
+    200: generateSchemaFromSampleObject(responseExample),
   },
 };

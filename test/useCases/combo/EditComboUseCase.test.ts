@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
-import { MinimumComboProductsNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { Product } from "@/core/domain/entities/Product";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
@@ -75,7 +75,7 @@ describe("Given the Edit Combo Use Case", () => {
         id: createdCombo.id.toString(),
         name,
       })
-    ).rejects.toBeInstanceOf(MinimumComboProductsNotReached);
+    ).rejects.toBeInstanceOf(MinimumResourcesNotReached);
   });
 
   it("should throw an error when the informed product id does not exist", async () => {

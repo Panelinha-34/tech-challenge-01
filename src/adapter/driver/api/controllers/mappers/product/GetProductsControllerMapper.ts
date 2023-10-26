@@ -6,7 +6,10 @@ import {
 } from "@/core/application/useCases/model/product/GetProductsUseCaseModel";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 
-import { getProductsQueryParamsSchema } from "../../model/product/GetProductsControllerModel";
+import {
+  GetProductsControllerResponse,
+  getProductsQueryParamsSchema,
+} from "../../model/product/GetProductsControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -15,7 +18,8 @@ export class GetProductsControllerMapper
   implements
     IControllerMapper<
       GetProductsUseCaseRequestModel,
-      GetProductsUseCaseResponseModel
+      GetProductsUseCaseResponseModel,
+      GetProductsControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): GetProductsUseCaseRequestModel {
@@ -28,11 +32,10 @@ export class GetProductsControllerMapper
     };
   }
 
-  convertSuccessfullyResponse(
-    res: FastifyReply,
-    response: GetProductsUseCaseResponseModel
-  ) {
-    const products = response.products.map((product) => ({
+  convertUseCaseModelToControllerResponse(
+    model: GetProductsUseCaseResponseModel
+  ): GetProductsControllerResponse {
+    const products = model.products.map((product) => ({
       id: product.id.toString(),
       name: product.name,
       description: product.description,
@@ -42,6 +45,15 @@ export class GetProductsControllerMapper
       updatedAt: product.updatedAt?.toISOString(),
     }));
 
-    return res.status(200).send({ products });
+    return { products };
+  }
+
+  convertSuccessfullyResponse(
+    res: FastifyReply,
+    response: GetProductsUseCaseResponseModel
+  ) {
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(response));
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { FastifyReply, FastifyRequest } from "fastify";
 
 import {
@@ -5,7 +6,10 @@ import {
   CreateOrderPaymentUseCaseResponseModel,
 } from "@/core/application/useCases/model/orderPayment/CreateOrderPaymentUseCaseModel";
 
-import { createOrderPaymentPayloadSchema } from "../../model/orderPayment/CreateOrderPaymentControllerModel";
+import {
+  CreateOrderPaymentControllerResponse,
+  createOrderPaymentPayloadSchema,
+} from "../../model/orderPayment/CreateOrderPaymentControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -13,20 +17,22 @@ export class CreateOrderPaymentControllerMapper
   extends ErrorHandlingMapper
   implements
     IControllerMapper<
-    CreateOrderPaymentUseCaseRequestModel,
-      CreateOrderPaymentUseCaseResponseModel
+      CreateOrderPaymentUseCaseRequestModel,
+      CreateOrderPaymentUseCaseResponseModel,
+      CreateOrderPaymentControllerResponse
     >
 {
-  convertRequestModel(req: FastifyRequest): CreateOrderPaymentUseCaseRequestModel {
-    const { orderId, amount, payment_method, status } = createOrderPaymentPayloadSchema.parse(
-      req.body
-    );
+  convertRequestModel(
+    req: FastifyRequest
+  ): CreateOrderPaymentUseCaseRequestModel {
+    const { orderId, amount, payment_method, status } =
+      createOrderPaymentPayloadSchema.parse(req.body);
 
     return {
       orderId,
       amount,
       payment_method,
-      status
+      status,
     };
   }
 
@@ -34,16 +40,24 @@ export class CreateOrderPaymentControllerMapper
     res: FastifyReply,
     useCaseResponseModel: CreateOrderPaymentUseCaseResponseModel
   ) {
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(useCaseResponseModel));
+  }
+
+  convertUseCaseModelToControllerResponse(
+    model: CreateOrderPaymentUseCaseResponseModel
+  ): CreateOrderPaymentControllerResponse {
     const orderPayment = {
-      id: useCaseResponseModel.orderPayment.id.toString(),
-      orderId: useCaseResponseModel.orderPayment.orderId,
-      amount: useCaseResponseModel.orderPayment.amount,
-      payment_method: useCaseResponseModel.orderPayment.payment_method,
-      status: useCaseResponseModel.orderPayment.status,
-      createdAt: useCaseResponseModel.orderPayment.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.orderPayment.updatedAt?.toISOString(),
+      id: model.orderPayment.id.toString(),
+      orderId: model.orderPayment.orderId,
+      amount: model.orderPayment.amount,
+      payment_method: model.orderPayment.payment_method,
+      status: model.orderPayment.status,
+      createdAt: model.orderPayment.createdAt.toISOString(),
+      updatedAt: model.orderPayment.updatedAt?.toISOString(),
     };
 
-    return res.status(200).send(orderPayment);
+    return orderPayment;
   }
 }

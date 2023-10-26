@@ -1,4 +1,5 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Order } from "@/core/domain/entities/Order";
 
 export interface GetOrdersUseCaseRequestModel {
@@ -6,5 +7,5 @@ export interface GetOrdersUseCaseRequestModel {
 }
 
 export interface GetOrdersUseCaseResponseModel {
-  orders: Order[];
+  paginationResponse: PaginationResponse<Order>;
 }

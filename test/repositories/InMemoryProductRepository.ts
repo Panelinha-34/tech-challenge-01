@@ -54,4 +54,8 @@ export class InMemoryProductRepository implements IProductRepository {
 
     return product;
   }
+
+  async delete(id: string): Promise<void> {
+    this.items = this.items.filter((a) => a.id.toString() !== id);
+  }
 }

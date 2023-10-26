@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FastifyReply, FastifyRequest } from "fastify";
 
 import {
@@ -5,7 +6,10 @@ import {
   CreateProductUseCaseResponseModel,
 } from "@/core/application/useCases/model/product/CreateProductUseCaseModel";
 
-import { createProductPayloadSchema } from "../../model/product/CreateProductControllerModel";
+import {
+  CreateProductControllerResponse,
+  createProductPayloadSchema,
+} from "../../model/product/CreateProductControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,7 +18,8 @@ export class CreateProductControllerMapper
   implements
     IControllerMapper<
       CreateProductUseCaseRequestModel,
-      CreateProductUseCaseResponseModel
+      CreateProductUseCaseResponseModel,
+      CreateProductControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): CreateProductUseCaseRequestModel {
@@ -31,18 +36,8 @@ export class CreateProductControllerMapper
 
   convertSuccessfullyResponse(
     res: FastifyReply,
-    useCaseResponseModel: CreateProductUseCaseResponseModel
+    _useCaseResponseModel: CreateProductUseCaseResponseModel
   ) {
-    const product = {
-      id: useCaseResponseModel.product.id.toString(),
-      name: useCaseResponseModel.product.name,
-      description: useCaseResponseModel.product.description,
-      price: useCaseResponseModel.product.price,
-      category: useCaseResponseModel.product.category.name,
-      createdAt: useCaseResponseModel.product.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.product.updatedAt?.toISOString(),
-    };
-
-    return res.status(200).send(product);
+    return res.status(201).send();
   }
 }

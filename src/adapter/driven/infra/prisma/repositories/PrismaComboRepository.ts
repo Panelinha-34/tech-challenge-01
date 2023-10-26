@@ -67,4 +67,12 @@ export class PrismaComboRepository implements IComboRepository {
       })
       .then((c) => PrismaComboToDomainClientConverter.convert(c));
   }
+
+  async delete(id: string): Promise<void> {
+    await prisma.combo.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

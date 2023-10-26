@@ -6,7 +6,10 @@ import {
 } from "@/core/application/useCases/model/client/GetClientsUseCaseModel";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 
-import { getClientsQueryParamsSchema } from "../../model/client/GetClientsControllerModel";
+import {
+  GetClientsControllerResponse,
+  getClientsQueryParamsSchema,
+} from "../../model/client/GetClientsControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -15,7 +18,8 @@ export class GetClientsControllerMapper
   implements
     IControllerMapper<
       GetClientsUseCaseRequestModel,
-      GetClientsUseCaseResponseModel
+      GetClientsUseCaseResponseModel,
+      GetClientsControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): GetClientsUseCaseRequestModel {
@@ -28,19 +32,27 @@ export class GetClientsControllerMapper
     };
   }
 
+  convertUseCaseModelToControllerResponse(
+    model: GetClientsUseCaseResponseModel
+  ): GetClientsControllerResponse {
+    const clients = model.paginationResponse.toResponse((item) => ({
+      id: item.id.toString(),
+      name: item.name,
+      email: item.email,
+      taxVat: item.taxVat.number,
+      createdAt: item.createdAt.toISOString(),
+      updatedAt: item.updatedAt?.toISOString(),
+    }));
+
+    return clients;
+  }
+
   convertSuccessfullyResponse(
     res: FastifyReply,
     response: GetClientsUseCaseResponseModel
   ) {
-    const clients = response.clients.map((client) => ({
-      id: client.id.toString(),
-      name: client.name,
-      email: client.email,
-      taxVat: client.taxVat.number,
-      createdAt: client.createdAt.toISOString(),
-      updatedAt: client.updatedAt?.toISOString(),
-    }));
+    const clients = this.convertUseCaseModelToControllerResponse(response);
 
-    return res.status(200).send({ clients });
+    return res.status(200).send(clients);
   }
 }

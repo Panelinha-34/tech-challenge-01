@@ -1,11 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
 import {
   EditComboUseCaseRequestModel,
   EditComboUseCaseResponseModel,
 } from "@/core/application/useCases/model/combo/EditComboUseCaseModel";
 
 import {
+  EditComboControllerResponse,
   editComboPathParametersSchema,
   editComboPayloadSchema,
 } from "../../model/combo/EditComboControllerModel";
@@ -17,7 +19,8 @@ export class EditComboControllerMapper
   implements
     IControllerMapper<
       EditComboUseCaseRequestModel,
-      EditComboUseCaseResponseModel
+      EditComboUseCaseResponseModel,
+      EditComboControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): EditComboUseCaseRequestModel {
@@ -36,30 +39,44 @@ export class EditComboControllerMapper
     };
   }
 
+  convertUseCaseModelToControllerResponse(
+    model: EditComboUseCaseResponseModel
+  ): EditComboControllerResponse {
+    return {
+      id: model.combo.id.toString(),
+      name: model.combo.name,
+      description: model.combo.description,
+      price: model.combo.price,
+      createdAt: model.combo.createdAt.toISOString(),
+      updatedAt: model.combo.updatedAt?.toISOString(),
+      products: model.productDetails.map((product) => ({
+        id: product.id.toString(),
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category.name,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt?.toISOString(),
+      })),
+    };
+  }
+
   convertSuccessfullyResponse(
     res: FastifyReply,
     useCaseResponseModel: EditComboUseCaseResponseModel
   ) {
-    const products = useCaseResponseModel.productDetails.map((product) => ({
-      id: product.id.toString(),
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      category: product.category.name,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt?.toISOString(),
-    }));
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(useCaseResponseModel));
+  }
 
-    const combo = {
-      id: useCaseResponseModel.combo.id.toString(),
-      name: useCaseResponseModel.combo.name,
-      description: useCaseResponseModel.combo.description,
-      price: useCaseResponseModel.combo.price,
-      createdAt: useCaseResponseModel.combo.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.combo.updatedAt?.toISOString(),
-      products,
-    };
+  convertErrorResponse(error: Error, res: FastifyReply): FastifyReply {
+    if (error instanceof MinimumResourcesNotReached) {
+      return res.status(400).send({
+        message: `Please inform at least 1 product`,
+      });
+    }
 
-    return res.status(200).send(combo);
+    return super.convertErrorResponse(error, res);
   }
 }

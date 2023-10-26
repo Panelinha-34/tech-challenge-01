@@ -13,10 +13,10 @@ POST http://localhost:3333/products
 content-type: application/json
 
 {
-  "name": "pink lemonade2",
-  "description": "pink lemonade",
-  "price": 12,
-  "category": "DRINK"
+  "name": "Lanche de costela",
+  "description": "lanche de costela",
+  "price": 25,
+  "category": "SANDWICH"
 }
 
 ### 

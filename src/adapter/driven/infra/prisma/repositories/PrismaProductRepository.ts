@@ -100,4 +100,12 @@ export class PrismaProductRepository implements IProductRepository {
       })
       .then((c) => PrismaProductToDomainClientConverter.convert(c));
   }
+
+  async delete(id: string): Promise<void> {
+    await prisma.product.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

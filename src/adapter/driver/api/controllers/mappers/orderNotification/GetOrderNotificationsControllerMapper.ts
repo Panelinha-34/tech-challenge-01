@@ -7,6 +7,7 @@ import {
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 
 import { getOrdersQueryParamsSchema } from "../../model/order/GetOrdersControllerModel";
+import { GetOrderNotificationsControllerResponse } from "../../model/orderNotification/GetOrderNotificationsControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -15,7 +16,8 @@ export class GetOrderNotificationsControllerMapper
   implements
     IControllerMapper<
       GetOrderNotificationsUseCaseRequestModel,
-      GetOrderNotificationsUseCaseResponseModel
+      GetOrderNotificationsUseCaseResponseModel,
+      GetOrderNotificationsControllerResponse
     >
 {
   convertRequestModel(
@@ -30,11 +32,10 @@ export class GetOrderNotificationsControllerMapper
     };
   }
 
-  convertSuccessfullyResponse(
-    res: FastifyReply,
-    response: GetOrderNotificationsUseCaseResponseModel
-  ) {
-    const orderNotifications = response.orderNotifications.map(
+  convertUseCaseModelToControllerResponse(
+    model: GetOrderNotificationsUseCaseResponseModel
+  ): GetOrderNotificationsControllerResponse {
+    const orderNotifications = model.orderNotifications.map(
       (orderNotification) => ({
         id: orderNotification.id.toString(),
         status: orderNotification.status,
@@ -45,6 +46,15 @@ export class GetOrderNotificationsControllerMapper
       })
     );
 
-    return res.status(200).send({ orderNotifications });
+    return { orderNotifications };
+  }
+
+  convertSuccessfullyResponse(
+    res: FastifyReply,
+    response: GetOrderNotificationsUseCaseResponseModel
+  ) {
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(response));
   }
 }

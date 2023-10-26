@@ -5,7 +5,10 @@ import {
   GetProductByIdUseCaseResponseModel,
 } from "@/core/application/useCases/model/product/GetProductByIdUseCaseModel";
 
-import { getProductByIdQueryParamsSchema } from "../../model/product/GetProductByIdControllerModel";
+import {
+  GetProductByIdControllerResponse,
+  getProductByIdQueryParamsSchema,
+} from "../../model/product/GetProductByIdControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,7 +17,8 @@ export class GetProductByIdControllerMapper
   implements
     IControllerMapper<
       GetProductByIdUseCaseRequestModel,
-      GetProductByIdUseCaseResponseModel
+      GetProductByIdUseCaseResponseModel,
+      GetProductByIdControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): GetProductByIdUseCaseRequestModel {
@@ -25,20 +29,26 @@ export class GetProductByIdControllerMapper
     };
   }
 
+  convertUseCaseModelToControllerResponse(
+    model: GetProductByIdUseCaseResponseModel
+  ): GetProductByIdControllerResponse {
+    return {
+      id: model.product.id.toString(),
+      name: model.product.name,
+      price: model.product.price,
+      description: model.product.description,
+      category: model.product.category.name,
+      createdAt: model.product.createdAt.toISOString(),
+      updatedAt: model.product.updatedAt?.toISOString(),
+    };
+  }
+
   convertSuccessfullyResponse(
     res: FastifyReply,
     useCaseResponseModel: GetProductByIdUseCaseResponseModel
   ) {
-    const product = {
-      id: useCaseResponseModel.product.id.toString(),
-      name: useCaseResponseModel.product.name,
-      price: useCaseResponseModel.product.price,
-      description: useCaseResponseModel.product.description,
-      category: useCaseResponseModel.product.category.name,
-      createdAt: useCaseResponseModel.product.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.product.updatedAt?.toISOString(),
-    };
-
-    return res.status(200).send(product);
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(useCaseResponseModel));
   }
 }

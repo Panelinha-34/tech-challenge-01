@@ -5,7 +5,10 @@ import {
   GetClientByIdUseCaseResponseModel,
 } from "@/core/application/useCases/model/client/GetClientByIdUseCaseModel";
 
-import { getClientByIdQueryParamsSchema } from "../../model/client/GetClientByIdControllerModel";
+import {
+  GetClientByIdControllerResponse,
+  getClientByIdQueryParamsSchema,
+} from "../../model/client/GetClientByIdControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,7 +17,8 @@ export class GetClientByIdControllerMapper
   implements
     IControllerMapper<
       GetClientByIdUseCaseRequestModel,
-      GetClientByIdUseCaseResponseModel
+      GetClientByIdUseCaseResponseModel,
+      GetClientByIdControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): GetClientByIdUseCaseRequestModel {
@@ -25,18 +29,27 @@ export class GetClientByIdControllerMapper
     };
   }
 
+  convertUseCaseModelToControllerResponse(
+    model: GetClientByIdUseCaseResponseModel
+  ): GetClientByIdControllerResponse {
+    const client = {
+      id: model.client.id.toString(),
+      name: model.client.name,
+      email: model.client.email,
+      taxVat: model.client.taxVat.number,
+      createdAt: model.client.createdAt.toISOString(),
+      updatedAt: model.client.updatedAt?.toISOString(),
+    };
+
+    return client;
+  }
+
   convertSuccessfullyResponse(
     res: FastifyReply,
     useCaseResponseModel: GetClientByIdUseCaseResponseModel
   ) {
-    const client = {
-      id: useCaseResponseModel.client.id.toString(),
-      name: useCaseResponseModel.client.name,
-      email: useCaseResponseModel.client.email,
-      taxVat: useCaseResponseModel.client.taxVat.number,
-      createdAt: useCaseResponseModel.client.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.client.updatedAt?.toISOString(),
-    };
+    const client =
+      this.convertUseCaseModelToControllerResponse(useCaseResponseModel);
 
     return res.status(200).send(client);
   }

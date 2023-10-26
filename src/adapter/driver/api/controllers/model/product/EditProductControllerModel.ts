@@ -3,6 +3,7 @@ import { z } from "zod";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
+import { generateSchemaFromSampleObject } from "../../utils/generateSchemaFromSampleObject";
 
 export const editProductPathParametersSchema = z.object({
   id: z.string(),
@@ -25,6 +26,16 @@ export interface EditProductControllerResponse {
   updatedAt?: string;
 }
 
+const responseExample: EditProductControllerResponse = {
+  id: "1",
+  name: "Sandwich 1",
+  description: "Sandwich 1",
+  price: 5,
+  category: "SANDWICH",
+  createdAt: "2021-01-01T00:00:00.000Z",
+  updatedAt: "2021-01-01T00:00:00.000Z",
+};
+
 export const editProductDocSchema = {
   tags: ["Product"],
   description: "Edit Product",
@@ -37,24 +48,10 @@ export const editProductDocSchema = {
       name: { type: "string" },
       description: { type: "string" },
       price: { type: "number" },
-      category: {
-        type: "string",
-        enum: Object.values(CategoriesEnum),
-      },
+      category: { type: "string" },
     },
   },
   response: {
-    200: {
-      type: "object",
-      properties: {
-        id: { type: "string" },
-        name: { type: "string" },
-        description: { type: "string" },
-        price: { type: "number" },
-        category: { type: "string" },
-        createdAt: { type: "string" },
-        updatedAt: { type: "string" },
-      },
-    },
+    200: generateSchemaFromSampleObject(responseExample),
   },
 };

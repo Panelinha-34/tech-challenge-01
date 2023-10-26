@@ -59,13 +59,13 @@ export class ClientController {
     return this.clientUseCase
       .createClient(this.createClientControllerMapper.convertRequestModel(req))
       .then((response) =>
-        this.getClientByIdControllerMapper.convertSuccessfullyResponse(
+        this.createClientControllerMapper.convertSuccessfullyResponse(
           res,
           response
         )
       )
       .catch((error) =>
-        this.getClientByIdControllerMapper.convertErrorResponse(error, res)
+        this.createClientControllerMapper.convertErrorResponse(error, res)
       );
   }
 

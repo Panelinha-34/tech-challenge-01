@@ -28,9 +28,9 @@ export class ClientUseCase implements IClientUseCase {
   async getClients({
     params,
   }: GetClientsUseCaseRequestModel): Promise<GetClientsUseCaseResponseModel> {
-    const clients = await this.clientRepository.findMany(params);
+    const paginationResponse = await this.clientRepository.findMany(params);
 
-    return { clients };
+    return { paginationResponse };
   }
 
   async getClientById({

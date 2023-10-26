@@ -1,4 +1,5 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Client } from "@/core/domain/entities/Client";
 import { IClientRepository } from "@/core/domain/repositories/IClientRepository";
 
@@ -23,10 +24,22 @@ export class InMemoryClientRepository implements IClientRepository {
     return answer || null;
   }
 
-  async findMany({ page, size }: PaginationParams): Promise<Client[]> {
-    const answers = this.items.slice((page - 1) * size, page * size);
+  async findMany({
+    page,
+    size,
+  }: PaginationParams): Promise<PaginationResponse<Client>> {
+    const totalItems = this.items.length;
+    const totalPages = Math.ceil(totalItems / size);
 
-    return answers;
+    const data = this.items.slice((page - 1) * size, page * size);
+
+    return new PaginationResponse<Client>({
+      data,
+      totalItems,
+      currentPage: page,
+      pageSize: size,
+      totalPages,
+    });
   }
 
   async create(client: Client): Promise<Client> {

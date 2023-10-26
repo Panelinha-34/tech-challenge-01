@@ -9,13 +9,14 @@ import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { Category } from "@/core/domain/valueObjects/Category";
 
-import { MinimumComboProductsNotReached } from "./errors/MinimumComboProductsNotReached";
+import { MinimumResourcesNotReached } from "./errors/MinimumComboProductsNotReached";
 import { ResourceNotFoundError } from "./errors/ResourceNotFoundError";
 import { IComboUseCase } from "./IComboUseCase";
 import {
   CreateComboUseCaseRequestModel,
   CreateComboUseCaseResponseModel,
 } from "./model/combo/CreateComboUseCaseModel";
+import { DeleteComboUseCaseRequestModel } from "./model/combo/DeleteComboUseCaseModel";
 import {
   EditComboUseCaseRequestModel,
   EditComboUseCaseResponseModel,
@@ -80,7 +81,7 @@ export class ComboUseCase implements IComboUseCase {
     const hasMinProducts = productIds.length >= 1;
 
     if (!hasMinProducts) {
-      throw new MinimumComboProductsNotReached();
+      throw new MinimumResourcesNotReached(Combo.name);
     }
 
     const productMap: Record<string, CategoriesEnum> = {};
@@ -155,7 +156,7 @@ export class ComboUseCase implements IComboUseCase {
     const hasMinProducts = productIds.length >= 1;
 
     if (!hasMinProducts) {
-      throw new MinimumComboProductsNotReached();
+      throw new MinimumResourcesNotReached(Combo.name);
     }
 
     const productMap: Record<string, CategoriesEnum> = {};
@@ -207,5 +208,17 @@ export class ComboUseCase implements IComboUseCase {
     await this.comboProductRepository.createMany(comboProducts);
 
     return { combo, productDetails };
+  }
+
+  async deleteCombo(props: DeleteComboUseCaseRequestModel) {
+    const combo = await this.comboRepository.findById(props.id);
+
+    if (!combo) {
+      throw new ResourceNotFoundError(Combo.name);
+    }
+
+    await this.comboProductRepository.deleteByComboId(combo.id.toString());
+
+    await this.comboRepository.delete(combo.id.toString());
   }
 }

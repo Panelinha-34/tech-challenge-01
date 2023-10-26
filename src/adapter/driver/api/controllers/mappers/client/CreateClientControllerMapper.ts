@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FastifyReply, FastifyRequest } from "fastify";
 
 import {
@@ -5,7 +6,10 @@ import {
   CreateClientUseCaseResponseModel,
 } from "@/core/application/useCases/model/client/CreateClientUseCaseModel";
 
-import { createClientPayloadSchema } from "../../model/client/CreateClientControllerModel";
+import {
+  CreateClientControllerResponse,
+  createClientPayloadSchema,
+} from "../../model/client/CreateClientControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,7 +18,8 @@ export class CreateClientControllerMapper
   implements
     IControllerMapper<
       CreateClientUseCaseRequestModel,
-      CreateClientUseCaseResponseModel
+      CreateClientUseCaseResponseModel,
+      CreateClientControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): CreateClientUseCaseRequestModel {
@@ -29,17 +34,8 @@ export class CreateClientControllerMapper
 
   convertSuccessfullyResponse(
     res: FastifyReply,
-    useCaseResponseModel: CreateClientUseCaseResponseModel
+    _useCaseResponseModel: CreateClientUseCaseResponseModel
   ) {
-    const client = {
-      id: useCaseResponseModel.client.id.toString(),
-      name: useCaseResponseModel.client.name,
-      email: useCaseResponseModel.client.email,
-      taxVat: useCaseResponseModel.client.taxVat.number,
-      createdAt: useCaseResponseModel.client.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.client.updatedAt?.toISOString(),
-    };
-
-    return res.status(200).send(client);
+    return res.status(201).send();
   }
 }

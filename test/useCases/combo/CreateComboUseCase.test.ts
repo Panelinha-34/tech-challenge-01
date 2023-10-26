@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
-import { MinimumComboProductsNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 import { Category } from "@/core/domain/valueObjects/Category";
@@ -83,6 +83,6 @@ describe("Given the Create Combo Use Case", () => {
         name,
         description,
       })
-    ).rejects.toBeInstanceOf(MinimumComboProductsNotReached);
+    ).rejects.toBeInstanceOf(MinimumResourcesNotReached);
   });
 });

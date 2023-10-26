@@ -11,4 +11,6 @@ export interface IComboRepository {
   create(combo: Combo): Promise<Combo>;
 
   update(combo: Combo): Promise<Combo>;
+
+  delete(id: string): Promise<void>;
 }

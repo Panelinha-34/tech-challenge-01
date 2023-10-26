@@ -6,8 +6,9 @@ import { OrderStatus } from "../valueObjects/OrderStatus";
 export interface OrderProps {
   status: OrderStatus;
   totalPrice: number;
-  clientId: string;
   createdAt: Date;
+  clientName?: string;
+  clientId?: string;
   updatedAt?: Date;
 }
 

@@ -6,6 +6,7 @@ import {
 } from "@/core/application/useCases/model/product/EditProductUseCaseModel";
 
 import {
+  EditProductControllerResponse,
   editProductPathParametersSchema,
   editProductPayloadSchema,
 } from "../../model/product/EditProductControllerModel";
@@ -17,7 +18,8 @@ export class EditProductControllerMapper
   implements
     IControllerMapper<
       EditProductUseCaseRequestModel,
-      EditProductUseCaseResponseModel
+      EditProductUseCaseResponseModel,
+      EditProductControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): EditProductUseCaseRequestModel {
@@ -34,20 +36,26 @@ export class EditProductControllerMapper
     };
   }
 
+  convertUseCaseModelToControllerResponse(
+    model: EditProductUseCaseResponseModel
+  ): EditProductControllerResponse {
+    return {
+      id: model.product.id.toString(),
+      name: model.product.name,
+      description: model.product.description,
+      price: model.product.price,
+      category: model.product.category.name,
+      createdAt: model.product.createdAt.toISOString(),
+      updatedAt: model.product.updatedAt?.toISOString(),
+    };
+  }
+
   convertSuccessfullyResponse(
     res: FastifyReply,
     useCaseResponseModel: EditProductUseCaseResponseModel
   ) {
-    const product = {
-      id: useCaseResponseModel.product.id.toString(),
-      name: useCaseResponseModel.product.name,
-      description: useCaseResponseModel.product.description,
-      price: useCaseResponseModel.product.price,
-      category: useCaseResponseModel.product.category.name,
-      createdAt: useCaseResponseModel.product.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.product.updatedAt?.toISOString(),
-    };
-
-    return res.status(200).send(product);
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(useCaseResponseModel));
   }
 }

@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -16,10 +16,13 @@ enum Category {
 }
 
 enum OrderStatus {
-  RECEIVED
+  PENDING_PAYMENT
+  PAID
   IN_PREPARATION
   READY
-  FINISHED
+  DELIVERED
+  COMPLETED
+  CANCELLED
 }
 
 model Client {
@@ -36,14 +39,15 @@ model Client {
 }
 
 model Order {
-  id          String    @id @default(uuid())
-  status      OrderStatus
-  client_id   String    @map("client_id")
-  total_price Decimal
-  created_at  DateTime  @default(now())
-  updated_at  DateTime? @updatedAt
+  id           String      @id @default(uuid())
+  status       OrderStatus
+  client_id    String?     @map("client_id")
+  visitor_name String?
+  total_price  Decimal
+  created_at   DateTime    @default(now())
+  updated_at   DateTime?   @updatedAt
 
-  client             Client              @relation(fields: [client_id], references: [id])
+  client             Client?             @relation(fields: [client_id], references: [id])
   orderPayments      OrderPayment[]
   orderNotifications OrderNotification[]
   orderComboItems    OrderComboItem[]

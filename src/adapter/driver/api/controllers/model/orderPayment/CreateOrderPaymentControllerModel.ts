@@ -6,8 +6,10 @@ export const createOrderPaymentPayloadSchema = z.object({
   orderId: z.string(),
   amount: z.number(),
   payment_method: z.string(),
-  status: z.string()
+  status: z.string(),
 });
+
+export interface CreateOrderPaymentControllerResponse {}
 
 export const createOrderPaymentDocSchema = {
   tags: ["Order Payment (WIP)"],

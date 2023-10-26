@@ -1,6 +1,6 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
-import { Combo } from '@/core/domain/entities/Combo';
-import { IComboRepository } from '@/core/domain/repositories/IComboRepository';
+import { Combo } from "@/core/domain/entities/Combo";
+import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
 
 export class InMemoryComboRepository implements IComboRepository {
   public items: Combo[] = [];
@@ -35,5 +35,9 @@ export class InMemoryComboRepository implements IComboRepository {
     this.items[index] = combo;
 
     return combo;
+  }
+
+  async delete(id: string): Promise<void> {
+    this.items = this.items.filter((a) => a.id.toString() !== id);
   }
 }
