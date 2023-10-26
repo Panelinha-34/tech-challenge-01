@@ -7,6 +7,18 @@ import { prisma } from "../config/prisma";
 import { PrismaProductToDomainClientConverter } from "../converter/PrismaProductToDomainClientConverter";
 
 export class PrismaProductRepository implements IProductRepository {
+  async findManyByCategory(category: Category): Promise<Product[]> {
+    return prisma.product
+      .findMany({
+        where: {
+          category: category.name,
+        },
+      })
+      .then((products) =>
+        products.map((c) => PrismaProductToDomainClientConverter.convert(c))
+      );
+  }
+
   async findByName(name: string): Promise<Product | null> {
     return prisma.product
       .findFirst({

@@ -6,6 +6,14 @@ import { Category } from "@/core/domain/valueObjects/Category";
 export class InMemoryProductRepository implements IProductRepository {
   public items: Product[] = [];
 
+  async findManyByCategory(category: Category): Promise<Product[]> {
+    const products = this.items.filter(
+      (a) => a.category.name === category.name
+    );
+
+    return products;
+  }
+
   async findById(id: string): Promise<Product | null> {
     const product = this.items.find((a) => a.id.toString() === id);
 
