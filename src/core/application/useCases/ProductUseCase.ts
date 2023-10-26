@@ -1,3 +1,4 @@
+import { UnsupportedArgumentValueError } from "@/core/domain/base/error/UnsupportedArgumentValueError";
 import { Product } from "@/core/domain/entities/Product";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
@@ -18,6 +19,10 @@ import {
   GetProductByIdUseCaseRequestModel,
   GetProductByIdUseCaseResponseModel,
 } from "./model/product/GetProductByIdUseCaseModel";
+import {
+  GetProductsByCategoryUseCaseRequestModel,
+  GetProductsByCategoryUseCaseResponseModel,
+} from "./model/product/GetProductsByCategoryUseCaseModel";
 import {
   GetProductsUseCaseRequestModel,
   GetProductsUseCaseResponseModel,
@@ -44,6 +49,24 @@ export class ProductUseCase implements IProductUseCase {
     }
 
     return { product };
+  }
+
+  async getProductsByCategory({
+    category,
+  }: GetProductsByCategoryUseCaseRequestModel): Promise<GetProductsByCategoryUseCaseResponseModel> {
+    const categories = Object.keys(CategoriesEnum).map((enumCategory) =>
+      enumCategory.toLowerCase()
+    );
+
+    if (!categories.includes(category.toLowerCase())) {
+      throw new UnsupportedArgumentValueError("category");
+    }
+
+    const products = await this.productRepository.findManyByCategory(
+      new Category({ name: category.toUpperCase() as CategoriesEnum })
+    );
+
+    return { products };
   }
 
   async createProduct({
