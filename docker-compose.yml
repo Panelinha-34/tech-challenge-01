@@ -6,8 +6,13 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
+    volumes:
+      - ./:/home/node/app
     ports:
       - 3333:3333
+    command: npm run dev
+    environment:
+      - DATABASE_URL=postgresql://${DATABASE_USER}:${DATABASE_PASS}@tech-challenge-db:5432/tech-challenge
   tech-challenge-db:
     image: bitnami/postgresql
     volumes:
