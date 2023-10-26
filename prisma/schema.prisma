@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -22,9 +23,20 @@ model Client {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  orders Order[]
+  orders   Order[]
+  sessions Session[]
 
   @@map("clients")
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  client_id  String   @map("client_id")
+  created_at DateTime @default(now())
+
+  client Client @relation(fields: [client_id], references: [id])
+
+  @@map("sessions")
 }
 
 model Order {
