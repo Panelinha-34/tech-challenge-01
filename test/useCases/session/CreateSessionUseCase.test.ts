@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { SessionUseCase } from "@/core/application/useCases/SessionUseCase";
 import { Taxvat } from "@/core/domain/valueObjects/Taxvat";
-import { makeClient } from "@test/factories/MakeClient";
+import { makeClient } from "@test/repositories/factories/MakeClient";
 import { InMemoryClientRepository } from "@test/repositories/InMemoryClientRepository";
 import { InMemorySessionRepository } from "@test/repositories/InMemorySessionRepository";
 

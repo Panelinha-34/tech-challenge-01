@@ -4,7 +4,7 @@ GET http://localhost:3333/products
 ### 
 
 # @name get-product-by-id
-GET http://localhost:3333/products/5b8e541c-d18c-4f91-b055-fa8b4de91345
+GET http://localhost:3333/products/657401ee-5abb-4436-9a91-d03059dfcd1c
 
 ### 
 

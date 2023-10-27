@@ -1,11 +1,12 @@
 import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
+import { PaymentMethod } from "../valueObjects/PaymentMethod";
 
 export interface OrderPaymentProps {
   orderId: string;
   amount: number;
-  payment_method: string;
+  paymentMethod: PaymentMethod;
   status: string;
   createdAt: Date;
   updatedAt?: Date;
@@ -33,8 +34,8 @@ export class OrderPayment extends Entity<OrderPaymentProps> {
     return this.props.amount;
   }
 
-  get payment_method() {
-    return this.props.payment_method;
+  get paymentMethod() {
+    return this.props.paymentMethod;
   }
 
   get status() {

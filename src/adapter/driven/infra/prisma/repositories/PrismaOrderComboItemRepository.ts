@@ -1,4 +1,3 @@
-import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { OrderComboItem } from "@/core/domain/entities/OrderComboItem";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
 
@@ -22,11 +21,12 @@ export class PrismaOrderComboItemRepository
       );
   }
 
-  async findMany({ page, size }: PaginationParams): Promise<OrderComboItem[]> {
+  async findManyByOrderId(orderId: string): Promise<OrderComboItem[]> {
     return prisma.orderComboItem
       .findMany({
-        take: size,
-        skip: (page - 1) * size,
+        where: {
+          order_id: orderId,
+        },
       })
       .then((orderComboItems) =>
         orderComboItems.map((c) =>
@@ -53,8 +53,8 @@ export class PrismaOrderComboItemRepository
     return prisma.orderComboItem
       .create({
         data: {
-          order_id: orderComboItem.orderId,
-          combo_id: orderComboItem.comboId,
+          order_id: orderComboItem.orderId.toString(),
+          combo_id: orderComboItem.comboId.toString(),
           annotation: orderComboItem.annotation,
           quantity: orderComboItem.quantity,
           total_price: orderComboItem.totalPrice,
@@ -67,8 +67,8 @@ export class PrismaOrderComboItemRepository
     return prisma.orderComboItem
       .createMany({
         data: orderComboItems.map((c) => ({
-          order_id: c.orderId,
-          combo_id: c.comboId,
+          order_id: c.orderId.toString(),
+          combo_id: c.comboId.toString(),
           annotation: c.annotation,
           quantity: c.quantity,
           total_price: c.totalPrice,

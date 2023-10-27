@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
-import { makeCombo } from "@test/factories/MakeCombo";
+import { makeCombo } from "@test/repositories/factories/MakeCombo";
 import { InMemoryComboProductRepository } from "@test/repositories/InMemoryComboProductRepository";
 import { InMemoryComboRepository } from "@test/repositories/InMemoryComboRepository";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
@@ -19,15 +19,13 @@ describe("Given the Get Combos Use Case", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    inMemoryComboRepository = new InMemoryComboRepository();
     inMemoryComboProductRepository = new InMemoryComboProductRepository();
+    inMemoryComboRepository = new InMemoryComboRepository(
+      inMemoryComboProductRepository
+    );
     inMemoryProductRepository = new InMemoryProductRepository();
 
-    sut = new ComboUseCase(
-      inMemoryComboRepository,
-      inMemoryComboProductRepository,
-      inMemoryProductRepository
-    );
+    sut = new ComboUseCase(inMemoryComboRepository, inMemoryProductRepository);
   });
 
   it("should return the combos correctly", async () => {
@@ -37,7 +35,9 @@ describe("Given the Get Combos Use Case", () => {
 
     inMemoryComboRepository.items.push(comboToCreate);
 
-    const { combos } = await sut.getCombos({ params });
+    const { paginationResponse } = await sut.getCombos({ params });
+
+    const combos = paginationResponse.data;
 
     expect(combos).toHaveLength(1);
   });
@@ -49,7 +49,9 @@ describe("Given the Get Combos Use Case", () => {
       inMemoryComboRepository.items.push(makeCombo());
     });
 
-    const { combos } = await sut.getCombos({ params });
+    const { paginationResponse } = await sut.getCombos({ params });
+
+    const combos = paginationResponse.data;
 
     expect(combos).toHaveLength(2);
   });

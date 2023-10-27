@@ -6,10 +6,10 @@ export class PrismaOrderComboItemToDomainConverter {
   static convert(prismaClient: PrismaOrderComboItem): OrderComboItem {
     return new OrderComboItem(
       {
-        orderId: prismaClient.order_id,
+        orderId: new UniqueEntityId(prismaClient.order_id),
+        comboId: new UniqueEntityId(prismaClient.combo_id),
         quantity: prismaClient.quantity,
         totalPrice: prismaClient.total_price.toNumber(),
-        comboId: prismaClient.combo_id,
         createdAt: prismaClient.created_at,
         updatedAt: prismaClient.updated_at ?? undefined,
       },

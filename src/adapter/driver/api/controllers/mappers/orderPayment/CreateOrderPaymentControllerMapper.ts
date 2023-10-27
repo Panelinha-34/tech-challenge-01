@@ -52,7 +52,7 @@ export class CreateOrderPaymentControllerMapper
       id: model.orderPayment.id.toString(),
       orderId: model.orderPayment.orderId,
       amount: model.orderPayment.amount,
-      payment_method: model.orderPayment.payment_method,
+      payment_method: model.orderPayment.paymentMethod,
       status: model.orderPayment.status,
       createdAt: model.orderPayment.createdAt.toISOString(),
       updatedAt: model.orderPayment.updatedAt?.toISOString(),

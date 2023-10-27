@@ -1,4 +1,3 @@
-import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { OrderPayment } from "@/core/domain/entities/OrderPayment";
 import { IOrderPaymentRepository } from "@/core/domain/repositories/IOrderPaymentRepository";
 
@@ -12,8 +11,8 @@ export class PrismaOrderPaymentRepository implements IOrderPaymentRepository {
         data: {
           order_id: orderPayment.orderId,
           amount: orderPayment.amount,
-          payment_method: orderPayment.payment_method,
-          status: orderPayment.status
+          payment_method: orderPayment.paymentMethod.name,
+          status: orderPayment.status,
         },
       })
       .then((c) => PrismaOrderPaymentToDomainClientConverter.convert(c));

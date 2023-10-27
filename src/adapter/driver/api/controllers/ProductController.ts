@@ -5,10 +5,8 @@ import { IProductUseCase } from "@/core/application/useCases/IProductUseCase";
 import { CreateProductControllerMapper } from "./mappers/product/CreateProductControllerMapper";
 import { EditProductControllerMapper } from "./mappers/product/EditProductControllerMapper";
 import { GetProductByIdControllerMapper } from "./mappers/product/GetProductByIdControllerMapper";
-import { GetProductsByCategoryControllerMapper } from "./mappers/product/GetProductsByCategoryControllerMapper";
 import { GetProductsControllerMapper } from "./mappers/product/GetProductsControllerMapper";
 import { GetProductByIdControllerResponse } from "./model/product/GetProductByIdControllerModel";
-import { GetProductsByCategoryControllerResponse } from "./model/product/GetProductsByCategoryControllerModel";
 import { GetProductsControllerResponse } from "./model/product/GetProductsControllerModel";
 
 export class ProductController {
@@ -17,7 +15,6 @@ export class ProductController {
 
     private getProductsControllerMapper: GetProductsControllerMapper,
     private getProductByIdControllerMapper: GetProductByIdControllerMapper,
-    private getProductsByCategoryControllerMapper: GetProductsByCategoryControllerMapper,
     private createProductControllerMapper: CreateProductControllerMapper,
     private editProductControllerMapper: EditProductControllerMapper
   ) {}
@@ -36,28 +33,6 @@ export class ProductController {
       )
       .catch((error) =>
         this.getProductsControllerMapper.convertErrorResponse(error, res)
-      );
-  }
-
-  async getProductsByCategory(
-    req: FastifyRequest,
-    res: FastifyReply
-  ): Promise<GetProductsByCategoryControllerResponse> {
-    return this.productUseCase
-      .getProductsByCategory(
-        this.getProductsByCategoryControllerMapper.convertRequestModel(req)
-      )
-      .then((response) =>
-        this.getProductsByCategoryControllerMapper.convertSuccessfullyResponse(
-          res,
-          response
-        )
-      )
-      .catch((error) =>
-        this.getProductsByCategoryControllerMapper.convertErrorResponse(
-          error,
-          res
-        )
       );
   }
 

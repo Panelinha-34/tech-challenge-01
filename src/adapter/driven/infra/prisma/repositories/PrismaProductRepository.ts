@@ -8,30 +8,30 @@ import { prisma } from "../config/prisma";
 import { PrismaProductToDomainClientConverter } from "../converter/PrismaProductToDomainClientConverter";
 
 export class PrismaProductRepository implements IProductRepository {
-  async findManyByCategory(
-    params: PaginationParams,
-    category: Category
+  async findMany(
+    { page, size }: PaginationParams,
+    category?: Category
   ): Promise<PaginationResponse<Product>> {
+    const where = {
+      category: category ? category.name : undefined,
+    };
+
     const totalItems = await prisma.product.count({
-      where: {
-        category: category.name,
-      },
+      where,
     });
-    const totalPages = Math.ceil(totalItems / params.size);
+    const totalPages = Math.ceil(totalItems / size);
 
     const data = await prisma.product.findMany({
-      where: {
-        category: category.name,
-      },
-      take: params.size,
-      skip: (params.page - 1) * params.size,
+      where,
+      take: size,
+      skip: (page - 1) * size,
     });
 
     return new PaginationResponse<Product>({
       data: data.map((c) => PrismaProductToDomainClientConverter.convert(c)),
       totalItems,
-      currentPage: params.page,
-      pageSize: params.size,
+      currentPage: page,
+      pageSize: size,
       totalPages,
     });
   }
@@ -88,27 +88,6 @@ export class PrismaProductRepository implements IProductRepository {
       .then((product) =>
         product ? PrismaProductToDomainClientConverter.convert(product) : null
       );
-  }
-
-  async findMany({
-    page,
-    size,
-  }: PaginationParams): Promise<PaginationResponse<Product>> {
-    const totalItems = await prisma.product.count();
-    const totalPages = Math.ceil(totalItems / size);
-
-    const data = await prisma.product.findMany({
-      take: size,
-      skip: (page - 1) * size,
-    });
-
-    return new PaginationResponse<Product>({
-      data: data.map((c) => PrismaProductToDomainClientConverter.convert(c)),
-      totalItems,
-      currentPage: page,
-      pageSize: size,
-      totalPages,
-    });
   }
 
   async create(product: Product): Promise<Product> {

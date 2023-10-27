@@ -69,8 +69,8 @@ export class PrismaComboProductRepository implements IComboProductRepository {
     return prisma.comboProduct
       .create({
         data: {
-          combo_id: comboProduct.comboId,
-          product_id: comboProduct.productId,
+          combo_id: comboProduct.comboId.toString(),
+          product_id: comboProduct.productId.toString(),
         },
       })
       .then((c) => PrismaComboProductToDomainClientConverter.convert(c));
@@ -80,9 +80,22 @@ export class PrismaComboProductRepository implements IComboProductRepository {
     return prisma.comboProduct
       .createMany({
         data: comboProducts.map((c) => ({
-          combo_id: c.comboId,
-          product_id: c.productId,
+          combo_id: c.comboId.toString(),
+          product_id: c.productId.toString(),
         })),
+      })
+      .then(({ count }) => count);
+  }
+
+  async deleteMany(comboProducts: ComboProduct[]): Promise<number> {
+    return prisma.comboProduct
+      .deleteMany({
+        where: {
+          OR: comboProducts.map((c) => ({
+            combo_id: c.comboId.toString(),
+            product_id: c.productId.toString(),
+          })),
+        },
       })
       .then(({ count }) => count);
   }

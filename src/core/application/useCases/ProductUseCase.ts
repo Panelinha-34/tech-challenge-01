@@ -20,10 +20,6 @@ import {
   GetProductByIdUseCaseResponseModel,
 } from "./model/product/GetProductByIdUseCaseModel";
 import {
-  GetProductsByCategoryUseCaseRequestModel,
-  GetProductsByCategoryUseCaseResponseModel,
-} from "./model/product/GetProductsByCategoryUseCaseModel";
-import {
   GetProductsUseCaseRequestModel,
   GetProductsUseCaseResponseModel,
 } from "./model/product/GetProductsUseCaseModel";
@@ -33,8 +29,26 @@ export class ProductUseCase implements IProductUseCase {
 
   async getProducts({
     params,
+    category,
   }: GetProductsUseCaseRequestModel): Promise<GetProductsUseCaseResponseModel> {
-    const paginationResponse = await this.productRepository.findMany(params);
+    if (category) {
+      const categories = Object.keys(CategoriesEnum).map((enumCategory) =>
+        enumCategory.toLowerCase()
+      );
+
+      if (!categories.includes(category.toLowerCase())) {
+        throw new UnsupportedArgumentValueError(Category.name);
+      }
+    }
+
+    const productCategory = category
+      ? new Category({ name: category as CategoriesEnum })
+      : undefined;
+
+    const paginationResponse = await this.productRepository.findMany(
+      params,
+      productCategory
+    );
 
     return { paginationResponse };
   }
@@ -49,26 +63,6 @@ export class ProductUseCase implements IProductUseCase {
     }
 
     return { product };
-  }
-
-  async getProductsByCategory({
-    params,
-    category,
-  }: GetProductsByCategoryUseCaseRequestModel): Promise<GetProductsByCategoryUseCaseResponseModel> {
-    const categories = Object.keys(CategoriesEnum).map((enumCategory) =>
-      enumCategory.toLowerCase()
-    );
-
-    if (!categories.includes(category.toLowerCase())) {
-      throw new UnsupportedArgumentValueError(Category.name);
-    }
-
-    const paginationResponse = await this.productRepository.findManyByCategory(
-      params,
-      new Category({ name: category as CategoriesEnum })
-    );
-
-    return { paginationResponse };
   }
 
   async createProduct({

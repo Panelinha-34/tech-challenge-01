@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
-import { makeProduct } from "@test/factories/MakeProduct";
+import { makeProduct } from "@test/repositories/factories/MakeProduct";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
 
 let inMemoryProductRepository: InMemoryProductRepository;
@@ -27,7 +27,9 @@ describe("Given the Get Products Use Case", () => {
 
     inMemoryProductRepository.items.push(productToCreate);
 
-    const { products } = await sut.getProducts({ params });
+    const { paginationResponse } = await sut.getProducts({ params });
+
+    const products = paginationResponse.data;
 
     expect(products).toHaveLength(1);
   });
@@ -39,7 +41,9 @@ describe("Given the Get Products Use Case", () => {
       inMemoryProductRepository.items.push(makeProduct());
     });
 
-    const { products } = await sut.getProducts({ params });
+    const { paginationResponse } = await sut.getProducts({ params });
+
+    const products = paginationResponse.data;
 
     expect(products).toHaveLength(2);
   });

@@ -4,11 +4,9 @@ import { Product } from "../entities/Product";
 import { Category } from "../valueObjects/Category";
 
 export interface IProductRepository {
-  findMany(params: PaginationParams): Promise<PaginationResponse<Product>>;
-
-  findManyByCategory(
+  findMany(
     params: PaginationParams,
-    category: Category
+    category?: Category
   ): Promise<PaginationResponse<Product>>;
 
   findById(id: string): Promise<Product | null>;

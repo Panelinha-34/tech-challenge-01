@@ -6,6 +6,8 @@ import { CreateComboControllerMapper } from "./mappers/combo/CreateComboControll
 import { EditComboControllerMapper } from "./mappers/combo/EditComboControllerMapper";
 import { GetComboByIdControllerMapper } from "./mappers/combo/GetComboByIdControllerMapper";
 import { GetCombosControllerMapper } from "./mappers/combo/GetCombosControllerMapper";
+import { CreateComboControllerResponse } from "./model/combo/CreateComboControllerModel";
+import { EditComboControllerResponse } from "./model/combo/EditComboControllerModel";
 import { GetComboByIdControllerResponse } from "./model/combo/GetComboByIdControllerModel";
 import { GetCombosControllerResponse } from "./model/combo/GetCombosControllerModel";
 
@@ -53,7 +55,10 @@ export class ComboController {
       );
   }
 
-  async createCombo(req: FastifyRequest, res: FastifyReply): Promise<void> {
+  async createCombo(
+    req: FastifyRequest,
+    res: FastifyReply
+  ): Promise<CreateComboControllerResponse> {
     return this.comboUseCase
       .createCombo(this.createComboControllerMapper.convertRequestModel(req))
       .then((response) =>
@@ -67,7 +72,10 @@ export class ComboController {
       );
   }
 
-  async editCombo(req: FastifyRequest, res: FastifyReply): Promise<void> {
+  async editCombo(
+    req: FastifyRequest,
+    res: FastifyReply
+  ): Promise<EditComboControllerResponse> {
     return this.comboUseCase
       .editCombo(this.editComboControllerMapper.convertRequestModel(req))
       .then((response) =>

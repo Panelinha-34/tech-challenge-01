@@ -38,7 +38,7 @@ export class GetOrdersControllerMapper
     return model.paginationResponse.toResponse((order) => ({
       id: order.id.toString(),
       status: order.status.name,
-      clientId: order.clientId,
+      clientId: order.clientId?.toString(),
       totalPrice: order.totalPrice,
       createdAt: order.createdAt.toISOString(),
       updatedAt: order.updatedAt?.toISOString(),

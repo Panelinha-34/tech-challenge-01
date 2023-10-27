@@ -1,4 +1,5 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Combo } from "@/core/domain/entities/Combo";
 
 export interface GetCombosUseCaseRequestModel {
@@ -6,5 +7,5 @@ export interface GetCombosUseCaseRequestModel {
 }
 
 export interface GetCombosUseCaseResponseModel {
-  combos: Combo[];
+  paginationResponse: PaginationResponse<Combo>;
 }

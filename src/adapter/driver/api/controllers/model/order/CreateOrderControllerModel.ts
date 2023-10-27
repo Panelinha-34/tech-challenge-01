@@ -29,7 +29,7 @@ export interface CreateOrderControllerResponse {}
 
 export const createOrderDocSchema = {
   description: "Create a order",
-  tags: ["Order"],
+  tags: ["Order (WIP)"],
   body: {
     type: "object",
     properties: {

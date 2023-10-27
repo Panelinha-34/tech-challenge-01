@@ -18,20 +18,32 @@ export interface GetComboResponse {
 }
 
 export interface GetCombosControllerResponse {
-  combos: GetComboResponse[];
+  data: GetComboResponse[];
+  pagination: {
+    totalItems: number;
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+  };
 }
 
 const responseExample: GetCombosControllerResponse = {
-  combos: [
+  data: [
     {
-      id: "1",
-      name: "Combo 1",
-      description: "Combo 1",
-      price: 10,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
+      id: "123",
+      name: "John",
+      description: "description",
+      price: 12,
+      createdAt: "2021-10-26",
+      updatedAt: "2021-10-27",
     },
   ],
+  pagination: {
+    totalItems: 1,
+    currentPage: 1,
+    pageSize: 20,
+    totalPages: 1,
+  },
 };
 
 export const getCombosDocSchema = {

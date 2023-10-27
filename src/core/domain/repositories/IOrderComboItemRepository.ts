@@ -3,7 +3,7 @@ import { OrderComboItem } from "../entities/OrderComboItem";
 export interface IOrderComboItemRepository {
   findById(id: string): Promise<OrderComboItem | null>;
 
-  findManyByComboId(comboId: string): Promise<OrderComboItem[]>;
+  findManyByOrderId(orderId: string): Promise<OrderComboItem[]>;
 
   create(orderComboItem: OrderComboItem): Promise<OrderComboItem>;
 

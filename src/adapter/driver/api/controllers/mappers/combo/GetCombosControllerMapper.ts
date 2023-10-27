@@ -35,16 +35,14 @@ export class GetCombosControllerMapper
   convertUseCaseModelToControllerResponse(
     model: GetCombosUseCaseResponseModel
   ): GetCombosControllerResponse {
-    return {
-      combos: model.combos.map((combo) => ({
-        id: combo.id.toString(),
-        name: combo.name,
-        description: combo.description,
-        price: combo.price,
-        createdAt: combo.createdAt.toISOString(),
-        updatedAt: combo.updatedAt?.toISOString(),
-      })),
-    };
+    return model.paginationResponse.toResponse((combo) => ({
+      id: combo.id.toString(),
+      name: combo.name,
+      description: combo.description,
+      price: combo.price,
+      createdAt: combo.createdAt.toISOString(),
+      updatedAt: combo.updatedAt?.toISOString(),
+    }));
   }
 
   convertSuccessfullyResponse(

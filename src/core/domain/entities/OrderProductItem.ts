@@ -3,8 +3,8 @@ import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
 
 export interface OrderProductItemProps {
-  orderId: string;
-  productId: string;
+  orderId: UniqueEntityId;
+  productId: UniqueEntityId;
   annotation?: string;
   quantity: number;
   totalPrice: number;

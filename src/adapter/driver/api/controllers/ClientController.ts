@@ -6,8 +6,6 @@ import { CreateClientControllerMapper } from "./mappers/client/CreateClientContr
 import { EditClientControllerMapper } from "./mappers/client/EditClientControllerMapper";
 import { GetClientByIdControllerMapper } from "./mappers/client/GetClientByIdControllerMapper";
 import { GetClientsControllerMapper } from "./mappers/client/GetClientsControllerMapper";
-import { GetClientByIdControllerResponse } from "./model/client/GetClientByIdControllerModel";
-import { GetClientsControllerResponse } from "./model/client/GetClientsControllerModel";
 
 export class ClientController {
   constructor(
@@ -19,10 +17,7 @@ export class ClientController {
     private editClientControllerMapper: EditClientControllerMapper
   ) {}
 
-  async getClients(
-    req: FastifyRequest,
-    res: FastifyReply
-  ): Promise<GetClientsControllerResponse> {
+  async getClients(req: FastifyRequest, res: FastifyReply) {
     return this.clientUseCase
       .getClients(this.getClientsControllerMapper.convertRequestModel(req))
       .then((response) =>
@@ -36,10 +31,7 @@ export class ClientController {
       );
   }
 
-  async getClientById(
-    req: FastifyRequest,
-    res: FastifyReply
-  ): Promise<GetClientByIdControllerResponse> {
+  async getClientById(req: FastifyRequest, res: FastifyReply) {
     return this.clientUseCase
       .getClientById(
         this.getClientByIdControllerMapper.convertRequestModel(req)
@@ -55,7 +47,7 @@ export class ClientController {
       );
   }
 
-  async createClient(req: FastifyRequest, res: FastifyReply): Promise<void> {
+  async createClient(req: FastifyRequest, res: FastifyReply) {
     return this.clientUseCase
       .createClient(this.createClientControllerMapper.convertRequestModel(req))
       .then((response) =>
@@ -69,7 +61,7 @@ export class ClientController {
       );
   }
 
-  async editClient(req: FastifyRequest, res: FastifyReply): Promise<void> {
+  async editClient(req: FastifyRequest, res: FastifyReply) {
     return this.clientUseCase
       .editClient(this.editClientControllerMapper.convertRequestModel(req))
       .then((response) =>

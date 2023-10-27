@@ -19,8 +19,8 @@ export function makeComboProduct(
 
   const newProduct = new ComboProduct(
     {
-      comboId: combo.id.toString(),
-      productId: product.id.toString(),
+      comboId: new UniqueEntityId(combo.id.toString()),
+      productId: new UniqueEntityId(product.id.toString()),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
       ...override,

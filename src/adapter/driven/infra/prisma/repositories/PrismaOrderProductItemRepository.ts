@@ -1,4 +1,3 @@
-import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { OrderProductItem } from "@/core/domain/entities/OrderProductItem";
 import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 
@@ -22,27 +21,11 @@ export class PrismaOrderProductItemRepository
       );
   }
 
-  async findMany({
-    page,
-    size,
-  }: PaginationParams): Promise<OrderProductItem[]> {
-    return prisma.orderProductItem
-      .findMany({
-        take: size,
-        skip: (page - 1) * size,
-      })
-      .then((orderProductItems) =>
-        orderProductItems.map((c) =>
-          PrismaOrderProductItemToDomainConverter.convert(c)
-        )
-      );
-  }
-
-  async findManyByProductId(productId: string): Promise<OrderProductItem[]> {
+  findManyByOrderId(orderId: string): Promise<OrderProductItem[]> {
     return prisma.orderProductItem
       .findMany({
         where: {
-          product_id: productId,
+          order_id: orderId,
         },
       })
       .then((orderProductItems) =>
@@ -56,8 +39,8 @@ export class PrismaOrderProductItemRepository
     return prisma.orderProductItem
       .create({
         data: {
-          order_id: orderProductItem.orderId,
-          product_id: orderProductItem.productId,
+          order_id: orderProductItem.orderId.toString(),
+          product_id: orderProductItem.productId.toString(),
           annotation: orderProductItem.annotation,
           quantity: orderProductItem.quantity,
           total_price: orderProductItem.totalPrice,
@@ -70,8 +53,8 @@ export class PrismaOrderProductItemRepository
     return prisma.orderProductItem
       .createMany({
         data: orderProductItems.map((c) => ({
-          order_id: c.orderId,
-          product_id: c.productId,
+          order_id: c.orderId.toString(),
+          product_id: c.productId.toString(),
           annotation: c.annotation,
           quantity: c.quantity,
           total_price: c.totalPrice,

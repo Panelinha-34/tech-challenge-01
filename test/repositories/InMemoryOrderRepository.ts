@@ -1,10 +1,17 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Order } from "@/core/domain/entities/Order";
+import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
+import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 
 export class InMemoryOrderRepository implements IOrderRepository {
   public items: Order[] = [];
+
+  constructor(
+    private orderComboItemRepository: IOrderComboItemRepository,
+    private orderProductItemRepository: IOrderProductItemRepository
+  ) {}
 
   async findMany({
     page,
@@ -29,7 +36,7 @@ export class InMemoryOrderRepository implements IOrderRepository {
     clientId: string
   ): Promise<PaginationResponse<Order>> {
     const filteredItems = this.items.filter(
-      (order) => order.clientId === clientId
+      (order) => order.clientId?.toString() === clientId
     );
 
     const totalItems = filteredItems.length;
@@ -65,6 +72,9 @@ export class InMemoryOrderRepository implements IOrderRepository {
 
   async create(order: Order): Promise<Order> {
     this.items.push(order);
+
+    this.orderComboItemRepository.createMany(order.combos.getItems());
+    this.orderProductItemRepository.createMany(order.products.getItems());
 
     return order;
   }

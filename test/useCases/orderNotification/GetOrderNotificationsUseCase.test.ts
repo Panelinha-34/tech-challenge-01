@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { PaginationParams } from "@/core/domain/base/PaginationParams";
-import { InMemoryOrderNotificationRepository } from "@test/repositories/InMemoryOrderNotificationRepository";
 import { OrderNotificationUseCase } from "@/core/application/useCases/OrderNotificationUseCase";
-import { makeOrderNotification } from "@test/factories/MakeOrderNotification";
+import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { makeOrderNotification } from "@test/repositories/factories/MakeOrderNotification";
+import { InMemoryOrderNotificationRepository } from "@test/repositories/InMemoryOrderNotificationRepository";
 
 let inMemoryOrderNotificationRepository: InMemoryOrderNotificationRepository;
 let sut: OrderNotificationUseCase;

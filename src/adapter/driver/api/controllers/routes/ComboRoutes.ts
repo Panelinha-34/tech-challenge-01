@@ -15,14 +15,10 @@ import { editComboDocSchema } from "../model/combo/EditComboControllerModel";
 import { getComboByIdDocSchema } from "../model/combo/GetComboByIdControllerModel";
 import { getCombosDocSchema } from "../model/combo/GetCombosControllerModel";
 
-const comboRepository = new PrismaComboRepository();
 const comboProductRepository = new PrismaComboProductRepository();
+const comboRepository = new PrismaComboRepository(comboProductRepository);
 const productRepository = new PrismaProductRepository();
-const comboUseCase = new ComboUseCase(
-  comboRepository,
-  comboProductRepository,
-  productRepository
-);
+const comboUseCase = new ComboUseCase(comboRepository, productRepository);
 
 const getCombosControllerMapper = new GetCombosControllerMapper();
 const getComboByIdControllerMapper = new GetComboByIdControllerMapper();

@@ -23,12 +23,15 @@ export class GetProductsControllerMapper
     >
 {
   convertRequestModel(req: FastifyRequest): GetProductsUseCaseRequestModel {
-    const { page, pageSize } = getProductsQueryParamsSchema.parse(req.query);
+    const { page, pageSize, category } = getProductsQueryParamsSchema.parse(
+      req.query
+    );
 
     const params = new PaginationParams(page, pageSize);
 
     return {
       params,
+      category,
     };
   }
 

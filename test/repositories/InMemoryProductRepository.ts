@@ -7,18 +7,18 @@ import { Category } from "@/core/domain/valueObjects/Category";
 export class InMemoryProductRepository implements IProductRepository {
   public items: Product[] = [];
 
-  async findManyByCategory(
+  async findMany(
     { page, size }: PaginationParams,
-    category: Category
+    category?: Category
   ): Promise<PaginationResponse<Product>> {
-    const totalItems = this.items.filter(
-      (i) => i.category.name === category.name
-    ).length;
+    const filteredItems = this.items.filter((p) =>
+      category ? p.category === category : true
+    );
+
+    const totalItems = filteredItems.length;
     const totalPages = Math.ceil(totalItems / size);
 
-    const data = this.items
-      .filter((i) => i.category.name === category.name)
-      .slice((page - 1) * size, page * size);
+    const data = filteredItems.slice((page - 1) * size, page * size);
 
     return new PaginationResponse<Product>({
       data,
@@ -56,24 +56,6 @@ export class InMemoryProductRepository implements IProductRepository {
     const products = this.items.filter((a) => ids.includes(a.id.toString()));
 
     return products;
-  }
-
-  async findMany({
-    page,
-    size,
-  }: PaginationParams): Promise<PaginationResponse<Product>> {
-    const totalItems = this.items.length;
-    const totalPages = Math.ceil(totalItems / size);
-
-    const data = this.items.slice((page - 1) * size, page * size);
-
-    return new PaginationResponse<Product>({
-      data,
-      totalItems,
-      currentPage: page,
-      pageSize: size,
-      totalPages,
-    });
   }
 
   async create(product: Product): Promise<Product> {

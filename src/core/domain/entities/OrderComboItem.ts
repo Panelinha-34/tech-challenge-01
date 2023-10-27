@@ -3,8 +3,8 @@ import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
 
 export interface OrderComboItemProps {
-  orderId: string;
-  comboId: string;
+  orderId: UniqueEntityId;
+  comboId: UniqueEntityId;
   annotation?: string;
   quantity: number;
   totalPrice: number;

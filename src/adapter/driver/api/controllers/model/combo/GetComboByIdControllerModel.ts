@@ -3,7 +3,7 @@ import { z } from "zod";
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
 import { generateSchemaFromSampleObject } from "../../utils/generateSchemaFromSampleObject";
 
-export const getComboByIdQueryParamsSchema = z.object({
+export const getComboByIdPathParamsSchema = z.object({
   id: z.string(),
 });
 
@@ -49,7 +49,7 @@ export const getComboByIdDocSchema = {
   tags: ["Combo"],
   description: "Get Combo",
   params: convertZodSchemaToDocsTemplate({
-    schema: getComboByIdQueryParamsSchema,
+    schema: getComboByIdPathParamsSchema,
   }),
   response: {
     200: generateSchemaFromSampleObject(responseExample),

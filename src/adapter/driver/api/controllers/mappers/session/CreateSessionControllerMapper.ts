@@ -5,7 +5,10 @@ import {
   CreateSessionUseCaseResponseModel,
 } from "@/core/application/useCases/model/session/CreateSessionUseCaseModel";
 
-import { createSessionPayloadSchema } from "../../model/session/CreateSessionControllerModel";
+import {
+  CreateSessionControllerResponse,
+  createSessionPayloadSchema,
+} from "../../model/session/CreateSessionControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,7 +17,8 @@ export class CreateSessionControllerMapper
   implements
     IControllerMapper<
       CreateSessionUseCaseRequestModel,
-      CreateSessionUseCaseResponseModel
+      CreateSessionUseCaseResponseModel,
+      CreateSessionControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): CreateSessionUseCaseRequestModel {

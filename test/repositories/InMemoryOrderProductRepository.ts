@@ -14,6 +14,14 @@ export class InMemoryOrderProductItemRepository
     return foundOrderProductItem || null;
   }
 
+  async findManyByOrderId(orderId: string): Promise<OrderProductItem[]> {
+    const foundOrderProductItems = this.items.filter(
+      (orderProductItem) => orderProductItem.orderId.toString() === orderId
+    );
+
+    return foundOrderProductItems;
+  }
+
   async deleteByProductId(id: string): Promise<void> {
     this.items = this.items.filter(
       (orderProductItem) => orderProductItem.productId.toString() !== id

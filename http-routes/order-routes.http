@@ -4,7 +4,7 @@ GET http://localhost:3333/orders
 ###
 
 # @name get-order-by-id
-GET http://localhost:3333/orders/056ec6a0-5418-4e77-a4d4-62d6b64e0483
+GET http://localhost:3333/orders/98158d30-d815-4777-9525-e5bcfd83c0de
 
 ### 
 
@@ -21,19 +21,5 @@ content-type: application/json
       "quantity": 5
     }
   ]
-}
-
-### 
-
-# @name edit-order
-PUT http://localhost:3333/orders/056ec6a0-5418-4e77-a4d4-62d6b64e0483
-content-type: application/json
-
-{
-  "name": "altered",
-  "description": "altered",
-  "sandwichId": "d70fa2a0-bd1c-48c4-935c-59b821486557",
-  "sideId": "",
-  "dessertId": ""
 }
 

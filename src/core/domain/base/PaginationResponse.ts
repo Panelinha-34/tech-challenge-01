@@ -7,10 +7,14 @@ export interface PaginationResponseProps<T> {
 }
 
 export class PaginationResponse<T> {
-  protected readonly props: PaginationResponseProps<T>;
+  readonly props: PaginationResponseProps<T>;
 
   constructor(props: PaginationResponseProps<T>) {
     this.props = props;
+  }
+
+  get data(): T[] {
+    return this.props.data;
   }
 
   hasNextPage(): boolean {

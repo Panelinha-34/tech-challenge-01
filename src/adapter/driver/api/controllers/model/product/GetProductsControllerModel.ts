@@ -1,11 +1,13 @@
 import { z } from "zod";
 
-import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
+import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
+
 import { generateSchemaFromSampleObject } from "../../utils/generateSchemaFromSampleObject";
 
 export const getProductsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
   pageSize: z.coerce.number().default(20),
+  category: z.nativeEnum(CategoriesEnum).optional(),
 });
 
 export interface GetProductResponse {
@@ -51,9 +53,14 @@ const responseExample: GetProductsControllerResponse = {
 export const getProductsDocSchema = {
   tags: ["Product"],
   description: "List products",
-  querystring: convertZodSchemaToDocsTemplate({
-    schema: getProductsQueryParamsSchema,
-  }),
+  querystring: {
+    type: "object",
+    properties: {
+      page: { type: "number" },
+      pageSize: { type: "number" },
+      category: { type: "string" },
+    },
+  },
   response: {
     200: generateSchemaFromSampleObject(responseExample),
   },

@@ -1,4 +1,3 @@
-import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { OrderComboItem } from "@/core/domain/entities/OrderComboItem";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
 
@@ -21,15 +20,9 @@ export class InMemoryOrderComboItemRepository
     );
   }
 
-  async findMany({ page, size }: PaginationParams): Promise<OrderComboItem[]> {
-    const combos = this.items.slice((page - 1) * size, page * size);
-
-    return combos;
-  }
-
-  async findManyByComboId(comboId: string): Promise<OrderComboItem[]> {
+  async findManyByOrderId(orderId: string): Promise<OrderComboItem[]> {
     const foundOrderComboItems = this.items.filter(
-      (orderComboItem) => orderComboItem.comboId.toString() === comboId
+      (orderComboItem) => orderComboItem.orderId.toString() === orderId
     );
 
     return foundOrderComboItems;

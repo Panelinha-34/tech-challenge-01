@@ -1,11 +1,17 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
 import { Client } from "@/core/domain/entities/Client";
 import { Combo } from "@/core/domain/entities/Combo";
 import { Order } from "@/core/domain/entities/Order";
 import { OrderComboItem } from "@/core/domain/entities/OrderComboItem";
+import { OrderComboItemList } from "@/core/domain/entities/OrderComboItemList";
 import { OrderProductItem } from "@/core/domain/entities/OrderProductItem";
+import { OrderProductItemList } from "@/core/domain/entities/OrderProductItemList";
 import { Product } from "@/core/domain/entities/Product";
 import { OrderStatusEnum } from "@/core/domain/enum/OrderStatusEnum";
 import { IClientRepository } from "@/core/domain/repositories/IClientRepository";
+import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
 import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
@@ -21,6 +27,10 @@ import {
   CreateOrderUseCaseResponseModel,
 } from "./model/order/CreateOrderUseCaseModel";
 import {
+  GetOrderByIdUseCaseRequestModel,
+  GetOrderByIdUseCaseResponseModel,
+} from "./model/order/GetOrderByIdUseCaseModel";
+import {
   GetOrdersUseCaseRequestModel,
   GetOrdersUseCaseResponseModel,
 } from "./model/order/GetOrdersUseCaseModel";
@@ -28,10 +38,11 @@ import {
 export class OrderUseCase implements IOrderUseCase {
   constructor(
     private orderRepository: IOrderRepository,
-    private clientRepository: IClientRepository,
-    private productRepository: IProductRepository,
     private orderComboItemRepository: IOrderComboItemRepository,
     private orderProductItemRepository: IOrderProductItemRepository,
+    private clientRepository: IClientRepository,
+    private productRepository: IProductRepository,
+    private comboRepository: IComboRepository,
 
     private comboUseCase: IComboUseCase
   ) {}
@@ -42,6 +53,34 @@ export class OrderUseCase implements IOrderUseCase {
     const paginationResponse = await this.orderRepository.findMany(params);
 
     return { paginationResponse };
+  }
+
+  async getOrderById({
+    id,
+  }: GetOrderByIdUseCaseRequestModel): Promise<GetOrderByIdUseCaseResponseModel> {
+    const order = await this.orderRepository.findById(id);
+
+    if (!order) {
+      throw new ResourceNotFoundError(Order.name);
+    }
+
+    const orderProducts =
+      await this.orderProductItemRepository.findManyByOrderId(id);
+    const products = await this.productRepository.findManyByIds(
+      orderProducts.map((p) => p.productId.toString())
+    );
+
+    const orderCombos =
+      await this.orderComboItemRepository.findManyByOrderId(id);
+    const combos = await this.comboRepository.findManyByIds(
+      orderCombos.map((c) => c.comboId.toString())
+    );
+
+    return {
+      order,
+      products,
+      combos,
+    };
   }
 
   async createOrder({
@@ -95,7 +134,7 @@ export class OrderUseCase implements IOrderUseCase {
       throw new ResourceNotFoundError(Product.name, notFoundedProductsIds);
     }
 
-    const createdCombos: {
+    let createdCombos: {
       combo: Combo;
       calculatedPrice: number;
       annotation?: string;
@@ -104,7 +143,7 @@ export class OrderUseCase implements IOrderUseCase {
 
     if (combos) {
       try {
-        combos.forEach(async (comboToCreate) => {
+        const createdCombosPromises = combos.map(async (comboToCreate) => {
           const { sandwichId, dessertId, sideId, drinkId } = comboToCreate;
 
           const { combo } = await this.comboUseCase.createCombo({
@@ -114,20 +153,21 @@ export class OrderUseCase implements IOrderUseCase {
             drinkId,
           });
 
-          createdCombos.push({
+          return {
             combo,
             calculatedPrice: combo.price * comboToCreate.quantity,
             annotation: comboToCreate.annotation,
             quantity: comboToCreate.quantity,
-          });
+          };
         });
+
+        createdCombos = await Promise.all(createdCombosPromises);
       } catch (error) {
-        createdCombos.forEach(async (createdCombo) => {
+        for (const createdCombo of createdCombos) {
           await this.comboUseCase.deleteCombo({
             id: createdCombo.combo.id.toString(),
           });
-        });
-
+        }
         throw error;
       }
     }
@@ -154,33 +194,18 @@ export class OrderUseCase implements IOrderUseCase {
 
     const order = new Order({
       status: new OrderStatus({ name: OrderStatusEnum.PENDING_PAYMENT }),
-      clientId,
+      clientId: new UniqueEntityId(clientId),
       clientName,
       totalPrice,
     });
-
-    const createdOrder = await this.orderRepository.create(order);
-
-    const orderCombosToCreate = createdCombos.map(
-      (combo) =>
-        new OrderComboItem({
-          comboId: combo.combo.id.toString(),
-          annotation: combo.annotation,
-          orderId: createdOrder.id.toString(),
-          quantity: combo.quantity,
-          totalPrice: combo.calculatedPrice,
-        })
-    );
-
-    await this.orderComboItemRepository.createMany(orderCombosToCreate);
 
     const orderProductsToCreate =
       products?.map(
         (product) =>
           new OrderProductItem({
-            productId: product.id,
+            productId: new UniqueEntityId(product.id),
             annotation: product.annotation,
-            orderId: createdOrder.id.toString(),
+            orderId: order.id,
             quantity: product.quantity,
             totalPrice:
               (productDetails.find((pd) => pd.id.toString() === product.id)
@@ -188,7 +213,21 @@ export class OrderUseCase implements IOrderUseCase {
           })
       ) ?? [];
 
-    await this.orderProductItemRepository.createMany(orderProductsToCreate);
+    const orderCombosToCreate = createdCombos.map(
+      (combo) =>
+        new OrderComboItem({
+          comboId: combo.combo.id,
+          annotation: combo.annotation,
+          orderId: order.id,
+          quantity: combo.quantity,
+          totalPrice: combo.calculatedPrice,
+        })
+    );
+
+    order.products = new OrderProductItemList(orderProductsToCreate);
+    order.combos = new OrderComboItemList(orderCombosToCreate);
+
+    const createdOrder = await this.orderRepository.create(order);
 
     return { order: createdOrder };
   }

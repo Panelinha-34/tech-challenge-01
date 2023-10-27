@@ -25,6 +25,10 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum PaymentMethod {
+  QR_CODE
+}
+
 model Client {
   id         String    @id @default(uuid())
   name       String
@@ -68,13 +72,13 @@ model Order {
 }
 
 model OrderPayment {
-  id             String    @id @default(uuid())
+  id             String        @id @default(uuid())
   order_id       String
   amount         Decimal
-  payment_method String
+  payment_method PaymentMethod
   status         String
-  created_at     DateTime  @default(now())
-  updated_at     DateTime? @updatedAt
+  created_at     DateTime      @default(now())
+  updated_at     DateTime?     @updatedAt
 
   order Order @relation(fields: [order_id], references: [id])
 

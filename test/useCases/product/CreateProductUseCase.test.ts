@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AttributeConflictError } from "@/core/application/useCases/errors/AttributeConflictError";
 import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
-import { makeProduct } from "@test/factories/MakeProduct";
+import { makeProduct } from "@test/repositories/factories/MakeProduct";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
 
 let inMemoryProductRepository: InMemoryProductRepository;

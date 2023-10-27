@@ -1,12 +1,19 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Order } from "@/core/domain/entities/Order";
+import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
+import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 
 import { prisma } from "../config/prisma";
 import { PrismaOrderToDomainClientConverter } from "../converter/PrismaOrderToDomainClientConverter";
 
 export class PrismaOrderRepository implements IOrderRepository {
+  constructor(
+    private orderComboItemRepository: IOrderComboItemRepository,
+    private orderProductItemRepository: IOrderProductItemRepository
+  ) {}
+
   async findMany({
     page,
     size,
@@ -57,31 +64,42 @@ export class PrismaOrderRepository implements IOrderRepository {
   }
 
   async findById(id: string): Promise<Order | null> {
-    return prisma.order
-      .findUnique({
-        where: {
-          id,
-        },
-      })
-      .then((order) =>
-        order ? PrismaOrderToDomainClientConverter.convert(order) : null
-      );
+    const order = await prisma.order.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!order) {
+      return null;
+    }
+
+    const products =
+      await this.orderProductItemRepository.findManyByOrderId(id);
+
+    const combos = await this.orderComboItemRepository.findManyByOrderId(id);
+
+    return PrismaOrderToDomainClientConverter.convert(order, products, combos);
   }
 
   async create(order: Order): Promise<Order> {
-    return prisma.order
+    const createdOrder = await prisma.order
       .create({
         data: {
+          id: order.id.toString(),
           status: order.status.name,
-          client_id: order.clientId,
+          client_id: order.clientId?.toString(),
           total_price: order.totalPrice,
           created_at: order.createdAt,
           updated_at: order.updatedAt,
         },
       })
-      .then((createdOrder) =>
-        PrismaOrderToDomainClientConverter.convert(createdOrder)
-      );
+      .then((c) => PrismaOrderToDomainClientConverter.convert(c));
+
+    await this.orderComboItemRepository.createMany(order.combos.getItems());
+    await this.orderProductItemRepository.createMany(order.products.getItems());
+
+    return createdOrder;
   }
 
   async update(order: Order): Promise<Order> {
@@ -92,7 +110,7 @@ export class PrismaOrderRepository implements IOrderRepository {
         },
         data: {
           status: order.status.name,
-          client_id: order.clientId,
+          client_id: order.clientId?.toString(),
           total_price: order.totalPrice,
           created_at: order.createdAt,
           updated_at: order.updatedAt,

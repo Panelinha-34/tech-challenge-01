@@ -4,7 +4,6 @@
 import { Combo } from "@/core/domain/entities/Combo";
 import { ComboProduct } from "@/core/domain/entities/ComboProduct";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
-import { IComboProductRepository } from "@/core/domain/repositories/IComboProductRepository";
 import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { Category } from "@/core/domain/valueObjects/Category";
@@ -33,16 +32,15 @@ import {
 export class ComboUseCase implements IComboUseCase {
   constructor(
     private comboRepository: IComboRepository,
-    private comboProductRepository: IComboProductRepository,
     private productRepository: IProductRepository
   ) {}
 
   async getCombos({
     params,
   }: GetCombosUseCaseRequestModel): Promise<GetCombosUseCaseResponseModel> {
-    const combos = await this.comboRepository.findMany(params);
+    const paginationResponse = await this.comboRepository.findMany(params);
 
-    return { combos };
+    return { paginationResponse };
   }
 
   async getComboById({
@@ -54,11 +52,9 @@ export class ComboUseCase implements IComboUseCase {
       throw new ResourceNotFoundError("combo");
     }
 
-    const products = await this.comboProductRepository.findManyByComboID(
-      combo.id.toString()
-    );
-
-    const productIds = products.map((p) => p.productId.toString());
+    const productIds = combo.products
+      .getItems()
+      .map((p) => p.productId.toString());
 
     const productDetails =
       await this.productRepository.findManyByIds(productIds);
@@ -111,25 +107,24 @@ export class ComboUseCase implements IComboUseCase {
       0
     );
 
-    const combo = await this.comboRepository.create(
-      new Combo({
-        price: comboPrice,
-        name,
-        description,
-      })
-    );
+    const combo = new Combo({
+      price: comboPrice,
+      name,
+      description,
+    });
 
-    const comboProducts = productDetails
+    productDetails
       .map((p) => p.id)
       .map(
         (id) =>
           new ComboProduct({
-            comboId: combo.id.toString(),
-            productId: id.toString(),
+            comboId: combo.id,
+            productId: id,
           })
-      );
+      )
+      .forEach((c) => combo.products.add(c));
 
-    await this.comboProductRepository.createMany(comboProducts);
+    await this.comboRepository.create(combo);
 
     return { combo, productDetails };
   }
@@ -191,21 +186,19 @@ export class ComboUseCase implements IComboUseCase {
     if (name) combo.name = name;
     if (description) combo.description = description;
 
-    await this.comboRepository.update(combo);
-
-    await this.comboProductRepository.deleteByComboId(combo.id.toString());
-
     const comboProducts = productDetails
       .map((p) => p.id)
       .map(
         (pId) =>
           new ComboProduct({
-            comboId: combo.id.toString(),
-            productId: pId.toString(),
+            comboId: combo.id,
+            productId: pId,
           })
       );
 
-    await this.comboProductRepository.createMany(comboProducts);
+    combo.products.update(comboProducts);
+
+    await this.comboRepository.update(combo);
 
     return { combo, productDetails };
   }
@@ -216,8 +209,6 @@ export class ComboUseCase implements IComboUseCase {
     if (!combo) {
       throw new ResourceNotFoundError(Combo.name);
     }
-
-    await this.comboProductRepository.deleteByComboId(combo.id.toString());
 
     await this.comboRepository.delete(combo.id.toString());
   }
