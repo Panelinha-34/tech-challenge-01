@@ -3,8 +3,8 @@ import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
 
 export interface ComboProductProps {
-  productId: string;
-  comboId: string;
+  productId: UniqueEntityId;
+  comboId: UniqueEntityId;
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -27,18 +27,8 @@ export class ComboProduct extends Entity<ComboProductProps> {
     return this.props.comboId;
   }
 
-  set comboId(value: string) {
-    this.props.comboId = value;
-    this.touch();
-  }
-
   get productId() {
     return this.props.productId;
-  }
-
-  set productId(value: string) {
-    this.props.productId = value;
-    this.touch();
   }
 
   get createdAt() {

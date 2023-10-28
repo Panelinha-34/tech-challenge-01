@@ -1,4 +1,5 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Product } from "@/core/domain/entities/Product";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { Category } from "@/core/domain/valueObjects/Category";
@@ -6,12 +7,26 @@ import { Category } from "@/core/domain/valueObjects/Category";
 export class InMemoryProductRepository implements IProductRepository {
   public items: Product[] = [];
 
-  async findManyByCategory(category: Category): Promise<Product[]> {
-    const products = this.items.filter(
-      (a) => a.category.name === category.name
+  async findMany(
+    { page, size }: PaginationParams,
+    category?: Category
+  ): Promise<PaginationResponse<Product>> {
+    const filteredItems = this.items.filter((p) =>
+      category ? p.category === category : true
     );
 
-    return products;
+    const totalItems = filteredItems.length;
+    const totalPages = Math.ceil(totalItems / size);
+
+    const data = filteredItems.slice((page - 1) * size, page * size);
+
+    return new PaginationResponse<Product>({
+      data,
+      totalItems,
+      currentPage: page,
+      pageSize: size,
+      totalPages,
+    });
   }
 
   async findById(id: string): Promise<Product | null> {
@@ -43,12 +58,6 @@ export class InMemoryProductRepository implements IProductRepository {
     return products;
   }
 
-  async findMany({ page, size }: PaginationParams): Promise<Product[]> {
-    const products = this.items.slice((page - 1) * size, page * size);
-
-    return products;
-  }
-
   async create(product: Product): Promise<Product> {
     this.items.push(product);
 
@@ -61,5 +70,9 @@ export class InMemoryProductRepository implements IProductRepository {
     this.items[index] = product;
 
     return product;
+  }
+
+  async delete(id: string): Promise<void> {
+    this.items = this.items.filter((a) => a.id.toString() !== id);
   }
 }

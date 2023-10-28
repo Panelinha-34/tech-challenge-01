@@ -13,9 +13,9 @@ POST http://localhost:3333/clients
 content-type: application/json
 
 {
-    "email": "john.doe102@gmail.com",
+    "email": "john.doe2@gmail.com",
     "name": "John Doe2",
-    "taxVat": "1331131"
+    "taxVat": "13311312"
 }
 
 ### 

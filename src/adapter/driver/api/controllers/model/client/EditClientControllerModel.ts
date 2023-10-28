@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
+import { generateSchemaFromSampleObject } from "../../utils/generateSchemaFromSampleObject";
 
 export const editClientPathParametersSchema = z.object({
   id: z.string(),
@@ -20,6 +21,15 @@ export interface EditClientControllerResponse {
   updatedAt?: string;
 }
 
+const responseExample: EditClientControllerResponse = {
+  id: "123",
+  name: "John",
+  email: "john.doe@test.com",
+  taxVat: "456",
+  createdAt: "2023-10-26",
+  updatedAt: "2023-10-27",
+};
+
 export const editClientDocSchema = {
   tags: ["Client"],
   description: "Edit Client",
@@ -30,16 +40,6 @@ export const editClientDocSchema = {
     schema: editClientPayloadSchema,
   }),
   response: {
-    200: {
-      type: "object",
-      properties: {
-        id: { type: "string" },
-        name: { type: "string" },
-        email: { type: "string" },
-        taxVat: { type: "string" },
-        createdAt: { type: "string" },
-        updatedAt: { type: "string" },
-      },
-    },
+    200: generateSchemaFromSampleObject(responseExample),
   },
 };

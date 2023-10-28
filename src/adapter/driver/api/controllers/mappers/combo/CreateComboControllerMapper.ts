@@ -1,11 +1,15 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
 import {
   CreateComboUseCaseRequestModel,
   CreateComboUseCaseResponseModel,
 } from "@/core/application/useCases/model/combo/CreateComboUseCaseModel";
 
-import { createComboPayloadSchema } from "../../model/combo/CreateComboControllerModel";
+import {
+  CreateComboControllerResponse,
+  createComboPayloadSchema,
+} from "../../model/combo/CreateComboControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,7 +18,8 @@ export class CreateComboControllerMapper
   implements
     IControllerMapper<
       CreateComboUseCaseRequestModel,
-      CreateComboUseCaseResponseModel
+      CreateComboUseCaseResponseModel,
+      CreateComboControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): CreateComboUseCaseRequestModel {
@@ -31,30 +36,44 @@ export class CreateComboControllerMapper
     };
   }
 
+  convertUseCaseModelToControllerResponse(
+    model: CreateComboUseCaseResponseModel
+  ): CreateComboControllerResponse {
+    return {
+      id: model.combo.id.toString(),
+      name: model.combo.name,
+      description: model.combo.description,
+      price: model.combo.price,
+      createdAt: model.combo.createdAt.toISOString(),
+      updatedAt: model.combo.updatedAt?.toISOString(),
+      products: model.productDetails.map((product) => ({
+        id: product.id.toString(),
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category.name,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt?.toISOString(),
+      })),
+    };
+  }
+
   convertSuccessfullyResponse(
     res: FastifyReply,
     useCaseResponseModel: CreateComboUseCaseResponseModel
   ) {
-    const products = useCaseResponseModel.productDetails.map((product) => ({
-      id: product.id.toString(),
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      category: product.category.name,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt?.toISOString(),
-    }));
-
-    const combo = {
-      id: useCaseResponseModel.combo.id.toString(),
-      name: useCaseResponseModel.combo.name,
-      description: useCaseResponseModel.combo.description,
-      price: useCaseResponseModel.combo.price,
-      createdAt: useCaseResponseModel.combo.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.combo.updatedAt?.toISOString(),
-      products,
-    };
-
+    const combo =
+      this.convertUseCaseModelToControllerResponse(useCaseResponseModel);
     return res.status(201).send(combo);
+  }
+
+  convertErrorResponse(error: Error, res: FastifyReply): FastifyReply {
+    if (error instanceof MinimumResourcesNotReached) {
+      return res.status(400).send({
+        message: `Please inform at least 1 product`,
+      });
+    }
+
+    return super.convertErrorResponse(error, res);
   }
 }

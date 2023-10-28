@@ -17,7 +17,7 @@ export function makeOrderNotification(
   const orderNotification = new OrderNotification(
     {
       message: faker.lorem.word(),
-      status: order.status,
+      status: faker.lorem.word(),
       orderId: order.id.toString(),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),

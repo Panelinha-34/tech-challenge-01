@@ -6,7 +6,10 @@ import {
 } from "@/core/application/useCases/model/combo/GetCombosUseCaseModel";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 
-import { getCombosQueryParamsSchema } from "../../model/combo/GetCombosControllerModel";
+import {
+  GetCombosControllerResponse,
+  getCombosQueryParamsSchema,
+} from "../../model/combo/GetCombosControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -15,7 +18,8 @@ export class GetCombosControllerMapper
   implements
     IControllerMapper<
       GetCombosUseCaseRequestModel,
-      GetCombosUseCaseResponseModel
+      GetCombosUseCaseResponseModel,
+      GetCombosControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): GetCombosUseCaseRequestModel {
@@ -28,11 +32,10 @@ export class GetCombosControllerMapper
     };
   }
 
-  convertSuccessfullyResponse(
-    res: FastifyReply,
-    response: GetCombosUseCaseResponseModel
-  ) {
-    const combos = response.combos.map((combo) => ({
+  convertUseCaseModelToControllerResponse(
+    model: GetCombosUseCaseResponseModel
+  ): GetCombosControllerResponse {
+    return model.paginationResponse.toResponse((combo) => ({
       id: combo.id.toString(),
       name: combo.name,
       description: combo.description,
@@ -40,7 +43,14 @@ export class GetCombosControllerMapper
       createdAt: combo.createdAt.toISOString(),
       updatedAt: combo.updatedAt?.toISOString(),
     }));
+  }
 
-    return res.status(200).send({ combos });
+  convertSuccessfullyResponse(
+    res: FastifyReply,
+    response: GetCombosUseCaseResponseModel
+  ) {
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(response));
   }
 }

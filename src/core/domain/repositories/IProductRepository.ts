@@ -1,11 +1,13 @@
 import { PaginationParams } from "../base/PaginationParams";
+import { PaginationResponse } from "../base/PaginationResponse";
 import { Product } from "../entities/Product";
 import { Category } from "../valueObjects/Category";
 
 export interface IProductRepository {
-  findMany(params: PaginationParams): Promise<Product[]>;
-
-  findManyByCategory(category: Category): Promise<Product[]>;
+  findMany(
+    params: PaginationParams,
+    category?: Category
+  ): Promise<PaginationResponse<Product>>;
 
   findById(id: string): Promise<Product | null>;
 
@@ -18,4 +20,6 @@ export interface IProductRepository {
   create(product: Product): Promise<Product>;
 
   update(product: Product): Promise<Product>;
+
+  delete(id: string): Promise<void>;
 }

@@ -11,10 +11,6 @@ import {
   GetProductByIdUseCaseResponseModel,
 } from "./model/product/GetProductByIdUseCaseModel";
 import {
-  GetProductsByCategoryUseCaseRequestModel,
-  GetProductsByCategoryUseCaseResponseModel,
-} from "./model/product/GetProductsByCategoryUseCaseModel";
-import {
   GetProductsUseCaseRequestModel,
   GetProductsUseCaseResponseModel,
 } from "./model/product/GetProductsUseCaseModel";
@@ -27,10 +23,6 @@ export interface IProductUseCase {
   getProductById(
     props: GetProductByIdUseCaseRequestModel
   ): Promise<GetProductByIdUseCaseResponseModel>;
-
-  getProductsByCategory(
-    props: GetProductsByCategoryUseCaseRequestModel
-  ): Promise<GetProductsByCategoryUseCaseResponseModel>;
 
   createProduct(
     props: CreateProductUseCaseRequestModel

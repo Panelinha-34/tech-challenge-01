@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
-import { MinimumComboProductsNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 import { Category } from "@/core/domain/valueObjects/Category";
-import { makeProduct } from "@test/factories/MakeProduct";
+import { makeProduct } from "@test/repositories/factories/MakeProduct";
 import { InMemoryComboProductRepository } from "@test/repositories/InMemoryComboProductRepository";
 import { InMemoryComboRepository } from "@test/repositories/InMemoryComboRepository";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
@@ -22,15 +22,13 @@ describe("Given the Create Combo Use Case", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    inMemoryComboRepository = new InMemoryComboRepository();
     inMemoryComboProductRepository = new InMemoryComboProductRepository();
+    inMemoryComboRepository = new InMemoryComboRepository(
+      inMemoryComboProductRepository
+    );
     inMemoryProductRepository = new InMemoryProductRepository();
 
-    sut = new ComboUseCase(
-      inMemoryComboRepository,
-      inMemoryComboProductRepository,
-      inMemoryProductRepository
-    );
+    sut = new ComboUseCase(inMemoryComboRepository, inMemoryProductRepository);
   });
 
   it("should create the combo correctly", async () => {
@@ -59,9 +57,7 @@ describe("Given the Create Combo Use Case", () => {
     );
 
     expect(
-      inMemoryComboProductRepository.items.filter(
-        (c) => c.comboId === combo.id.toString()
-      )
+      inMemoryComboProductRepository.items.filter((c) => c.comboId === combo.id)
     ).toHaveLength(2);
   });
 
@@ -83,6 +79,6 @@ describe("Given the Create Combo Use Case", () => {
         name,
         description,
       })
-    ).rejects.toBeInstanceOf(MinimumComboProductsNotReached);
+    ).rejects.toBeInstanceOf(MinimumResourcesNotReached);
   });
 });

@@ -1,4 +1,5 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Client } from "@/core/domain/entities/Client";
 import { IClientRepository } from "@/core/domain/repositories/IClientRepository";
 
@@ -42,15 +43,25 @@ export class PrismaClientRepository implements IClientRepository {
       );
   }
 
-  async findMany({ page, size }: PaginationParams): Promise<Client[]> {
-    return prisma.client
-      .findMany({
-        take: size,
-        skip: (page - 1) * size,
-      })
-      .then((clients) =>
-        clients.map((c) => PrismaClientToDomainClientConverter.convert(c))
-      );
+  async findMany({
+    page,
+    size,
+  }: PaginationParams): Promise<PaginationResponse<Client>> {
+    const totalItems = await prisma.client.count();
+    const totalPages = Math.ceil(totalItems / size);
+
+    const data = await prisma.client.findMany({
+      skip: (page - 1) * size,
+      take: size,
+    });
+
+    return new PaginationResponse<Client>({
+      data: data.map((c) => PrismaClientToDomainClientConverter.convert(c)),
+      totalItems,
+      currentPage: page,
+      pageSize: size,
+      totalPages,
+    });
   }
 
   async create(client: Client): Promise<Client> {

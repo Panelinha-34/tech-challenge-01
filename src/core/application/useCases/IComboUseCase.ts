@@ -2,6 +2,7 @@ import {
   CreateComboUseCaseRequestModel,
   CreateComboUseCaseResponseModel,
 } from "./model/combo/CreateComboUseCaseModel";
+import { DeleteComboUseCaseRequestModel } from "./model/combo/DeleteComboUseCaseModel";
 import {
   EditComboUseCaseRequestModel,
   EditComboUseCaseResponseModel,
@@ -31,4 +32,6 @@ export interface IComboUseCase {
   editCombo(
     props: EditComboUseCaseRequestModel
   ): Promise<EditComboUseCaseResponseModel>;
+
+  deleteCombo(props: DeleteComboUseCaseRequestModel): Promise<void>;
 }

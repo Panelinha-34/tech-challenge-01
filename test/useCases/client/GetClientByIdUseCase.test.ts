@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ClientUseCase } from "@/core/application/useCases/ClientUseCase";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
-import { makeClient } from "@test/factories/MakeClient";
+import { makeClient } from "@test/repositories/factories/MakeClient";
 import { InMemoryClientRepository } from "@test/repositories/InMemoryClientRepository";
 
 let inMemoryClientsRepository: InMemoryClientRepository;

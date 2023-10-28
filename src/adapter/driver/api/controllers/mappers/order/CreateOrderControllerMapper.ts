@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable unused-imports/no-unused-vars */
 import { FastifyReply, FastifyRequest } from "fastify";
 
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
 import {
   CreateOrderUseCaseRequestModel,
   CreateOrderUseCaseResponseModel,
 } from "@/core/application/useCases/model/order/CreateOrderUseCaseModel";
 
-import { createOrderPayloadSchema } from "../../model/order/CreateOrderControllerModel";
+import {
+  CreateOrderControllerResponse,
+  createOrderPayloadSchema,
+} from "../../model/order/CreateOrderControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,34 +20,32 @@ export class CreateOrderControllerMapper
   implements
     IControllerMapper<
       CreateOrderUseCaseRequestModel,
-      CreateOrderUseCaseResponseModel
+      CreateOrderUseCaseResponseModel,
+      CreateOrderControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): CreateOrderUseCaseRequestModel {
-    const { clientId, status, totalPrice } = createOrderPayloadSchema.parse(
-      req.body
-    );
+    const parsedRequest = createOrderPayloadSchema.parse(req.body);
 
     return {
-      clientId,
-      status,
-      totalPrice,
+      ...parsedRequest,
     };
   }
 
   convertSuccessfullyResponse(
     res: FastifyReply,
-    useCaseResponseModel: CreateOrderUseCaseResponseModel
+    _useCaseResponseModel: CreateOrderUseCaseResponseModel
   ) {
-    const order = {
-      id: useCaseResponseModel.order.id.toString(),
-      status: useCaseResponseModel.order.status,
-      clientId: useCaseResponseModel.order.clientId,
-      totalPrice: useCaseResponseModel.order.totalPrice,
-      createdAt: useCaseResponseModel.order.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.order.updatedAt?.toISOString(),
-    };
+    return res.status(201).send();
+  }
 
-    return res.status(200).send(order);
+  convertErrorResponse(error: Error, res: FastifyReply): FastifyReply {
+    if (error instanceof MinimumResourcesNotReached) {
+      return res.status(400).send({
+        message: `Please inform the clientId or the visitorName`,
+      });
+    }
+
+    return super.convertErrorResponse(error, res);
   }
 }

@@ -57,4 +57,17 @@ export class InMemoryComboProductRepository implements IComboProductRepository {
 
     return comboProducts.length;
   }
+
+  async deleteMany(comboProducts: ComboProduct[]): Promise<number> {
+    this.items = this.items.filter(
+      (comboProduct) =>
+        !comboProducts.some(
+          (p) =>
+            p.comboId.toString() === comboProduct.comboId.toString() &&
+            p.productId.toString() === comboProduct.productId.toString()
+        )
+    );
+
+    return comboProducts.length;
+  }
 }

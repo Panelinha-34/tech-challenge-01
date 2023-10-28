@@ -17,5 +17,7 @@ export interface IComboProductRepository {
 
   createMany(comboProducts: ComboProduct[]): Promise<number>;
 
+  deleteMany(comboProducts: ComboProduct[]): Promise<number>;
+
   deleteByComboId(id: string): Promise<void>;
 }

@@ -6,6 +6,7 @@ import {
 } from "@/core/application/useCases/model/client/EditClientUseCaseModel";
 
 import {
+  EditClientControllerResponse,
   editClientPathParametersSchema,
   editClientPayloadSchema,
 } from "../../model/client/EditClientControllerModel";
@@ -17,7 +18,8 @@ export class EditClientControllerMapper
   implements
     IControllerMapper<
       EditClientUseCaseRequestModel,
-      EditClientUseCaseResponseModel
+      EditClientUseCaseResponseModel,
+      EditClientControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): EditClientUseCaseRequestModel {
@@ -35,15 +37,21 @@ export class EditClientControllerMapper
     res: FastifyReply,
     useCaseResponseModel: EditClientUseCaseResponseModel
   ) {
-    const client = {
-      id: useCaseResponseModel.client.id.toString(),
-      name: useCaseResponseModel.client.name,
-      email: useCaseResponseModel.client.email,
-      taxVat: useCaseResponseModel.client.taxVat.number,
-      createdAt: useCaseResponseModel.client.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.client.updatedAt?.toISOString(),
-    };
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(useCaseResponseModel));
+  }
 
-    return res.status(200).send(client);
+  convertUseCaseModelToControllerResponse(
+    model: EditClientUseCaseResponseModel
+  ): EditClientControllerResponse {
+    return {
+      id: model.client.id.toString(),
+      name: model.client.name,
+      email: model.client.email,
+      taxVat: model.client.taxVat.number,
+      createdAt: model.client.createdAt.toISOString(),
+      updatedAt: model.client.updatedAt?.toISOString(),
+    };
   }
 }

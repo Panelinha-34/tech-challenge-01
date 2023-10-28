@@ -6,7 +6,10 @@ import {
 } from "@/core/application/useCases/model/product/GetProductsUseCaseModel";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 
-import { getProductsQueryParamsSchema } from "../../model/product/GetProductsControllerModel";
+import {
+  GetProductsControllerResponse,
+  getProductsQueryParamsSchema,
+} from "../../model/product/GetProductsControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -15,24 +18,27 @@ export class GetProductsControllerMapper
   implements
     IControllerMapper<
       GetProductsUseCaseRequestModel,
-      GetProductsUseCaseResponseModel
+      GetProductsUseCaseResponseModel,
+      GetProductsControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): GetProductsUseCaseRequestModel {
-    const { page, pageSize } = getProductsQueryParamsSchema.parse(req.query);
+    const { page, pageSize, category } = getProductsQueryParamsSchema.parse(
+      req.query
+    );
 
     const params = new PaginationParams(page, pageSize);
 
     return {
       params,
+      category,
     };
   }
 
-  convertSuccessfullyResponse(
-    res: FastifyReply,
-    response: GetProductsUseCaseResponseModel
-  ) {
-    const products = response.products.map((product) => ({
+  convertUseCaseModelToControllerResponse(
+    model: GetProductsUseCaseResponseModel
+  ): GetProductsControllerResponse {
+    return model.paginationResponse.toResponse((product) => ({
       id: product.id.toString(),
       name: product.name,
       description: product.description,
@@ -41,7 +47,14 @@ export class GetProductsControllerMapper
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt?.toISOString(),
     }));
+  }
 
-    return res.status(200).send({ products });
+  convertSuccessfullyResponse(
+    res: FastifyReply,
+    response: GetProductsUseCaseResponseModel
+  ) {
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(response));
   }
 }

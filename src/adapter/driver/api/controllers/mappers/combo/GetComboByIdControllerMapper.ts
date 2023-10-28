@@ -5,7 +5,10 @@ import {
   GetComboByIdUseCaseResponseModel,
 } from "@/core/application/useCases/model/combo/GetComboByIdUseCaseModel";
 
-import { getComboByIdQueryParamsSchema } from "../../model/combo/GetComboByIdControllerModel";
+import {
+  GetComboByIdControllerResponse,
+  getComboByIdQueryParamsSchema,
+} from "../../model/combo/GetComboByIdControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
 
@@ -14,7 +17,8 @@ export class GetComboByIdControllerMapper
   implements
     IControllerMapper<
       GetComboByIdUseCaseRequestModel,
-      GetComboByIdUseCaseResponseModel
+      GetComboByIdUseCaseResponseModel,
+      GetComboByIdControllerResponse
     >
 {
   convertRequestModel(req: FastifyRequest): GetComboByIdUseCaseRequestModel {
@@ -25,30 +29,34 @@ export class GetComboByIdControllerMapper
     };
   }
 
+  convertUseCaseModelToControllerResponse(
+    model: GetComboByIdUseCaseResponseModel
+  ): GetComboByIdControllerResponse {
+    return {
+      id: model.combo.id.toString(),
+      name: model.combo.name,
+      description: model.combo.description,
+      price: model.combo.price,
+      createdAt: model.combo.createdAt.toISOString(),
+      updatedAt: model.combo.updatedAt?.toISOString(),
+      products: model.productDetails.map((product) => ({
+        id: product.id.toString(),
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category.name,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt?.toISOString(),
+      })),
+    };
+  }
+
   convertSuccessfullyResponse(
     res: FastifyReply,
     useCaseResponseModel: GetComboByIdUseCaseResponseModel
   ) {
-    const products = useCaseResponseModel.productDetails.map((product) => ({
-      id: product.id.toString(),
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      category: product.category.name,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt?.toISOString(),
-    }));
-
-    const combo = {
-      id: useCaseResponseModel.combo.id.toString(),
-      name: useCaseResponseModel.combo.name,
-      description: useCaseResponseModel.combo.description,
-      price: useCaseResponseModel.combo.price,
-      createdAt: useCaseResponseModel.combo.createdAt.toISOString(),
-      updatedAt: useCaseResponseModel.combo.updatedAt?.toISOString(),
-      products,
-    };
-
-    return res.status(200).send(combo);
+    return res
+      .status(200)
+      .send(this.convertUseCaseModelToControllerResponse(useCaseResponseModel));
   }
 }

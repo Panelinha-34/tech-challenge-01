@@ -8,6 +8,8 @@ export const createClientPayloadSchema = z.object({
   taxVat: z.string(),
 });
 
+export interface CreateClientControllerResponse {}
+
 export const createClientDocSchema = {
   description: "Create a client",
   tags: ["Client"],

@@ -1,0 +1,25 @@
+# @name get-orders
+GET http://localhost:3333/orders
+
+###
+
+# @name get-order-by-id
+GET http://localhost:3333/orders/98158d30-d815-4777-9525-e5bcfd83c0de
+
+### 
+
+# @name create-order
+POST http://localhost:3333/orders  
+content-type: application/json
+
+{
+  "clientId": "25af869b-1a47-41b4-b5f2-1c2bdfcc2b8d",
+  "combos": [
+    {
+      "sandwichId": "657401ee-5abb-4436-9a91-d03059dfcd1c",
+      "drinkId": "d824ba54-eafb-4846-99b3-e566b8cc74ae",
+      "quantity": 5
+    }
+  ]
+}
+

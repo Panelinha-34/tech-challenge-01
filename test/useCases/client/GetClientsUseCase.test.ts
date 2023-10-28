@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ClientUseCase } from "@/core/application/useCases/ClientUseCase";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
-import { makeClient } from "@test/factories/MakeClient";
+import { makeClient } from "@test/repositories/factories/MakeClient";
 import { InMemoryClientRepository } from "@test/repositories/InMemoryClientRepository";
 
 let inMemoryClientsRepository: InMemoryClientRepository;
@@ -27,7 +27,9 @@ describe("Given the Get Clients Use Case", () => {
 
     inMemoryClientsRepository.items.push(clientToCreate);
 
-    const { clients } = await sut.getClients({ params });
+    const { paginationResponse } = await sut.getClients({ params });
+
+    const clients = paginationResponse.data;
 
     expect(clients).toHaveLength(1);
   });
@@ -39,7 +41,9 @@ describe("Given the Get Clients Use Case", () => {
       inMemoryClientsRepository.items.push(makeClient());
     });
 
-    const { clients } = await sut.getClients({ params });
+    const { paginationResponse } = await sut.getClients({ params });
+
+    const clients = paginationResponse.data;
 
     expect(clients).toHaveLength(2);
   });

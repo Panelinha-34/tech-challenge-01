@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
+import { generateSchemaFromSampleObject } from "../../utils/generateSchemaFromSampleObject";
 
 export const getOrdersQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -10,15 +11,40 @@ export const getOrdersQueryParamsSchema = z.object({
 export interface GetOrdersResponse {
   id: string;
   status: string;
-  clientId: string;
+  clientId?: string;
   totalPrice: number;
   createdAt: string;
   updatedAt?: string;
 }
 
 export interface GetOrdersControllerResponse {
-  orders: GetOrdersResponse[];
+  data: GetOrdersResponse[];
+  pagination: {
+    totalItems: number;
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+  };
 }
+
+const responseExample: GetOrdersControllerResponse = {
+  data: [
+    {
+      id: "123",
+      status: "pending",
+      clientId: "123",
+      totalPrice: 100,
+      createdAt: "2021-10-26",
+      updatedAt: "2021-10-27",
+    },
+  ],
+  pagination: {
+    totalItems: 1,
+    currentPage: 1,
+    pageSize: 20,
+    totalPages: 1,
+  },
+};
 
 export const getOrdersDocSchema = {
   tags: ["Order (WIP)"],
@@ -27,24 +53,6 @@ export const getOrdersDocSchema = {
     schema: getOrdersQueryParamsSchema,
   }),
   response: {
-    200: {
-      type: "object",
-      properties: {
-        orders: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              clientId: { type: "string" },
-              totalPrice: { type: "number" },
-              status: { type: "string" },
-              createdAt: { type: "string" },
-              updatedAt: { type: "string" },
-            },
-          },
-        },
-      },
-    },
+    200: generateSchemaFromSampleObject(responseExample),
   },
 };

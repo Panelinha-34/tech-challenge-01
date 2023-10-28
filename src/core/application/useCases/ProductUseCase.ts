@@ -20,10 +20,6 @@ import {
   GetProductByIdUseCaseResponseModel,
 } from "./model/product/GetProductByIdUseCaseModel";
 import {
-  GetProductsByCategoryUseCaseRequestModel,
-  GetProductsByCategoryUseCaseResponseModel,
-} from "./model/product/GetProductsByCategoryUseCaseModel";
-import {
   GetProductsUseCaseRequestModel,
   GetProductsUseCaseResponseModel,
 } from "./model/product/GetProductsUseCaseModel";
@@ -33,10 +29,28 @@ export class ProductUseCase implements IProductUseCase {
 
   async getProducts({
     params,
+    category,
   }: GetProductsUseCaseRequestModel): Promise<GetProductsUseCaseResponseModel> {
-    const products = await this.productRepository.findMany(params);
+    if (category) {
+      const categories = Object.keys(CategoriesEnum).map((enumCategory) =>
+        enumCategory.toLowerCase()
+      );
 
-    return { products };
+      if (!categories.includes(category.toLowerCase())) {
+        throw new UnsupportedArgumentValueError(Category.name);
+      }
+    }
+
+    const productCategory = category
+      ? new Category({ name: category as CategoriesEnum })
+      : undefined;
+
+    const paginationResponse = await this.productRepository.findMany(
+      params,
+      productCategory
+    );
+
+    return { paginationResponse };
   }
 
   async getProductById({
@@ -51,24 +65,6 @@ export class ProductUseCase implements IProductUseCase {
     return { product };
   }
 
-  async getProductsByCategory({
-    category,
-  }: GetProductsByCategoryUseCaseRequestModel): Promise<GetProductsByCategoryUseCaseResponseModel> {
-    const categories = Object.keys(CategoriesEnum).map((enumCategory) =>
-      enumCategory.toLowerCase()
-    );
-
-    if (!categories.includes(category.toLowerCase())) {
-      throw new UnsupportedArgumentValueError("category");
-    }
-
-    const products = await this.productRepository.findManyByCategory(
-      new Category({ name: category.toUpperCase() as CategoriesEnum })
-    );
-
-    return { products };
-  }
-
   async createProduct({
     category,
     description,
@@ -79,7 +75,7 @@ export class ProductUseCase implements IProductUseCase {
       await this.productRepository.findByName(name);
 
     if (hasProductWithSameName) {
-      throw new AttributeConflictError("name", "product");
+      throw new AttributeConflictError<Product>("name", Product.name);
     }
 
     const product = await this.productRepository.create(

@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
-import { MinimumComboProductsNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { Product } from "@/core/domain/entities/Product";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 import { Category } from "@/core/domain/valueObjects/Category";
-import { makeCombo } from "@test/factories/MakeCombo";
-import { makeProduct } from "@test/factories/MakeProduct";
+import { makeCombo } from "@test/repositories/factories/MakeCombo";
+import { makeProduct } from "@test/repositories/factories/MakeProduct";
 import { InMemoryComboProductRepository } from "@test/repositories/InMemoryComboProductRepository";
 import { InMemoryComboRepository } from "@test/repositories/InMemoryComboRepository";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
@@ -26,8 +26,10 @@ describe("Given the Edit Combo Use Case", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    inMemoryComboRepository = new InMemoryComboRepository();
     inMemoryComboProductRepository = new InMemoryComboProductRepository();
+    inMemoryComboRepository = new InMemoryComboRepository(
+      inMemoryComboProductRepository
+    );
     inMemoryProductRepository = new InMemoryProductRepository();
 
     sandwich = makeProduct({});
@@ -38,11 +40,7 @@ describe("Given the Edit Combo Use Case", () => {
     inMemoryProductRepository.items.push(sandwich);
     inMemoryProductRepository.items.push(drink);
 
-    sut = new ComboUseCase(
-      inMemoryComboRepository,
-      inMemoryComboProductRepository,
-      inMemoryProductRepository
-    );
+    sut = new ComboUseCase(inMemoryComboRepository, inMemoryProductRepository);
   });
 
   it("should edit the combo correctly", async () => {
@@ -75,7 +73,7 @@ describe("Given the Edit Combo Use Case", () => {
         id: createdCombo.id.toString(),
         name,
       })
-    ).rejects.toBeInstanceOf(MinimumComboProductsNotReached);
+    ).rejects.toBeInstanceOf(MinimumResourcesNotReached);
   });
 
   it("should throw an error when the informed product id does not exist", async () => {

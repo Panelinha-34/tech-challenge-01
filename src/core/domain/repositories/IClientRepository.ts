@@ -1,8 +1,9 @@
 import { PaginationParams } from "../base/PaginationParams";
+import { PaginationResponse } from "../base/PaginationResponse";
 import { Client } from "../entities/Client";
 
 export interface IClientRepository {
-  findMany(params: PaginationParams): Promise<Client[]>;
+  findMany(params: PaginationParams): Promise<PaginationResponse<Client>>;
 
   findById(id: string): Promise<Client | null>;
 

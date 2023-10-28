@@ -6,8 +6,8 @@ export class PrismaComboProductToDomainClientConverter {
   static convert(prismaClient: PrismaComboProduct): ComboProduct {
     return new ComboProduct(
       {
-        comboId: prismaClient.combo_id,
-        productId: prismaClient.product_id,
+        comboId: new UniqueEntityId(prismaClient.combo_id),
+        productId: new UniqueEntityId(prismaClient.product_id),
         createdAt: prismaClient.created_at,
         updatedAt: prismaClient.updated_at ?? undefined,
       },

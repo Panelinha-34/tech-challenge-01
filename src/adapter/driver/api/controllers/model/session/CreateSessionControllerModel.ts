@@ -6,6 +6,8 @@ export const createSessionPayloadSchema = z.object({
   taxVat: z.string(),
 });
 
+export interface CreateSessionControllerResponse {}
+
 export const createSessionDocSchema = {
   description: "Create a session",
   tags: ["Session"],

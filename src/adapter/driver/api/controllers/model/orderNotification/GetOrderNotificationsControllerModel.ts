@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { convertZodSchemaToDocsTemplate } from "../../utils/convertZodSchemaToDocsTemplate";
+import { generateSchemaFromSampleObject } from "../../utils/generateSchemaFromSampleObject";
 
 export const getOrderNotificationsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -20,6 +21,19 @@ export interface GetOrderNotificationsControllerResponse {
   orderNotifications: GetOrderNotificationsResponse[];
 }
 
+const responseExample: GetOrderNotificationsControllerResponse = {
+  orderNotifications: [
+    {
+      id: "1",
+      status: "PENDING",
+      message: "Order 1",
+      orderId: "1",
+      createdAt: "2021-01-01T00:00:00.000Z",
+      updatedAt: "2021-01-01T00:00:00.000Z",
+    },
+  ],
+};
+
 export const getOrderNotificationsDocSchema = {
   tags: ["Order Notification (WIP)"],
   description: "List order notifications",
@@ -27,24 +41,6 @@ export const getOrderNotificationsDocSchema = {
     schema: getOrderNotificationsQueryParamsSchema,
   }),
   response: {
-    200: {
-      type: "object",
-      properties: {
-        orderNotifications: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              orderId: { type: "string" },
-              message: { type: "number" },
-              status: { type: "string" },
-              createdAt: { type: "string" },
-              updatedAt: { type: "string" },
-            },
-          },
-        },
-      },
-    },
+    200: generateSchemaFromSampleObject(responseExample),
   },
 };

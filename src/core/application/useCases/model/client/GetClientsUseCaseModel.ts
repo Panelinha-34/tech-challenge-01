@@ -1,4 +1,5 @@
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
+import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Client } from "@/core/domain/entities/Client";
 
 export interface GetClientsUseCaseRequestModel {
@@ -6,5 +7,5 @@ export interface GetClientsUseCaseRequestModel {
 }
 
 export interface GetClientsUseCaseResponseModel {
-  clients: Client[];
+  paginationResponse: PaginationResponse<Client>;
 }

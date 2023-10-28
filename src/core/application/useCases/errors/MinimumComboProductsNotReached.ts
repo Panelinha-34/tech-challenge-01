@@ -1,10 +1,10 @@
 import { UseCaseError } from "@/core/domain/base/error/UseCaseError";
 
-export class MinimumComboProductsNotReached
-  extends Error
-  implements UseCaseError
-{
-  constructor() {
-    super(`Combo must have at least 1 product`);
+export class MinimumResourcesNotReached extends Error implements UseCaseError {
+  details?: string[];
+
+  constructor(entity: string, details?: string[]) {
+    super(`Minimum ${entity} not reached`);
+    this.details = details;
   }
 }
