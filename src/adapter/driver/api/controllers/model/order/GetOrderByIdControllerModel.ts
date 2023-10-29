@@ -12,20 +12,25 @@ export interface GetOrderByIdControllerResponse {
   clientId?: string;
   status: string;
   totalPrice: number;
+  paymentMethod: string;
   createdAt: string;
-  clientName?: string;
+  visitorName?: string;
   updatedAt?: string;
   combos: {
     id: string;
     name: string;
     description: string;
     price: number;
+    quantity: number;
+    annotation?: string;
   }[];
   products: {
     id: string;
     name: string;
     description: string;
     price: number;
+    quantity: number;
+    annotation?: string;
   }[];
 }
 
@@ -34,8 +39,9 @@ const responseExample: GetOrderByIdControllerResponse = {
   clientId: "1",
   status: "pending",
   totalPrice: 10,
+  paymentMethod: "QR_CODE",
   createdAt: "2021-01-01T00:00:00.000Z",
-  clientName: "John Doe",
+  visitorName: "John Doe",
   updatedAt: "2021-01-01T00:00:00.000Z",
   combos: [
     {
@@ -43,6 +49,8 @@ const responseExample: GetOrderByIdControllerResponse = {
       name: "Combo 1",
       description: "Combo 1",
       price: 10,
+      quantity: 1,
+      annotation: "annotation",
     },
   ],
   products: [
@@ -51,6 +59,8 @@ const responseExample: GetOrderByIdControllerResponse = {
       name: "Sandwich 1",
       description: "Sandwich 1",
       price: 5,
+      quantity: 1,
+      annotation: "annotation",
     },
   ],
 };

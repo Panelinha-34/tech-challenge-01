@@ -1,4 +1,4 @@
-import { AggregateRoot } from "../base/entities/AggregateRoot";
+import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
 import { ComboProductList } from "./ComboProductList";
@@ -12,7 +12,7 @@ export interface ComboProps {
   updatedAt?: Date;
 }
 
-export class Combo extends AggregateRoot<ComboProps> {
+export class Combo extends Entity<ComboProps> {
   constructor(
     props: Optional<
       ComboProps,

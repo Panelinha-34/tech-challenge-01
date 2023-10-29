@@ -4,6 +4,8 @@ import { Order } from "@/core/domain/entities/Order";
 
 export interface GetOrdersUseCaseRequestModel {
   params: PaginationParams;
+  status?: string;
+  clientId?: string;
 }
 
 export interface GetOrdersUseCaseResponseModel {

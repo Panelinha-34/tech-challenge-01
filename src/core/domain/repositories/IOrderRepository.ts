@@ -1,9 +1,14 @@
 import { PaginationParams } from "../base/PaginationParams";
 import { PaginationResponse } from "../base/PaginationResponse";
 import { Order } from "../entities/Order";
+import { OrderStatus } from "../valueObjects/OrderStatus";
 
 export interface IOrderRepository {
-  findMany(params: PaginationParams): Promise<PaginationResponse<Order>>;
+  findMany(
+    params: PaginationParams,
+    status?: OrderStatus,
+    clientId?: string
+  ): Promise<PaginationResponse<Order>>;
 
   findManyByClientId(
     params: PaginationParams,

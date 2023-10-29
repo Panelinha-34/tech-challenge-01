@@ -12,13 +12,20 @@ export class Category extends ValueObject<CategoryProps> {
       ...props,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!Object.values(CategoriesEnum).includes(props.name as any)) {
-      throw new UnsupportedArgumentValueError("category");
-    }
+    this.validateName();
   }
 
   get name() {
     return this.props.name;
+  }
+
+  private validateName(): void {
+    if (!Object.values(CategoriesEnum).includes(this.name)) {
+      throw new UnsupportedArgumentValueError(
+        `Invalid Category: ${this.name}. Accepted values are ${Object.values(
+          CategoriesEnum
+        ).join(", ")}`
+      );
+    }
   }
 }

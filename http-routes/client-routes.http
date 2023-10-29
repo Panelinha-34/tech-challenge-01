@@ -4,7 +4,7 @@ GET http://localhost:3333/clients
 ###
 
 # @name get-client-by-id
-GET http://localhost:3333/clients/1198eaa6-8d4d-450b-8561-ce867c8c88cc
+GET http://localhost:3333/clients/149d4cff-a8e2-44cf-b949-f3aad598d1ee
 
 ### 
 

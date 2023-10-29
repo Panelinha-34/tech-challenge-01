@@ -7,7 +7,7 @@ import {
 
 import {
   GetComboByIdControllerResponse,
-  getComboByIdQueryParamsSchema,
+  getComboByIdPathParamsSchema,
 } from "../../model/combo/GetComboByIdControllerModel";
 import { ErrorHandlingMapper } from "../base/ErrorHandlingMapper";
 import { IControllerMapper } from "../base/IControllerMapper";
@@ -22,7 +22,7 @@ export class GetComboByIdControllerMapper
     >
 {
   convertRequestModel(req: FastifyRequest): GetComboByIdUseCaseRequestModel {
-    const { id } = getComboByIdQueryParamsSchema.parse(req.params);
+    const { id } = getComboByIdPathParamsSchema.parse(req.params);
 
     return {
       id,

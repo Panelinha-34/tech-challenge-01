@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { PrismaClientRepository } from "@/adapter/driven/infra/prisma/repositories/PrismaClientRepository";
+import { makeClientRepository } from "@/adapter/driven/infra/prisma/repositories/PrismaRepositoryFactory";
 import { ClientUseCase } from "@/core/application/useCases/ClientUseCase";
 
 import { ClientController } from "../ClientController";
@@ -13,24 +13,16 @@ import { editClientDocSchema } from "../model/client/EditClientControllerModel";
 import { getClientByIdDocSchema } from "../model/client/GetClientByIdControllerModel";
 import { getClientsDocSchema } from "../model/client/GetClientsControllerModel";
 
-const clientRepository = new PrismaClientRepository();
-const clientUseCase = new ClientUseCase(clientRepository);
-
-const editClientControllerMapper = new EditClientControllerMapper();
-const getClientByIdControllerMapper = new GetClientByIdControllerMapper();
-const createClientControllerMapper = new CreateClientControllerMapper();
-const getClientsControllerMapper = new GetClientsControllerMapper();
-
-const clientController = new ClientController(
-  clientUseCase,
-
-  getClientsControllerMapper,
-  getClientByIdControllerMapper,
-  createClientControllerMapper,
-  editClientControllerMapper
-);
-
 export async function ClientRoutes(app: FastifyInstance) {
+  const clientController = new ClientController(
+    new ClientUseCase(makeClientRepository()),
+
+    new GetClientsControllerMapper(),
+    new GetClientByIdControllerMapper(),
+    new CreateClientControllerMapper(),
+    new EditClientControllerMapper()
+  );
+
   app.get("", {
     schema: getClientsDocSchema,
     handler: clientController.getClients.bind(clientController),

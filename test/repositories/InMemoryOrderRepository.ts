@@ -4,6 +4,7 @@ import { Order } from "@/core/domain/entities/Order";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
 import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
 
 export class InMemoryOrderRepository implements IOrderRepository {
   public items: Order[] = [];
@@ -13,14 +14,21 @@ export class InMemoryOrderRepository implements IOrderRepository {
     private orderProductItemRepository: IOrderProductItemRepository
   ) {}
 
-  async findMany({
-    page,
-    size,
-  }: PaginationParams): Promise<PaginationResponse<Order>> {
-    const totalItems = this.items.length;
+  async findMany(
+    { page, size }: PaginationParams,
+    status?: OrderStatus,
+    clientId?: string
+  ): Promise<PaginationResponse<Order>> {
+    const filteredItems = this.items.filter(
+      (p) =>
+        (status ? p.status === status : true) &&
+        (clientId ? p.clientId?.toString() === clientId : true)
+    );
+
+    const totalItems = filteredItems.length;
     const totalPages = Math.ceil(totalItems / size);
 
-    const data = this.items.slice((page - 1) * size, page * size);
+    const data = filteredItems.slice((page - 1) * size, page * size);
 
     return new PaginationResponse<Order>({
       data,
@@ -62,19 +70,23 @@ export class InMemoryOrderRepository implements IOrderRepository {
     return answer || null;
   }
 
-  async update(order: Order): Promise<Order> {
-    const index = this.items.findIndex((a) => a.id === order.id);
-
-    this.items[index] = order;
-
-    return order;
-  }
-
   async create(order: Order): Promise<Order> {
     this.items.push(order);
 
     this.orderComboItemRepository.createMany(order.combos.getItems());
     this.orderProductItemRepository.createMany(order.products.getItems());
+
+    return order;
+  }
+
+  async update(order: Order): Promise<Order> {
+    const index = this.items.findIndex((a) => a.id === order.id);
+
+    if (index === -1) {
+      throw new Error("Order not found");
+    }
+
+    this.items[index] = order;
 
     return order;
   }

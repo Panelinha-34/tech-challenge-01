@@ -48,7 +48,7 @@ export const editProductDocSchema = {
       name: { type: "string" },
       description: { type: "string" },
       price: { type: "number" },
-      category: { type: "string" },
+      category: { type: "string", enum: Object.values(CategoriesEnum) },
     },
   },
   response: {

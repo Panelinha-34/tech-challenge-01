@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import { PrismaProductRepository } from "@/adapter/driven/infra/prisma/repositories/PrismaProductRepository";
+import { makeProductRepository } from "@/adapter/driven/infra/prisma/repositories/PrismaRepositoryFactory";
 import { ProductUseCase } from "@/core/application/useCases/ProductUseCase";
 
 import { CreateProductControllerMapper } from "../mappers/product/CreateProductControllerMapper";
@@ -13,24 +13,16 @@ import { getProductByIdDocSchema } from "../model/product/GetProductByIdControll
 import { getProductsDocSchema } from "../model/product/GetProductsControllerModel";
 import { ProductController } from "../ProductController";
 
-const productRepository = new PrismaProductRepository();
-const productUseCase = new ProductUseCase(productRepository);
-
-const createProductControllerMapper = new CreateProductControllerMapper();
-const getProductByIdControllerMapper = new GetProductByIdControllerMapper();
-const getProductsControllerMapper = new GetProductsControllerMapper();
-const editProductControllerMapper = new EditProductControllerMapper();
-
-const productController = new ProductController(
-  productUseCase,
-
-  getProductsControllerMapper,
-  getProductByIdControllerMapper,
-  createProductControllerMapper,
-  editProductControllerMapper
-);
-
 export async function ProductRoutes(app: FastifyInstance) {
+  const productController = new ProductController(
+    new ProductUseCase(makeProductRepository()),
+
+    new GetProductsControllerMapper(),
+    new GetProductByIdControllerMapper(),
+    new CreateProductControllerMapper(),
+    new EditProductControllerMapper()
+  );
+
   app.get("", {
     schema: getProductsDocSchema,
     handler: productController.getProducts.bind(productController),

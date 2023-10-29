@@ -31,14 +31,13 @@ export class ProductUseCase implements IProductUseCase {
     params,
     category,
   }: GetProductsUseCaseRequestModel): Promise<GetProductsUseCaseResponseModel> {
-    if (category) {
-      const categories = Object.keys(CategoriesEnum).map((enumCategory) =>
-        enumCategory.toLowerCase()
-      );
-
-      if (!categories.includes(category.toLowerCase())) {
-        throw new UnsupportedArgumentValueError(Category.name);
-      }
+    if (
+      category &&
+      !Object.keys(CategoriesEnum)
+        .map((e) => e.toLowerCase())
+        .includes(category.toLowerCase())
+    ) {
+      throw new UnsupportedArgumentValueError(Category.name);
     }
 
     const productCategory = category

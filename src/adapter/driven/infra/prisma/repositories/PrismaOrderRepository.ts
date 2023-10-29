@@ -4,6 +4,7 @@ import { Order } from "@/core/domain/entities/Order";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
 import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
 
 import { prisma } from "../config/prisma";
 import { PrismaOrderToDomainClientConverter } from "../converter/PrismaOrderToDomainClientConverter";
@@ -14,14 +15,23 @@ export class PrismaOrderRepository implements IOrderRepository {
     private orderProductItemRepository: IOrderProductItemRepository
   ) {}
 
-  async findMany({
-    page,
-    size,
-  }: PaginationParams): Promise<PaginationResponse<Order>> {
-    const totalItems = await prisma.order.count();
+  async findMany(
+    { page, size }: PaginationParams,
+    status?: OrderStatus,
+    clientId?: string
+  ): Promise<PaginationResponse<Order>> {
+    const where = {
+      status: status ? status.name : undefined,
+      client_id: clientId,
+    };
+
+    const totalItems = await prisma.order.count({
+      where,
+    });
     const totalPages = Math.ceil(totalItems / size);
 
     const data = await prisma.order.findMany({
+      where,
       skip: (page - 1) * size,
       take: size,
     });
@@ -88,7 +98,10 @@ export class PrismaOrderRepository implements IOrderRepository {
         data: {
           id: order.id.toString(),
           status: order.status.name,
+          payment_method: order.paymentMethod.name,
+          payment_details: order.paymentDetails,
           client_id: order.clientId?.toString(),
+          visitor_name: order.visitorName,
           total_price: order.totalPrice,
           created_at: order.createdAt,
           updated_at: order.updatedAt,
@@ -110,14 +123,9 @@ export class PrismaOrderRepository implements IOrderRepository {
         },
         data: {
           status: order.status.name,
-          client_id: order.clientId?.toString(),
-          total_price: order.totalPrice,
-          created_at: order.createdAt,
           updated_at: order.updatedAt,
         },
       })
-      .then((updatedOrder) =>
-        PrismaOrderToDomainClientConverter.convert(updatedOrder)
-      );
+      .then((c) => PrismaOrderToDomainClientConverter.convert(c));
   }
 }

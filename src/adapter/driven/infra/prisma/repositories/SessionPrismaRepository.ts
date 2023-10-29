@@ -3,7 +3,7 @@ import { ISessionRepository } from "@/core/domain/repositories/ISessionRepositor
 
 import { prisma } from "../config/prisma";
 
-export class SesionPrismaRepository implements ISessionRepository {
+export class SessionPrismaRepository implements ISessionRepository {
   async create(session: Session): Promise<Session> {
     const createdSession = await prisma.session.create({
       data: {

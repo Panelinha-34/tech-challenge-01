@@ -13,7 +13,7 @@ POST http://localhost:3333/products
 content-type: application/json
 
 {
-  "name": "Lanche de costela",
+  "name": "Lanche de costela 2",
   "description": "lanche de costela",
   "price": 25,
   "category": "SANDWICH"

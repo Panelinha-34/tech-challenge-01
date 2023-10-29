@@ -1,8 +1,9 @@
 import { FastifyInstance } from "fastify";
 
-import { PrismaComboProductRepository } from "@/adapter/driven/infra/prisma/repositories/PrismaComboProductRepository";
-import { PrismaComboRepository } from "@/adapter/driven/infra/prisma/repositories/PrismaComboRepository";
-import { PrismaProductRepository } from "@/adapter/driven/infra/prisma/repositories/PrismaProductRepository";
+import {
+  makeComboRepository,
+  makeProductRepository,
+} from "@/adapter/driven/infra/prisma/repositories/PrismaRepositoryFactory";
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
 
 import { ComboController } from "../ComboController";
@@ -15,26 +16,16 @@ import { editComboDocSchema } from "../model/combo/EditComboControllerModel";
 import { getComboByIdDocSchema } from "../model/combo/GetComboByIdControllerModel";
 import { getCombosDocSchema } from "../model/combo/GetCombosControllerModel";
 
-const comboProductRepository = new PrismaComboProductRepository();
-const comboRepository = new PrismaComboRepository(comboProductRepository);
-const productRepository = new PrismaProductRepository();
-const comboUseCase = new ComboUseCase(comboRepository, productRepository);
-
-const getCombosControllerMapper = new GetCombosControllerMapper();
-const getComboByIdControllerMapper = new GetComboByIdControllerMapper();
-const createComboControllerMapper = new CreateComboControllerMapper();
-const editComboControllerMapper = new EditComboControllerMapper();
-
-const comboController = new ComboController(
-  comboUseCase,
-
-  getCombosControllerMapper,
-  getComboByIdControllerMapper,
-  createComboControllerMapper,
-  editComboControllerMapper
-);
-
 export async function ComboRoutes(app: FastifyInstance) {
+  const comboController = new ComboController(
+    new ComboUseCase(makeComboRepository(), makeProductRepository()),
+
+    new GetCombosControllerMapper(),
+    new GetComboByIdControllerMapper(),
+    new CreateComboControllerMapper(),
+    new EditComboControllerMapper()
+  );
+
   app.get("", {
     schema: getCombosDocSchema,
     handler: comboController.getCombos.bind(comboController),

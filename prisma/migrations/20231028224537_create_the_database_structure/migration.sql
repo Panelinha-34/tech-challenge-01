@@ -1,15 +1,45 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Category" AS ENUM ('SANDWICH', 'DRINK', 'SIDE_DISH', 'DESSERT');
 
-  - A unique constraint covering the columns `[email]` on the table `clients` will be added. If there are existing duplicate values, this will fail.
+-- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING_PAYMENT', 'PAID', 'IN_PREPARATION', 'READY', 'DELIVERED', 'COMPLETED', 'CANCELLED');
 
-*/
+-- CreateEnum
+CREATE TYPE "NotificationStatus" AS ENUM ('PENDING', 'SENT');
+
+-- CreateEnum
+CREATE TYPE "PaymentMethod" AS ENUM ('QR_CODE');
+
+-- CreateTable
+CREATE TABLE "clients" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "tax_vat" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+
+    CONSTRAINT "clients_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "sessions" (
+    "id" TEXT NOT NULL,
+    "client_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateTable
 CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
-    "client_id" TEXT NOT NULL,
+    "status" "OrderStatus" NOT NULL,
+    "client_id" TEXT,
+    "visitor_name" TEXT,
     "total_price" DECIMAL(65,30) NOT NULL,
+    "payment_method" "PaymentMethod" NOT NULL,
+    "payment_details" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
@@ -17,24 +47,12 @@ CREATE TABLE "orders" (
 );
 
 -- CreateTable
-CREATE TABLE "order_payments" (
-    "id" TEXT NOT NULL,
-    "order_id" TEXT NOT NULL,
-    "amount" DECIMAL(65,30) NOT NULL,
-    "payment_method" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3),
-
-    CONSTRAINT "order_payments_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "order_notifications" (
     "id" TEXT NOT NULL,
     "order_id" TEXT NOT NULL,
+    "client_id" TEXT NOT NULL,
     "message" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
+    "status" "NotificationStatus" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
@@ -50,6 +68,7 @@ CREATE TABLE "order_combo_items" (
     "quantity" INTEGER NOT NULL,
     "total_price" DECIMAL(65,30) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
 
     CONSTRAINT "order_combo_items_pkey" PRIMARY KEY ("id")
 );
@@ -63,6 +82,7 @@ CREATE TABLE "order_product_items" (
     "quantity" INTEGER NOT NULL,
     "total_price" DECIMAL(65,30) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
 
     CONSTRAINT "order_product_items_pkey" PRIMARY KEY ("id")
 );
@@ -82,9 +102,10 @@ CREATE TABLE "combos" (
 -- CreateTable
 CREATE TABLE "combo_products" (
     "id" TEXT NOT NULL,
-    "product_id" TEXT NOT NULL,
     "combo_id" TEXT NOT NULL,
+    "product_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
 
     CONSTRAINT "combo_products_pkey" PRIMARY KEY ("id")
 );
@@ -95,34 +116,30 @@ CREATE TABLE "products" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
-    "category_id" TEXT NOT NULL,
+    "category" "Category" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "categories" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3),
-
-    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
-);
+-- CreateIndex
+CREATE UNIQUE INDEX "clients_tax_vat_key" ON "clients"("tax_vat");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "clients_email_key" ON "clients"("email");
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "order_payments" ADD CONSTRAINT "order_payments_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order_notifications" ADD CONSTRAINT "order_notifications_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_notifications" ADD CONSTRAINT "order_notifications_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order_combo_items" ADD CONSTRAINT "order_combo_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -141,6 +158,3 @@ ALTER TABLE "combo_products" ADD CONSTRAINT "combo_products_combo_id_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "combo_products" ADD CONSTRAINT "combo_products_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

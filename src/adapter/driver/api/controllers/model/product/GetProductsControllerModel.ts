@@ -58,7 +58,7 @@ export const getProductsDocSchema = {
     properties: {
       page: { type: "number" },
       pageSize: { type: "number" },
-      category: { type: "string" },
+      category: { type: "string", enum: Object.values(CategoriesEnum) },
     },
   },
   response: {

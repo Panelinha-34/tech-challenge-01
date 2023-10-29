@@ -10,6 +10,10 @@ import {
   GetOrdersUseCaseRequestModel,
   GetOrdersUseCaseResponseModel,
 } from "./model/order/GetOrdersUseCaseModel";
+import {
+  UpdateOrderStatusUseCaseRequestModel,
+  UpdateOrderStatusUseCaseResponseModel,
+} from "./model/order/UpdateOrderStatusUseCaseModel";
 
 export interface IOrderUseCase {
   getOrders(
@@ -23,4 +27,8 @@ export interface IOrderUseCase {
   createOrder(
     props: CreateOrderUseCaseRequestModel
   ): Promise<CreateOrderUseCaseResponseModel>;
+
+  updateOrderStatus(
+    props: UpdateOrderStatusUseCaseRequestModel
+  ): Promise<UpdateOrderStatusUseCaseResponseModel>;
 }

@@ -23,12 +23,15 @@ export class GetOrdersControllerMapper
     >
 {
   convertRequestModel(req: FastifyRequest): GetOrdersUseCaseRequestModel {
-    const { page, pageSize } = getOrdersQueryParamsSchema.parse(req.query);
+    const { page, pageSize, status, clientId } =
+      getOrdersQueryParamsSchema.parse(req.query);
 
     const params = new PaginationParams(page, pageSize);
 
     return {
       params,
+      status,
+      clientId,
     };
   }
 
@@ -39,6 +42,8 @@ export class GetOrdersControllerMapper
       id: order.id.toString(),
       status: order.status.name,
       clientId: order.clientId?.toString(),
+      visitorName: order.visitorName,
+      paymentMethod: order.paymentMethod.name,
       totalPrice: order.totalPrice,
       createdAt: order.createdAt.toISOString(),
       updatedAt: order.updatedAt?.toISOString(),

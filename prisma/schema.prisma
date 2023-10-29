@@ -25,6 +25,11 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum NotificationStatus {
+  PENDING
+  SENT
+}
+
 enum PaymentMethod {
   QR_CODE
 }
@@ -37,8 +42,9 @@ model Client {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  orders   Order[]
-  sessions Session[]
+  orders            Order[]
+  sessions          Session[]
+  OrderNotification OrderNotification[]
 
   @@map("clients")
 }
@@ -54,16 +60,17 @@ model Session {
 }
 
 model Order {
-  id           String      @id @default(uuid())
-  status       OrderStatus
-  client_id    String?     @map("client_id")
-  visitor_name String?
-  total_price  Decimal
-  created_at   DateTime    @default(now())
-  updated_at   DateTime?   @updatedAt
+  id              String        @id @default(uuid())
+  status          OrderStatus
+  client_id       String?       @map("client_id")
+  visitor_name    String?
+  total_price     Decimal
+  payment_method  PaymentMethod
+  payment_details String?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime?     @updatedAt
 
   client             Client?             @relation(fields: [client_id], references: [id])
-  orderPayments      OrderPayment[]
   orderNotifications OrderNotification[]
   orderComboItems    OrderComboItem[]
   orderProductItems  OrderProductItem[]
@@ -71,29 +78,17 @@ model Order {
   @@map("orders")
 }
 
-model OrderPayment {
-  id             String        @id @default(uuid())
-  order_id       String
-  amount         Decimal
-  payment_method PaymentMethod
-  status         String
-  created_at     DateTime      @default(now())
-  updated_at     DateTime?     @updatedAt
-
-  order Order @relation(fields: [order_id], references: [id])
-
-  @@map("order_payments")
-}
-
 model OrderNotification {
-  id         String    @id @default(uuid())
+  id         String             @id @default(uuid())
   order_id   String
+  client_id  String
   message    String
-  status     String
-  created_at DateTime  @default(now())
-  updated_at DateTime? @updatedAt
+  status     NotificationStatus
+  created_at DateTime           @default(now())
+  updated_at DateTime?          @updatedAt
 
-  order Order @relation(fields: [order_id], references: [id])
+  order  Order  @relation(fields: [order_id], references: [id])
+  client Client @relation(fields: [client_id], references: [id])
 
   @@map("order_notifications")
 }

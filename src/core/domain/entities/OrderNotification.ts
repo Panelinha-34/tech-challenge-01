@@ -1,11 +1,13 @@
 import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
+import { NotificationStatus } from "../valueObjects/NotificationStatus";
 
 export interface OrderNotificationProps {
-  status: string;
+  orderId: UniqueEntityId;
+  clientId: UniqueEntityId;
+  status: NotificationStatus;
   message: string;
-  orderId: string;
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -24,10 +26,6 @@ export class OrderNotification extends Entity<OrderNotificationProps> {
     );
   }
 
-  get status() {
-    return this.props.status;
-  }
-
   get message() {
     return this.props.message;
   }
@@ -42,6 +40,16 @@ export class OrderNotification extends Entity<OrderNotificationProps> {
 
   get updatedAt() {
     return this.props.updatedAt;
+  }
+
+  get status() {
+    return this.props.status;
+  }
+
+  set status(value: NotificationStatus) {
+    this.props.status.name = value.name;
+
+    this.touch();
   }
 
   private touch() {

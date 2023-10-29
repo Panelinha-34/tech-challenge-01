@@ -6,6 +6,7 @@ import {
   OrderNotificationProps,
 } from "@/core/domain/entities/OrderNotification";
 import { faker } from "@faker-js/faker";
+
 import { makeOrder } from "./MakeOrder";
 
 export function makeOrderNotification(

@@ -12,6 +12,7 @@ export class PrismaOrderComboItemToDomainConverter {
         totalPrice: prismaClient.total_price.toNumber(),
         createdAt: prismaClient.created_at,
         updatedAt: prismaClient.updated_at ?? undefined,
+        annotation: prismaClient.annotation ?? undefined,
       },
       new UniqueEntityId(prismaClient.id)
     );

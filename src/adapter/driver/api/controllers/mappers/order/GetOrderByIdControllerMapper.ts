@@ -36,7 +36,9 @@ export class GetOrderByIdControllerMapper
       id: model.order.id.toString(),
       status: model.order.status.name,
       clientId: model.order.clientId?.toString(),
+      visitorName: model.order.visitorName,
       totalPrice: model.order.totalPrice,
+      paymentMethod: model.order.paymentMethod.name,
       createdAt: model.order.createdAt.toISOString(),
       updatedAt: model.order.updatedAt?.toISOString(),
       combos: model.combos.map((combo) => ({
@@ -44,12 +46,24 @@ export class GetOrderByIdControllerMapper
         name: combo.name,
         description: combo.description,
         price: combo.price,
+        quantity: model.orderCombos.find(
+          (oc) => combo.id.toString() === oc.comboId.toString()
+        )!.quantity,
+        annotation: model.orderCombos.find(
+          (oc) => combo.id.toString() === oc.comboId.toString()
+        )!.annotation,
       })),
       products: model.products.map((product) => ({
         id: product.id.toString(),
         name: product.name,
         description: product.description,
         price: product.price,
+        quantity: model.orderProducts.find(
+          (op) => product.id.toString() === op.productId.toString()
+        )!.quantity,
+        annotation: model.orderProducts.find(
+          (op) => product.id.toString() === op.productId.toString()
+        )!.annotation,
       })),
     };
   }

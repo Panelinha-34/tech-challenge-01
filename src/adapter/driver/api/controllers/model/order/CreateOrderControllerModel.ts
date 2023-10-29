@@ -1,7 +1,10 @@
-import { z } from "zod";
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable guard-for-in */
+
+import { z } from "zod";
+
+import { PaymentMethodEnum } from "@/core/domain/enum/PaymentMethodEnum";
+import { PaymentStatusEnum } from "@/core/domain/enum/PaymentStatusEnum";
 
 const orderComboSchema = z.object({
   sandwichId: z.string().optional(),
@@ -20,7 +23,10 @@ const orderProductSchema = z.object({
 
 export const createOrderPayloadSchema = z.object({
   clientId: z.string().optional(),
-  clientName: z.string().optional(),
+  visitorName: z.string().optional(),
+  paymentMethod: z.nativeEnum(PaymentMethodEnum),
+  paymentStatus: z.nativeEnum(PaymentStatusEnum),
+  paymentDetails: z.string().optional(),
   combos: z.array(orderComboSchema).optional(),
   products: z.array(orderProductSchema).optional(),
 });
@@ -34,7 +40,23 @@ export const createOrderDocSchema = {
     type: "object",
     properties: {
       clientId: { type: "string" },
-      clientName: { type: "string" },
+      visitorName: {
+        type: "string",
+        description:
+          "This field is used for users who do not want to identify themselves.",
+      },
+      paymentMethod: {
+        type: "string",
+        enum: Object.values(PaymentMethodEnum),
+      },
+      paymentStatus: {
+        type: "string",
+        enum: Object.values(PaymentStatusEnum),
+      },
+      paymentDetails: {
+        type: "string",
+        description: "This field is used for payment details.",
+      },
       combos: {
         type: "array",
         items: {

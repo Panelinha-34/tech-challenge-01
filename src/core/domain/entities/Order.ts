@@ -1,7 +1,8 @@
-import { Entity } from "../base/entities/Entity";
+import { AggregateEventRoot } from "../base/entities/AggregateRoot";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
 import { OrderStatus } from "../valueObjects/OrderStatus";
+import { PaymentMethod } from "../valueObjects/PaymentMethod";
 import { OrderComboItemList } from "./OrderComboItemList";
 import { OrderProductItemList } from "./OrderProductItemList";
 
@@ -9,14 +10,16 @@ export interface OrderProps {
   status: OrderStatus;
   totalPrice: number;
   createdAt: Date;
-  clientName?: string;
   clientId?: UniqueEntityId;
+  visitorName?: string;
   updatedAt?: Date;
+  paymentMethod: PaymentMethod;
+  paymentDetails?: string;
   combos: OrderComboItemList;
   products: OrderProductItemList;
 }
 
-export class Order extends Entity<OrderProps> {
+export class Order extends AggregateEventRoot<OrderProps> {
   constructor(
     props: Optional<OrderProps, "createdAt" | "combos" | "products">,
     id?: UniqueEntityId
@@ -37,7 +40,8 @@ export class Order extends Entity<OrderProps> {
   }
 
   set status(value: OrderStatus) {
-    this.props.status = value;
+    this.props.status.name = value.name;
+
     this.touch();
   }
 
@@ -47,6 +51,10 @@ export class Order extends Entity<OrderProps> {
 
   get clientId() {
     return this.props.clientId;
+  }
+
+  get visitorName() {
+    return this.props.visitorName;
   }
 
   get createdAt() {
@@ -72,6 +80,19 @@ export class Order extends Entity<OrderProps> {
 
   set products(value: OrderProductItemList) {
     this.props.products = value;
+    this.touch();
+  }
+
+  get paymentMethod() {
+    return this.props.paymentMethod;
+  }
+
+  get paymentDetails() {
+    return this.props.paymentDetails;
+  }
+
+  set paymentDetails(value: string | undefined) {
+    this.props.paymentDetails = value;
     this.touch();
   }
 

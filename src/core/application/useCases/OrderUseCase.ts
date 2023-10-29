@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
+import { UnsupportedArgumentValueError } from "@/core/domain/base/error/UnsupportedArgumentValueError";
 import { Client } from "@/core/domain/entities/Client";
 import { Combo } from "@/core/domain/entities/Combo";
 import { Order } from "@/core/domain/entities/Order";
@@ -10,13 +11,17 @@ import { OrderProductItem } from "@/core/domain/entities/OrderProductItem";
 import { OrderProductItemList } from "@/core/domain/entities/OrderProductItemList";
 import { Product } from "@/core/domain/entities/Product";
 import { OrderStatusEnum } from "@/core/domain/enum/OrderStatusEnum";
+import { PaymentMethodEnum } from "@/core/domain/enum/PaymentMethodEnum";
+import { PaymentStatusEnum } from "@/core/domain/enum/PaymentStatusEnum";
 import { IClientRepository } from "@/core/domain/repositories/IClientRepository";
 import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
 import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { Category } from "@/core/domain/valueObjects/Category";
 import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
+import { PaymentMethod } from "@/core/domain/valueObjects/PaymentMethod";
 
 import { MinimumResourcesNotReached } from "./errors/MinimumComboProductsNotReached";
 import { ResourceNotFoundError } from "./errors/ResourceNotFoundError";
@@ -34,6 +39,10 @@ import {
   GetOrdersUseCaseRequestModel,
   GetOrdersUseCaseResponseModel,
 } from "./model/order/GetOrdersUseCaseModel";
+import {
+  UpdateOrderStatusUseCaseRequestModel,
+  UpdateOrderStatusUseCaseResponseModel,
+} from "./model/order/UpdateOrderStatusUseCaseModel";
 
 export class OrderUseCase implements IOrderUseCase {
   constructor(
@@ -49,8 +58,35 @@ export class OrderUseCase implements IOrderUseCase {
 
   async getOrders({
     params,
+    status,
+    clientId,
   }: GetOrdersUseCaseRequestModel): Promise<GetOrdersUseCaseResponseModel> {
-    const paginationResponse = await this.orderRepository.findMany(params);
+    if (
+      status &&
+      !Object.keys(OrderStatusEnum)
+        .map((e) => e.toLowerCase())
+        .includes(status.toLowerCase())
+    ) {
+      throw new UnsupportedArgumentValueError(Category.name);
+    }
+
+    if (clientId) {
+      const client = await this.clientRepository.findById(clientId);
+
+      if (!client) {
+        throw new ResourceNotFoundError(Client.name);
+      }
+    }
+
+    const orderStatus = status
+      ? new OrderStatus({ name: status as OrderStatusEnum })
+      : undefined;
+
+    const paginationResponse = await this.orderRepository.findMany(
+      params,
+      orderStatus,
+      clientId
+    );
 
     return { paginationResponse };
   }
@@ -78,6 +114,8 @@ export class OrderUseCase implements IOrderUseCase {
 
     return {
       order,
+      orderProducts,
+      orderCombos,
       products,
       combos,
     };
@@ -85,14 +123,26 @@ export class OrderUseCase implements IOrderUseCase {
 
   async createOrder({
     clientId,
-    clientName,
+    visitorName,
     combos,
     products,
+    paymentMethod,
+    paymentDetails,
+    paymentStatus,
   }: CreateOrderUseCaseRequestModel): Promise<CreateOrderUseCaseResponseModel> {
-    if (!clientId && !clientName) {
+    if (
+      paymentMethod &&
+      !Object.keys(PaymentMethodEnum)
+        .map((e) => e.toLowerCase())
+        .includes(paymentMethod.toLowerCase())
+    ) {
+      throw new UnsupportedArgumentValueError(PaymentMethod.name);
+    }
+
+    if (!clientId && !visitorName) {
       throw new MinimumResourcesNotReached(Client.name, [
         "clientId",
-        "clientName",
+        "visitorName",
       ]);
     }
 
@@ -193,9 +243,18 @@ export class OrderUseCase implements IOrderUseCase {
     const totalPrice = productsTotalPrice + combosTotalPrice;
 
     const order = new Order({
-      status: new OrderStatus({ name: OrderStatusEnum.PENDING_PAYMENT }),
-      clientId: new UniqueEntityId(clientId),
-      clientName,
+      status: new OrderStatus({
+        name:
+          PaymentStatusEnum.PAID === paymentStatus
+            ? OrderStatusEnum.PAID
+            : OrderStatusEnum.PENDING_PAYMENT,
+      }),
+      clientId: clientId ? new UniqueEntityId(clientId) : undefined,
+      paymentMethod: new PaymentMethod({
+        name: paymentMethod as PaymentMethodEnum,
+      }),
+      paymentDetails,
+      visitorName,
       totalPrice,
     });
 
@@ -230,5 +289,25 @@ export class OrderUseCase implements IOrderUseCase {
     const createdOrder = await this.orderRepository.create(order);
 
     return { order: createdOrder };
+  }
+
+  async updateOrderStatus(
+    props: UpdateOrderStatusUseCaseRequestModel
+  ): Promise<UpdateOrderStatusUseCaseResponseModel> {
+    const { id, status } = props;
+
+    const order = await this.orderRepository.findById(id);
+
+    if (!order) {
+      throw new ResourceNotFoundError(Order.name);
+    }
+
+    order.status = new OrderStatus({
+      name: status as OrderStatusEnum,
+    });
+
+    const updatedOrder = await this.orderRepository.update(order);
+
+    return { order: updatedOrder };
   }
 }

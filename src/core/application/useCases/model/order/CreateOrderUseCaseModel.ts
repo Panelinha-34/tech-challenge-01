@@ -2,7 +2,10 @@ import { Order } from "@/core/domain/entities/Order";
 
 export interface CreateOrderUseCaseRequestModel {
   clientId?: string;
-  clientName?: string;
+  visitorName?: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  paymentDetails?: string;
   combos?: {
     sandwichId?: string;
     sideId?: string;
