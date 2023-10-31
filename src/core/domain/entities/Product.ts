@@ -7,17 +7,22 @@ export interface ProductProps {
   name: string;
   description: string;
   price: number;
+  active: boolean;
   category: Category;
   createdAt: Date;
   updatedAt?: Date;
 }
 
 export class Product extends Entity<ProductProps> {
-  constructor(props: Optional<ProductProps, "createdAt">, id?: UniqueEntityId) {
+  constructor(
+    props: Optional<ProductProps, "createdAt" | "active">,
+    id?: UniqueEntityId
+  ) {
     super(
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
+        active: props.active ?? true,
       },
       id
     );
@@ -38,6 +43,15 @@ export class Product extends Entity<ProductProps> {
 
   set description(value: string) {
     this.props.description = value;
+    this.touch();
+  }
+
+  get active() {
+    return this.props.active;
+  }
+
+  set active(value: boolean) {
+    this.props.active = value;
     this.touch();
   }
 

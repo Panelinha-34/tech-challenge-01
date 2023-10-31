@@ -36,7 +36,7 @@ const responseExample: UpdateOrderStatusControllerResponse = {
 };
 
 export const updateOrderStatusDocSchema = {
-  tags: ["Order (WIP)"],
+  tags: ["Order "],
   description: "Update Order Status",
   params: convertZodSchemaToDocsTemplate({
     schema: updateOrderStatusPathParametersSchema,

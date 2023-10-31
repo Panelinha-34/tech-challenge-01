@@ -36,6 +36,7 @@ export class GetProductByIdControllerMapper
       id: model.product.id.toString(),
       name: model.product.name,
       price: model.product.price,
+      active: model.product.active,
       description: model.product.description,
       category: model.product.category.name,
       createdAt: model.product.createdAt.toISOString(),

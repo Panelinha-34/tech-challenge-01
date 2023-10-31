@@ -4,7 +4,7 @@ GET http://localhost:3333/products
 ### 
 
 # @name get-product-by-id
-GET http://localhost:3333/products/657401ee-5abb-4436-9a91-d03059dfcd1c
+GET http://localhost:3333/products/0ed117a2-5d6f-4f54-9f1b-748b0df9f37e
 
 ### 
 
@@ -31,3 +31,10 @@ content-type: application/json
   "description": "hamburguer de costela",
   "category": "DESSERT"
 }
+
+### 
+
+# @name inactive-product
+DELETE http://localhost:3333/products/0ed117a2-5d6f-4f54-9f1b-748b0df9f37e
+content-type: application/json
+

@@ -10,32 +10,46 @@ export const getOrderNotificationsQueryParamsSchema = z.object({
 
 export interface GetOrderNotificationsResponse {
   id: string;
+  orderId: string;
+  clientId: string;
   status: string;
   message: string;
-  orderId: string;
   createdAt: string;
   updatedAt?: string;
 }
 
 export interface GetOrderNotificationsControllerResponse {
-  orderNotifications: GetOrderNotificationsResponse[];
+  data: GetOrderNotificationsResponse[];
+  pagination: {
+    totalItems: number;
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+  };
 }
 
 const responseExample: GetOrderNotificationsControllerResponse = {
-  orderNotifications: [
+  data: [
     {
-      id: "1",
+      id: "123",
+      orderId: "123",
+      clientId: "123",
       status: "PENDING",
-      message: "Order 1",
-      orderId: "1",
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
+      message: "Your order is pending",
+      createdAt: "2021-10-26",
+      updatedAt: "2021-10-27",
     },
   ],
+  pagination: {
+    totalItems: 1,
+    currentPage: 1,
+    pageSize: 20,
+    totalPages: 1,
+  },
 };
 
 export const getOrderNotificationsDocSchema = {
-  tags: ["Order Notification (WIP)"],
+  tags: ["Order Notification "],
   description: "List order notifications",
   querystring: convertZodSchemaToDocsTemplate({
     schema: getOrderNotificationsQueryParamsSchema,

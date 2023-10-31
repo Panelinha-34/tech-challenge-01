@@ -41,6 +41,7 @@ export class GetProductsControllerMapper
     return model.paginationResponse.toResponse((product) => ({
       id: product.id.toString(),
       name: product.name,
+      active: product.active,
       description: product.description,
       price: product.price,
       category: product.category.name,

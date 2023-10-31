@@ -35,18 +35,15 @@ export class GetOrderNotificationsControllerMapper
   convertUseCaseModelToControllerResponse(
     model: GetOrderNotificationsUseCaseResponseModel
   ): GetOrderNotificationsControllerResponse {
-    const orderNotifications = model.orderNotifications.map(
-      (orderNotification) => ({
-        id: orderNotification.id.toString(),
-        status: orderNotification.status,
-        message: orderNotification.message,
-        orderId: orderNotification.orderId,
-        createdAt: orderNotification.createdAt.toISOString(),
-        updatedAt: orderNotification.updatedAt?.toISOString(),
-      })
-    );
-
-    return { orderNotifications };
+    return model.paginationResponse.toResponse((orderNotification) => ({
+      id: orderNotification.id.toString(),
+      orderId: orderNotification.orderId.toString(),
+      clientId: orderNotification.clientId.toString(),
+      status: orderNotification.status.name,
+      message: orderNotification.message,
+      createdAt: orderNotification.createdAt.toISOString(),
+      updatedAt: orderNotification.updatedAt?.toISOString(),
+    }));
   }
 
   convertSuccessfullyResponse(

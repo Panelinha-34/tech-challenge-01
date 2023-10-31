@@ -3,8 +3,6 @@ import { FastifyInstance } from "fastify";
 import {
   makeClientRepository,
   makeComboRepository,
-  makeOrderComboItemRepository,
-  makeOrderProductItemRepository,
   makeOrderRepository,
   makeProductRepository,
 } from "@/adapter/driven/infra/prisma/repositories/PrismaRepositoryFactory";
@@ -25,8 +23,6 @@ export async function OrderRoutes(app: FastifyInstance) {
   const orderController = new OrderController(
     new OrderUseCase(
       makeOrderRepository(),
-      makeOrderComboItemRepository(),
-      makeOrderProductItemRepository(),
       makeClientRepository(),
       makeProductRepository(),
       makeComboRepository(),

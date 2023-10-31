@@ -15,15 +15,13 @@ import { PaymentMethodEnum } from "@/core/domain/enum/PaymentMethodEnum";
 import { PaymentStatusEnum } from "@/core/domain/enum/PaymentStatusEnum";
 import { IClientRepository } from "@/core/domain/repositories/IClientRepository";
 import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
-import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
-import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { Category } from "@/core/domain/valueObjects/Category";
 import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
 import { PaymentMethod } from "@/core/domain/valueObjects/PaymentMethod";
 
-import { MinimumResourcesNotReached } from "./errors/MinimumComboProductsNotReached";
+import { MinimumResourcesNotReached } from "./errors/MinimumResourcesNotReached";
 import { ResourceNotFoundError } from "./errors/ResourceNotFoundError";
 import { IComboUseCase } from "./IComboUseCase";
 import { IOrderUseCase } from "./IOrderUseCase";
@@ -47,8 +45,6 @@ import {
 export class OrderUseCase implements IOrderUseCase {
   constructor(
     private orderRepository: IOrderRepository,
-    private orderComboItemRepository: IOrderComboItemRepository,
-    private orderProductItemRepository: IOrderProductItemRepository,
     private clientRepository: IClientRepository,
     private productRepository: IProductRepository,
     private comboRepository: IComboRepository,
@@ -100,14 +96,12 @@ export class OrderUseCase implements IOrderUseCase {
       throw new ResourceNotFoundError(Order.name);
     }
 
-    const orderProducts =
-      await this.orderProductItemRepository.findManyByOrderId(id);
+    const orderProducts = order.products.getItems();
     const products = await this.productRepository.findManyByIds(
       orderProducts.map((p) => p.productId.toString())
     );
 
-    const orderCombos =
-      await this.orderComboItemRepository.findManyByOrderId(id);
+    const orderCombos = order.combos.getItems();
     const combos = await this.comboRepository.findManyByIds(
       orderCombos.map((c) => c.comboId.toString())
     );

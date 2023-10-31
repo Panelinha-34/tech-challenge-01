@@ -26,12 +26,16 @@ export class OrderNotification extends Entity<OrderNotificationProps> {
     );
   }
 
-  get message() {
-    return this.props.message;
-  }
-
   get orderId() {
     return this.props.orderId;
+  }
+
+  get clientId() {
+    return this.props.clientId;
+  }
+
+  get message() {
+    return this.props.message;
   }
 
   get createdAt() {

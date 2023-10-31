@@ -14,6 +14,10 @@ import {
   GetProductsUseCaseRequestModel,
   GetProductsUseCaseResponseModel,
 } from "./model/product/GetProductsUseCaseModel";
+import {
+  InactiveProductUseCaseRequestModel,
+  InactiveProductUseCaseResponseModel,
+} from "./model/product/InactiveProductUseCaseModel";
 
 export interface IProductUseCase {
   getProducts(
@@ -31,4 +35,8 @@ export interface IProductUseCase {
   editProduct(
     props: EditProductUseCaseRequestModel
   ): Promise<EditProductUseCaseResponseModel>;
+
+  inactiveProduct(
+    props: InactiveProductUseCaseRequestModel
+  ): Promise<InactiveProductUseCaseResponseModel>;
 }

@@ -13,6 +13,7 @@ export class PrismaProductToDomainClientConverter {
         category: new Category({
           name: prismaClient.category as CategoriesEnum,
         }),
+        active: prismaClient.active,
         price: prismaClient.price.toNumber(),
         createdAt: prismaClient.created_at,
         updatedAt: prismaClient.updated_at ?? undefined,

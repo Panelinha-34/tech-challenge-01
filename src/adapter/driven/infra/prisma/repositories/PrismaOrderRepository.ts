@@ -1,3 +1,4 @@
+import { DomainEvents } from "@/core/domain/base/events/DomainEvents";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Order } from "@/core/domain/entities/Order";
@@ -112,11 +113,13 @@ export class PrismaOrderRepository implements IOrderRepository {
     await this.orderComboItemRepository.createMany(order.combos.getItems());
     await this.orderProductItemRepository.createMany(order.products.getItems());
 
+    DomainEvents.dispatchEventsForAggregate(order.id);
+
     return createdOrder;
   }
 
   async update(order: Order): Promise<Order> {
-    return prisma.order
+    const updatedOrder = await prisma.order
       .update({
         where: {
           id: order.id.toString(),
@@ -127,5 +130,9 @@ export class PrismaOrderRepository implements IOrderRepository {
         },
       })
       .then((c) => PrismaOrderToDomainClientConverter.convert(c));
+
+    DomainEvents.dispatchEventsForAggregate(order.id);
+
+    return updatedOrder;
   }
 }

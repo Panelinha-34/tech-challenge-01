@@ -5,8 +5,11 @@ import {
   OrderNotification,
   OrderNotificationProps,
 } from "@/core/domain/entities/OrderNotification";
+import { NotificationStatusEnum } from "@/core/domain/enum/NotificationStatusEnum";
+import { NotificationStatus } from "@/core/domain/valueObjects/NotificationStatus";
 import { faker } from "@faker-js/faker";
 
+import { makeClient } from "./MakeClient";
 import { makeOrder } from "./MakeOrder";
 
 export function makeOrderNotification(
@@ -14,12 +17,14 @@ export function makeOrderNotification(
   id?: UniqueEntityId
 ): OrderNotification {
   const order = makeOrder();
+  const client = makeClient();
 
   const orderNotification = new OrderNotification(
     {
       message: faker.lorem.word(),
-      status: faker.lorem.word(),
-      orderId: order.id.toString(),
+      status: new NotificationStatus({ name: NotificationStatusEnum.PENDING }),
+      orderId: new UniqueEntityId(order.id.toString()),
+      clientId: new UniqueEntityId(client.id.toString()),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
       ...override,

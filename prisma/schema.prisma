@@ -157,6 +157,7 @@ model Product {
   name        String
   description String
   price       Decimal
+  active      Boolean   @default(true)
   category    Category
   created_at  DateTime  @default(now())
   updated_at  DateTime? @updatedAt

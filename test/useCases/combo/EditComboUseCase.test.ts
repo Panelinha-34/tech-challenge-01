@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
-import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
+import { EntityNotActiveError } from "@/core/application/useCases/errors/EntityNotActiveError";
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumResourcesNotReached";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { Product } from "@/core/domain/entities/Product";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
@@ -74,6 +75,23 @@ describe("Given the Edit Combo Use Case", () => {
         name,
       })
     ).rejects.toBeInstanceOf(MinimumResourcesNotReached);
+  });
+
+  it("should throw an error when the informed product is not active", async () => {
+    const product = makeProduct({
+      active: false,
+    });
+    const createdCombo = makeCombo();
+
+    inMemoryProductRepository.items.push(product);
+    inMemoryComboRepository.items.push(createdCombo);
+
+    await expect(() =>
+      sut.editCombo({
+        id: createdCombo.id.toString(),
+        sandwichId: product.id.toString(),
+      })
+    ).rejects.toBeInstanceOf(EntityNotActiveError);
   });
 
   it("should throw an error when the informed product id does not exist", async () => {

@@ -14,6 +14,7 @@ export interface GetProductResponse {
   id: string;
   name: string;
   description: string;
+  active: boolean;
   price: number;
   category: string;
   createdAt: string;
@@ -36,6 +37,7 @@ const responseExample: GetProductsControllerResponse = {
       id: "1",
       name: "Product 1",
       description: "Description 1",
+      active: true,
       price: 100,
       category: "Category 1",
       createdAt: new Date().toISOString(),

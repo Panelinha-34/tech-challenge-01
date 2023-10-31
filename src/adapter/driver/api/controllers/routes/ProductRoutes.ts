@@ -7,10 +7,12 @@ import { CreateProductControllerMapper } from "../mappers/product/CreateProductC
 import { EditProductControllerMapper } from "../mappers/product/EditProductControllerMapper";
 import { GetProductByIdControllerMapper } from "../mappers/product/GetProductByIdControllerMapper";
 import { GetProductsControllerMapper } from "../mappers/product/GetProductsControllerMapper";
+import { InactiveProductControllerMapper } from "../mappers/product/InactivateProductControllerMapper";
 import { createProductDocSchema } from "../model/product/CreateProductControllerModel";
 import { editProductDocSchema } from "../model/product/EditProductControllerModel";
 import { getProductByIdDocSchema } from "../model/product/GetProductByIdControllerModel";
 import { getProductsDocSchema } from "../model/product/GetProductsControllerModel";
+import { inactiveProductDocSchema } from "../model/product/InactiveProductControllerModel";
 import { ProductController } from "../ProductController";
 
 export async function ProductRoutes(app: FastifyInstance) {
@@ -20,7 +22,8 @@ export async function ProductRoutes(app: FastifyInstance) {
     new GetProductsControllerMapper(),
     new GetProductByIdControllerMapper(),
     new CreateProductControllerMapper(),
-    new EditProductControllerMapper()
+    new EditProductControllerMapper(),
+    new InactiveProductControllerMapper()
   );
 
   app.get("", {
@@ -38,5 +41,9 @@ export async function ProductRoutes(app: FastifyInstance) {
   app.put("/:id", {
     schema: editProductDocSchema,
     handler: productController.editProduct.bind(productController),
+  });
+  app.delete("/:id", {
+    schema: inactiveProductDocSchema,
+    handler: productController.inactivateProduct.bind(productController),
   });
 }

@@ -16,7 +16,7 @@ export class OrderNotificationController {
     res: FastifyReply
   ): Promise<GetOrderNotificationsControllerResponse> {
     return this.orderNotificationUseCase
-      .getOrderNotifications(
+      .getNotifications(
         this.getOrderNotificationsControllerMapper.convertRequestModel(req)
       )
       .then((response) =>

@@ -66,9 +66,9 @@ const responseExample: GetOrderByIdControllerResponse = {
 };
 
 export const getOrderByIdDocSchema = {
-  tags: ["Order (WIP)"],
+  tags: ["Order "],
   description: "List orders",
-  querystring: convertZodSchemaToDocsTemplate({
+  params: convertZodSchemaToDocsTemplate({
     schema: getOrderByIdPathParamsSchema,
   }),
   response: {

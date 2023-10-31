@@ -54,7 +54,7 @@ const responseExample: GetOrdersControllerResponse = {
 };
 
 export const getOrdersDocSchema = {
-  tags: ["Order (WIP)"],
+  tags: ["Order "],
   description: "List orders",
   querystring: {
     type: "object",

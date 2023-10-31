@@ -4,7 +4,7 @@ GET http://localhost:3333/combos
 ###
 
 # @name get-combo-by-id
-GET http://localhost:3333/combos/16a441e8-0033-4b74-a33d-5670c07fafb3
+GET http://localhost:3333/combos/5a55ead7-17a7-4b70-b513-444338125ae5
 
 ### 
 
@@ -13,20 +13,19 @@ POST http://localhost:3333/combos
 content-type: application/json
 
 {
-  "sandwichId": "4740b9a2-0d21-4c98-97a7-73a9451c926e",
-  "sideId": "469a1d75-935e-4843-ace5-e33172d10fdd",
-  "drinkId": "768e86cc-79da-4a92-9c7b-a484f93b3c48"
+  "sandwichId": "095181e8-62f6-4e78-8de9-d01ed812fa2c",
+  "sideId": "1d697fac-7069-4681-a2fb-c3af02e429e2"
 }
 
 ### 
 
 # @name edit-combo
-PUT http://localhost:3333/combos/e4215989-9148-4650-a375-be5bae3778ac
+PUT http://localhost:3333/combos/5a55ead7-17a7-4b70-b513-444338125ae5
 content-type: application/json
 
 {
-  "sandwichId": "180f70f4-0f9e-451e-99ae-60ece8bcf0da",
-  "sideId": "07354a02-4bc6-4836-a0d7-8da4b1ba7134",
-  "drinkId": "14116e79-90ad-4829-8ffa-f0a7d0ae9ac4"
+  "sandwichId": "095181e8-62f6-4e78-8de9-d01ed812fa2c",
+  "sideId": "1d697fac-7069-4681-a2fb-c3af02e429e2",
+  "drinkId": "72fdfbe1-618d-4837-bfdf-d79ad26fe9bd"
 }
 

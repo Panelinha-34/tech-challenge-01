@@ -96,6 +96,7 @@ export class PrismaProductRepository implements IProductRepository {
         data: {
           name: product.name,
           description: product.description,
+          active: product.active,
           price: product.price,
           category: product.category.name,
         },
@@ -112,18 +113,11 @@ export class PrismaProductRepository implements IProductRepository {
         data: {
           name: product.name,
           description: product.description,
+          active: product.active,
           price: product.price,
           category: product.category.name,
         },
       })
       .then((c) => PrismaProductToDomainClientConverter.convert(c));
-  }
-
-  async delete(id: string): Promise<void> {
-    await prisma.product.delete({
-      where: {
-        id,
-      },
-    });
   }
 }

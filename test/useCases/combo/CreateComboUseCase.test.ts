@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ComboUseCase } from "@/core/application/useCases/ComboUseCase";
-import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
+import { EntityNotActiveError } from "@/core/application/useCases/errors/EntityNotActiveError";
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumResourcesNotReached";
 import { ResourceNotFoundError } from "@/core/application/useCases/errors/ResourceNotFoundError";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 import { Category } from "@/core/domain/valueObjects/Category";
@@ -71,6 +72,22 @@ describe("Given the Create Combo Use Case", () => {
         sandwichId: sandwich.id.toString(),
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it("should throw an error when the informed product is not active", async () => {
+    const sandwich = makeProduct({
+      active: false,
+    });
+
+    inMemoryProductRepository.items.push(sandwich);
+
+    await expect(() =>
+      sut.createCombo({
+        name,
+        description,
+        sandwichId: sandwich.id.toString(),
+      })
+    ).rejects.toBeInstanceOf(EntityNotActiveError);
   });
 
   it("should throw an error when there are no products", async () => {

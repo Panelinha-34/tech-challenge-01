@@ -23,6 +23,10 @@ import {
   GetProductsUseCaseRequestModel,
   GetProductsUseCaseResponseModel,
 } from "./model/product/GetProductsUseCaseModel";
+import {
+  InactiveProductUseCaseRequestModel,
+  InactiveProductUseCaseResponseModel,
+} from "./model/product/InactiveProductUseCaseModel";
 
 export class ProductUseCase implements IProductUseCase {
   constructor(private productRepository: IProductRepository) {}
@@ -127,6 +131,24 @@ export class ProductUseCase implements IProductUseCase {
     if (price) {
       product.price = price;
     }
+
+    const updatedProduct = await this.productRepository.update(product);
+
+    return { product: updatedProduct };
+  }
+
+  async inactiveProduct(
+    props: InactiveProductUseCaseRequestModel
+  ): Promise<InactiveProductUseCaseResponseModel> {
+    const { id } = props;
+
+    const product = await this.productRepository.findById(id);
+
+    if (!product) {
+      throw new ResourceNotFoundError(Product.name);
+    }
+
+    product.active = false;
 
     const updatedProduct = await this.productRepository.update(product);
 

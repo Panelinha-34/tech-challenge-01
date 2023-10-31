@@ -3,12 +3,14 @@
 
 import { Combo } from "@/core/domain/entities/Combo";
 import { ComboProduct } from "@/core/domain/entities/ComboProduct";
+import { Product } from "@/core/domain/entities/Product";
 import { CategoriesEnum } from "@/core/domain/enum/CategoriesEnum";
 import { IComboRepository } from "@/core/domain/repositories/IComboRepository";
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { Category } from "@/core/domain/valueObjects/Category";
 
-import { MinimumResourcesNotReached } from "./errors/MinimumComboProductsNotReached";
+import { EntityNotActiveError } from "./errors/EntityNotActiveError";
+import { MinimumResourcesNotReached } from "./errors/MinimumResourcesNotReached";
 import { ResourceNotFoundError } from "./errors/ResourceNotFoundError";
 import { IComboUseCase } from "./IComboUseCase";
 import {
@@ -95,7 +97,11 @@ export class ComboUseCase implements IComboUseCase {
       );
 
       if (!product) {
-        throw new ResourceNotFoundError(productMap[id].toLowerCase());
+        throw new ResourceNotFoundError(productMap[id].toLowerCase(), []);
+      }
+
+      if (!product.active) {
+        throw new EntityNotActiveError(Product.name, [id]);
       }
     }
 
@@ -169,7 +175,13 @@ export class ComboUseCase implements IComboUseCase {
       );
 
       if (!product) {
-        throw new ResourceNotFoundError(productMap[productId].toLowerCase());
+        throw new ResourceNotFoundError(productMap[productId].toLowerCase(), [
+          productId,
+        ]);
+      }
+
+      if (!product.active) {
+        throw new EntityNotActiveError(Product.name, [productId]);
       }
     }
 

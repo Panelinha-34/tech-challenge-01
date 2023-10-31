@@ -1,3 +1,4 @@
+import { DomainEvents } from "@/core/domain/base/events/DomainEvents";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Order } from "@/core/domain/entities/Order";
@@ -76,6 +77,8 @@ export class InMemoryOrderRepository implements IOrderRepository {
     this.orderComboItemRepository.createMany(order.combos.getItems());
     this.orderProductItemRepository.createMany(order.products.getItems());
 
+    DomainEvents.dispatchEventsForAggregate(order.id);
+
     return order;
   }
 
@@ -87,6 +90,8 @@ export class InMemoryOrderRepository implements IOrderRepository {
     }
 
     this.items[index] = order;
+
+    DomainEvents.dispatchEventsForAggregate(order.id);
 
     return order;
   }

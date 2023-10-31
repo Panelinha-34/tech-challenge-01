@@ -6,6 +6,7 @@ import { CreateProductControllerMapper } from "./mappers/product/CreateProductCo
 import { EditProductControllerMapper } from "./mappers/product/EditProductControllerMapper";
 import { GetProductByIdControllerMapper } from "./mappers/product/GetProductByIdControllerMapper";
 import { GetProductsControllerMapper } from "./mappers/product/GetProductsControllerMapper";
+import { InactiveProductControllerMapper } from "./mappers/product/InactivateProductControllerMapper";
 import { GetProductByIdControllerResponse } from "./model/product/GetProductByIdControllerModel";
 import { GetProductsControllerResponse } from "./model/product/GetProductsControllerModel";
 
@@ -16,7 +17,8 @@ export class ProductController {
     private getProductsControllerMapper: GetProductsControllerMapper,
     private getProductByIdControllerMapper: GetProductByIdControllerMapper,
     private createProductControllerMapper: CreateProductControllerMapper,
-    private editProductControllerMapper: EditProductControllerMapper
+    private editProductControllerMapper: EditProductControllerMapper,
+    private inactivateProductControllerMapper: InactiveProductControllerMapper
   ) {}
 
   async getProducts(
@@ -82,6 +84,25 @@ export class ProductController {
       )
       .catch((error) =>
         this.editProductControllerMapper.convertErrorResponse(error, res)
+      );
+  }
+
+  async inactivateProduct(
+    req: FastifyRequest,
+    res: FastifyReply
+  ): Promise<void> {
+    return this.productUseCase
+      .inactiveProduct(
+        this.inactivateProductControllerMapper.convertRequestModel(req)
+      )
+      .then((response) =>
+        this.inactivateProductControllerMapper.convertSuccessfullyResponse(
+          res,
+          response
+        )
+      )
+      .catch((error) =>
+        this.inactivateProductControllerMapper.convertErrorResponse(error, res)
       );
   }
 }

@@ -4,7 +4,7 @@
 
 import { describe, expect, it, vi } from "vitest";
 
-import { AggregateEventRoot } from "@/core/domain/base/entities/AggregateRoot";
+import { AggregateRoot } from "@/core/domain/base/entities/AggregateRoot";
 import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
 import { DomainEvent } from "@/core/domain/base/events/DomainEvent";
 import { DomainEvents } from "@/core/domain/base/events/DomainEvents";
@@ -24,7 +24,7 @@ class CustomAggregateCreated implements DomainEvent {
   }
 }
 
-class CustomAggregate extends AggregateEventRoot<any> {
+class CustomAggregate extends AggregateRoot<any> {
   static create() {
     const aggregate = new CustomAggregate(null);
 

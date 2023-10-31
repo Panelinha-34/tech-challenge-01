@@ -2,7 +2,7 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import { FastifyReply, FastifyRequest } from "fastify";
 
-import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumComboProductsNotReached";
+import { MinimumResourcesNotReached } from "@/core/application/useCases/errors/MinimumResourcesNotReached";
 import {
   CreateOrderUseCaseRequestModel,
   CreateOrderUseCaseResponseModel,

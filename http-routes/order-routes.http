@@ -3,8 +3,8 @@ GET http://localhost:3333/orders
 
 ###
 
-# @name get-order-by-id
-GET http://localhost:3333/orders/8b53b50d-51cb-4f47-abf2-f1618b60afba
+# @name get-order-by-id 
+GET http://localhost:3333/orders/1676f8da-6649-47c3-bab7-30a34477de7c
 
 ### 
 
@@ -13,14 +13,14 @@ POST http://localhost:3333/orders
 content-type: application/json
 
 {
-  "visitorName": "John Doe",
+  "clientId": "eeaa256e-bda4-486f-8b19-d59d4cf3e23a",
   "paymentMethod": "QR_CODE",
   "paymentStatus": "PENDING_PAYMENT",
   "combos": [
     {
-      "sandwichId": "4acff47b-78e2-49ed-89e6-4265f97c87ad",
-      "sideId": "52952605-5deb-45fe-934d-04450edb085a",
-      "drinkId": "277b94da-683e-40ca-bad1-3ed7990fb902",
+      "sandwichId": "095181e8-62f6-4e78-8de9-d01ed812fa2c",
+      "sideId": "1d697fac-7069-4681-a2fb-c3af02e429e2",
+      "drinkId": "3fb830eb-6e5f-49ae-a796-d8486460bd01",
       "quantity": 10,
       "annotation": "remove the tomatos"
     }
@@ -31,11 +31,11 @@ content-type: application/json
 
 
 # @name update-order-status
-PATCH http://localhost:3333/orders/66ca3720-ec31-412d-9db5-8fb7ffca9961  
+PATCH http://localhost:3333/orders/4eb25524-5bae-4937-80a5-24e62a29bd28
 content-type: application/json
 
 {
-  "status": "PAID"
+  "status": "READY"
 }
 
 

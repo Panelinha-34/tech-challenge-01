@@ -15,7 +15,9 @@ export function makeProduct(
       name: faker.commerce.product(),
       description: faker.commerce.productDescription(),
       price: faker.number.float(),
-      category: new Category({ name: CategoriesEnum.SANDWICH }),
+      active: true,
+      category:
+        override.category ?? new Category({ name: CategoriesEnum.SANDWICH }),
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
       ...override,

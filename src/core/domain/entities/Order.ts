@@ -1,6 +1,9 @@
-import { AggregateEventRoot } from "../base/entities/AggregateRoot";
+/* eslint-disable import/no-cycle */
+
+import { AggregateRoot } from "../base/entities/AggregateRoot";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
+import { UpdatedOrderStatusEvent } from "../events/UpdatedOrderStatusEvent";
 import { OrderStatus } from "../valueObjects/OrderStatus";
 import { PaymentMethod } from "../valueObjects/PaymentMethod";
 import { OrderComboItemList } from "./OrderComboItemList";
@@ -19,7 +22,7 @@ export interface OrderProps {
   products: OrderProductItemList;
 }
 
-export class Order extends AggregateEventRoot<OrderProps> {
+export class Order extends AggregateRoot<OrderProps> {
   constructor(
     props: Optional<OrderProps, "createdAt" | "combos" | "products">,
     id?: UniqueEntityId
@@ -33,6 +36,12 @@ export class Order extends AggregateEventRoot<OrderProps> {
       },
       id
     );
+
+    const isNewAnswer = !id;
+
+    if (isNewAnswer) {
+      this.addDomainEvent(new UpdatedOrderStatusEvent(this));
+    }
   }
 
   get status() {
@@ -41,6 +50,8 @@ export class Order extends AggregateEventRoot<OrderProps> {
 
   set status(value: OrderStatus) {
     this.props.status.name = value.name;
+
+    this.addDomainEvent(new UpdatedOrderStatusEvent(this));
 
     this.touch();
   }
