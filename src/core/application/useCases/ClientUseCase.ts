@@ -6,6 +6,10 @@ import { AttributeConflictError } from "./errors/AttributeConflictError";
 import { ResourceNotFoundError } from "./errors/ResourceNotFoundError";
 import { IClientUseCase } from "./IClientUseCase";
 import {
+  CheckClientByTaxvatUseCaseRequestModel,
+  CheckClientByTaxvatUseCaseResponseModel,
+} from "./model/client/CheckClientByTaxvatUseCaseModel";
+import {
   CreateClientUseCaseRequestModel,
   CreateClientUseCaseResponseModel,
 } from "./model/client/CreateClientUseCaseModel";
@@ -31,6 +35,18 @@ export class ClientUseCase implements IClientUseCase {
     const paginationResponse = await this.clientRepository.findMany(params);
 
     return { paginationResponse };
+  }
+
+  async checkByTaxvat({
+    taxvat,
+  }: CheckClientByTaxvatUseCaseRequestModel): Promise<CheckClientByTaxvatUseCaseResponseModel> {
+    const client = await this.clientRepository.findByTaxVat(taxvat);
+
+    if (!client) {
+      return { exist: false };
+    }
+
+    return { exist: true };
   }
 
   async getClientById({

@@ -8,6 +8,7 @@ export const getProductsQueryParamsSchema = z.object({
   page: z.coerce.number().default(1),
   pageSize: z.coerce.number().default(20),
   category: z.nativeEnum(CategoriesEnum).optional(),
+  includeInactive: z.boolean().default(false),
 });
 
 export interface GetProductResponse {
@@ -61,6 +62,7 @@ export const getProductsDocSchema = {
       page: { type: "number" },
       pageSize: { type: "number" },
       category: { type: "string", enum: Object.values(CategoriesEnum) },
+      includeInactive: { type: "boolean" },
     },
   },
   response: {

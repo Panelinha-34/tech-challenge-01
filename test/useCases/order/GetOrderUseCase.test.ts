@@ -9,7 +9,6 @@ import { InMemoryClientRepository } from "@test/repositories/InMemoryClientRepos
 import { InMemoryComboProductRepository } from "@test/repositories/InMemoryComboProductRepository";
 import { InMemoryComboRepository } from "@test/repositories/InMemoryComboRepository";
 import { InMemoryOrderComboItemRepository } from "@test/repositories/InMemoryOrderComboRepository";
-import { InMemoryOrderProductItemRepository } from "@test/repositories/InMemoryOrderProductRepository";
 import { InMemoryOrderRepository } from "@test/repositories/InMemoryOrderRepository";
 import { InMemoryProductRepository } from "@test/repositories/InMemoryProductRepository";
 
@@ -19,7 +18,6 @@ let inMemoryProductRepository: InMemoryProductRepository;
 let inMemoryComboRepository: InMemoryComboRepository;
 let inMemoryOrderComboItemRepository: InMemoryOrderComboItemRepository;
 let inMemoryComboProductRepository: InMemoryComboProductRepository;
-let inMemoryOrderProductItemRepository: InMemoryOrderProductItemRepository;
 let comboUseCase: IComboUseCase;
 let sut: OrderUseCase;
 
@@ -36,8 +34,7 @@ describe("Given the Get Orders Use Case", () => {
     );
 
     inMemoryOrderRepository = new InMemoryOrderRepository(
-      inMemoryOrderComboItemRepository,
-      inMemoryOrderProductItemRepository
+      inMemoryOrderComboItemRepository
     );
 
     inMemoryProductRepository = new InMemoryProductRepository();

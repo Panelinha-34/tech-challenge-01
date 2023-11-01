@@ -7,7 +7,6 @@ async function clearDatabase() {
   await prisma.orderComboItem.deleteMany();
   await prisma.orderProductItem.deleteMany();
   await prisma.order.deleteMany();
-  await prisma.session.deleteMany();
   await prisma.client.deleteMany();
   await prisma.comboProduct.deleteMany();
   await prisma.product.deleteMany();
@@ -15,7 +14,7 @@ async function clearDatabase() {
 }
 
 async function seedDatabase() {
-  const client = await prisma.client.create({
+  await prisma.client.create({
     data: {
       name: "John Doe",
       tax_vat: "1234567890",
@@ -148,12 +147,6 @@ async function seedDatabase() {
           ],
         },
       },
-    },
-  });
-
-  await prisma.session.create({
-    data: {
-      client_id: client.id,
     },
   });
 }

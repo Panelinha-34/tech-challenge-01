@@ -10,10 +10,12 @@ import { PrismaProductToDomainClientConverter } from "../converter/PrismaProduct
 export class PrismaProductRepository implements IProductRepository {
   async findMany(
     { page, size }: PaginationParams,
+    includeInactive: boolean,
     category?: Category
   ): Promise<PaginationResponse<Product>> {
     const where = {
       category: category ? category.name : undefined,
+      active: includeInactive ? undefined : true,
     };
 
     const totalItems = await prisma.product.count({

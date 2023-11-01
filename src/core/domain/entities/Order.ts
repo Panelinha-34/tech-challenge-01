@@ -6,11 +6,12 @@ import { Optional } from "../base/types/Optional";
 import { UpdatedOrderStatusEvent } from "../events/UpdatedOrderStatusEvent";
 import { OrderStatus } from "../valueObjects/OrderStatus";
 import { PaymentMethod } from "../valueObjects/PaymentMethod";
+import { Client } from "./Client";
 import { OrderComboItemList } from "./OrderComboItemList";
-import { OrderProductItemList } from "./OrderProductItemList";
 
 export interface OrderProps {
   status: OrderStatus;
+  number: bigint;
   totalPrice: number;
   createdAt: Date;
   clientId?: UniqueEntityId;
@@ -19,12 +20,12 @@ export interface OrderProps {
   paymentMethod: PaymentMethod;
   paymentDetails?: string;
   combos: OrderComboItemList;
-  products: OrderProductItemList;
+  client?: Client;
 }
 
 export class Order extends AggregateRoot<OrderProps> {
   constructor(
-    props: Optional<OrderProps, "createdAt" | "combos" | "products">,
+    props: Optional<OrderProps, "createdAt" | "combos" | "number">,
     id?: UniqueEntityId
   ) {
     super(
@@ -32,7 +33,7 @@ export class Order extends AggregateRoot<OrderProps> {
         ...props,
         createdAt: props.createdAt ?? new Date(),
         combos: props.combos ?? new OrderComboItemList(),
-        products: props.products ?? new OrderProductItemList(),
+        number: props.number ?? BigInt(0),
       },
       id
     );
@@ -54,6 +55,10 @@ export class Order extends AggregateRoot<OrderProps> {
     this.addDomainEvent(new UpdatedOrderStatusEvent(this));
 
     this.touch();
+  }
+
+  get number() {
+    return this.props.number;
   }
 
   get totalPrice() {
@@ -85,15 +90,6 @@ export class Order extends AggregateRoot<OrderProps> {
     this.touch();
   }
 
-  get products() {
-    return this.props.products;
-  }
-
-  set products(value: OrderProductItemList) {
-    this.props.products = value;
-    this.touch();
-  }
-
   get paymentMethod() {
     return this.props.paymentMethod;
   }
@@ -105,6 +101,10 @@ export class Order extends AggregateRoot<OrderProps> {
   set paymentDetails(value: string | undefined) {
     this.props.paymentDetails = value;
     this.touch();
+  }
+
+  get client() {
+    return this.props.client;
   }
 
   private touch() {

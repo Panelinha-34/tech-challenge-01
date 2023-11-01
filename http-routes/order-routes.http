@@ -13,15 +13,14 @@ POST http://localhost:3333/orders
 content-type: application/json
 
 {
-  "clientId": "eeaa256e-bda4-486f-8b19-d59d4cf3e23a",
+  "clientId": "93714d13-10b4-40a0-89d4-15fa5dc5030b",
   "paymentMethod": "QR_CODE",
   "paymentStatus": "PENDING_PAYMENT",
   "combos": [
     {
-      "sandwichId": "095181e8-62f6-4e78-8de9-d01ed812fa2c",
-      "sideId": "1d697fac-7069-4681-a2fb-c3af02e429e2",
-      "drinkId": "3fb830eb-6e5f-49ae-a796-d8486460bd01",
-      "quantity": 10,
+      "sandwichId": "0a1ca055-737e-45af-9159-c3ac1617afb2",
+      "drinkId": "71abde36-b3cd-419b-8bed-8e61f4323078",
+      "quantity": 2,
       "annotation": "remove the tomatos"
     }
   ]
@@ -31,7 +30,7 @@ content-type: application/json
 
 
 # @name update-order-status
-PATCH http://localhost:3333/orders/4eb25524-5bae-4937-80a5-24e62a29bd28
+PATCH http://localhost:3333/orders/4dca82ee-f925-4ac7-aeec-f1f4b527287d
 content-type: application/json
 
 {

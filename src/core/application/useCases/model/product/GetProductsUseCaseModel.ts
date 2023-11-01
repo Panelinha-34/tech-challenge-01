@@ -4,6 +4,7 @@ import { Product } from "@/core/domain/entities/Product";
 
 export interface GetProductsUseCaseRequestModel {
   params: PaginationParams;
+  includeInactive: boolean;
   category?: string;
 }
 

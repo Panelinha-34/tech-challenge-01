@@ -41,7 +41,7 @@ export const updateOrderStatusDocSchema = {
   params: convertZodSchemaToDocsTemplate({
     schema: updateOrderStatusPathParametersSchema,
   }),
-  querystring: {
+  body: {
     type: "object",
     properties: {
       status: { type: "string", enum: Object.values(OrderStatusEnum) },

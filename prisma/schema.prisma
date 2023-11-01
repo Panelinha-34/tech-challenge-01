@@ -43,24 +43,14 @@ model Client {
   updated_at DateTime? @updatedAt
 
   orders            Order[]
-  sessions          Session[]
   OrderNotification OrderNotification[]
 
   @@map("clients")
 }
 
-model Session {
-  id         String   @id @default(uuid())
-  client_id  String   @map("client_id")
-  created_at DateTime @default(now())
-
-  client Client @relation(fields: [client_id], references: [id])
-
-  @@map("sessions")
-}
-
 model Order {
   id              String        @id @default(uuid())
+  number          BigInt        @unique @default(autoincrement())
   status          OrderStatus
   client_id       String?       @map("client_id")
   visitor_name    String?
@@ -73,7 +63,6 @@ model Order {
   client             Client?             @relation(fields: [client_id], references: [id])
   orderNotifications OrderNotification[]
   orderComboItems    OrderComboItem[]
-  orderProductItems  OrderProductItem[]
 
   @@map("orders")
 }
@@ -119,7 +108,6 @@ model OrderProductItem {
   created_at  DateTime  @default(now())
   updated_at  DateTime? @updatedAt
 
-  order   Order   @relation(fields: [order_id], references: [id])
   product Product @relation(fields: [product_id], references: [id])
 
   @@map("order_product_items")

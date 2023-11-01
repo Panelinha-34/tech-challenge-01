@@ -40,6 +40,7 @@ export class GetOrdersControllerMapper
   ): GetOrdersControllerResponse {
     return model.paginationResponse.toResponse((order) => ({
       id: order.id.toString(),
+      number: order.number.toString(),
       status: order.status.name,
       clientId: order.clientId?.toString(),
       visitorName: order.visitorName,

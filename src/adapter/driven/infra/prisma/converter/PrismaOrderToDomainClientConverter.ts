@@ -2,22 +2,22 @@ import { UniqueEntityId } from "@/core/domain/base/entities/UniqueEntityId";
 import { Order } from "@/core/domain/entities/Order";
 import { OrderComboItem } from "@/core/domain/entities/OrderComboItem";
 import { OrderComboItemList } from "@/core/domain/entities/OrderComboItemList";
-import { OrderProductItem } from "@/core/domain/entities/OrderProductItem";
-import { OrderProductItemList } from "@/core/domain/entities/OrderProductItemList";
 import { OrderStatusEnum } from "@/core/domain/enum/OrderStatusEnum";
 import { PaymentMethodEnum } from "@/core/domain/enum/PaymentMethodEnum";
 import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
 import { PaymentMethod } from "@/core/domain/valueObjects/PaymentMethod";
-import { Order as PrismaOrder } from "@prisma/client";
+import { Client as PrismaClient, Order as PrismaOrder } from "@prisma/client";
+
+import { PrismaClientToDomainClientConverter } from "./PrismaClientToDomainClientConverter";
 
 export class PrismaOrderToDomainClientConverter {
   static convert(
-    prismaClient: PrismaOrder,
-    products?: OrderProductItem[],
+    prismaClient: PrismaOrder & { client?: PrismaClient | null },
     combos?: OrderComboItem[]
   ): Order {
     return new Order(
       {
+        number: prismaClient.number ? BigInt(prismaClient.number) : undefined,
         status: new OrderStatus({
           name: prismaClient.status as OrderStatusEnum,
         }),
@@ -32,8 +32,10 @@ export class PrismaOrderToDomainClientConverter {
         totalPrice: prismaClient.total_price.toNumber(),
         createdAt: prismaClient.created_at,
         updatedAt: prismaClient.updated_at ?? undefined,
+        client: prismaClient.client
+          ? PrismaClientToDomainClientConverter.convert(prismaClient.client)
+          : undefined,
         combos: new OrderComboItemList(combos),
-        products: new OrderProductItemList(products),
       },
       new UniqueEntityId(prismaClient.id)
     );

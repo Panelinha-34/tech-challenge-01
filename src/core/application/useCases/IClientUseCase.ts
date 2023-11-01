@@ -1,4 +1,8 @@
 import {
+  CheckClientByTaxvatUseCaseRequestModel,
+  CheckClientByTaxvatUseCaseResponseModel,
+} from "./model/client/CheckClientByTaxvatUseCaseModel";
+import {
   CreateClientUseCaseRequestModel,
   CreateClientUseCaseResponseModel,
 } from "./model/client/CreateClientUseCaseModel";
@@ -19,6 +23,10 @@ export interface IClientUseCase {
   getClients(
     props: GetClientsUseCaseRequestModel
   ): Promise<GetClientsUseCaseResponseModel>;
+
+  checkByTaxvat(
+    props: CheckClientByTaxvatUseCaseRequestModel
+  ): Promise<CheckClientByTaxvatUseCaseResponseModel>;
 
   getClientById(
     props: GetClientByIdUseCaseRequestModel

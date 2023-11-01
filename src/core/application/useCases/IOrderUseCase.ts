@@ -7,6 +7,10 @@ import {
   GetOrderByIdUseCaseResponseModel,
 } from "./model/order/GetOrderByIdUseCaseModel";
 import {
+  GetOrdersQueueFormatedUseCaseRequestModel,
+  GetOrdersQueueFormatedUseCaseResponseModel,
+} from "./model/order/GetOrdersQueueFormatedUseCaseModel";
+import {
   GetOrdersUseCaseRequestModel,
   GetOrdersUseCaseResponseModel,
 } from "./model/order/GetOrdersUseCaseModel";
@@ -19,6 +23,10 @@ export interface IOrderUseCase {
   getOrders(
     props: GetOrdersUseCaseRequestModel
   ): Promise<GetOrdersUseCaseResponseModel>;
+
+  getOrdersQueueFormated(
+    props: GetOrdersQueueFormatedUseCaseRequestModel
+  ): Promise<GetOrdersQueueFormatedUseCaseResponseModel>;
 
   getOrderById(
     props: GetOrderByIdUseCaseRequestModel

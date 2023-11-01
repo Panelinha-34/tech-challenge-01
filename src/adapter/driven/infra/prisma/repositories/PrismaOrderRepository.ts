@@ -2,8 +2,8 @@ import { DomainEvents } from "@/core/domain/base/events/DomainEvents";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Order } from "@/core/domain/entities/Order";
+import { OrderStatusEnum } from "@/core/domain/enum/OrderStatusEnum";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
-import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
 
@@ -11,10 +11,7 @@ import { prisma } from "../config/prisma";
 import { PrismaOrderToDomainClientConverter } from "../converter/PrismaOrderToDomainClientConverter";
 
 export class PrismaOrderRepository implements IOrderRepository {
-  constructor(
-    private orderComboItemRepository: IOrderComboItemRepository,
-    private orderProductItemRepository: IOrderProductItemRepository
-  ) {}
+  constructor(private orderComboItemRepository: IOrderComboItemRepository) {}
 
   async findMany(
     { page, size }: PaginationParams,
@@ -42,6 +39,45 @@ export class PrismaOrderRepository implements IOrderRepository {
       totalItems,
       currentPage: page,
       pageSize: size,
+      totalPages,
+    });
+  }
+
+  async findManyQueueFormated(
+    params: PaginationParams
+  ): Promise<PaginationResponse<Order>> {
+    const where = {
+      status: {
+        in: [
+          OrderStatusEnum.IN_PREPARATION,
+          OrderStatusEnum.READY,
+          OrderStatusEnum.PAID,
+        ],
+      },
+    };
+
+    const totalItems = await prisma.order.count({
+      where,
+    });
+    const totalPages = Math.ceil(totalItems / params.size);
+
+    const data = await prisma.order.findMany({
+      where,
+      skip: (params.page - 1) * params.size,
+      take: params.size,
+      orderBy: {
+        status: "desc",
+      },
+      include: {
+        client: true,
+      },
+    });
+
+    return new PaginationResponse<Order>({
+      data: data.map((c) => PrismaOrderToDomainClientConverter.convert(c)),
+      totalItems,
+      currentPage: params.page,
+      pageSize: params.size,
       totalPages,
     });
   }
@@ -85,12 +121,9 @@ export class PrismaOrderRepository implements IOrderRepository {
       return null;
     }
 
-    const products =
-      await this.orderProductItemRepository.findManyByOrderId(id);
-
     const combos = await this.orderComboItemRepository.findManyByOrderId(id);
 
-    return PrismaOrderToDomainClientConverter.convert(order, products, combos);
+    return PrismaOrderToDomainClientConverter.convert(order, combos);
   }
 
   async create(order: Order): Promise<Order> {
@@ -111,7 +144,6 @@ export class PrismaOrderRepository implements IOrderRepository {
       .then((c) => PrismaOrderToDomainClientConverter.convert(c));
 
     await this.orderComboItemRepository.createMany(order.combos.getItems());
-    await this.orderProductItemRepository.createMany(order.products.getItems());
 
     DomainEvents.dispatchEventsForAggregate(order.id);
 

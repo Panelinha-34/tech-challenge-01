@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 import { IClientUseCase } from "@/core/application/useCases/IClientUseCase";
 
+import { CheckClientByTaxvatControllerMapper } from "./mappers/client/CheckClientByTaxvatControllerMapper";
 import { CreateClientControllerMapper } from "./mappers/client/CreateClientControllerMapper";
 import { EditClientControllerMapper } from "./mappers/client/EditClientControllerMapper";
 import { GetClientByIdControllerMapper } from "./mappers/client/GetClientByIdControllerMapper";
@@ -14,7 +15,8 @@ export class ClientController {
     private getClientsControllerMapper: GetClientsControllerMapper,
     private getClientByIdControllerMapper: GetClientByIdControllerMapper,
     private createClientControllerMapper: CreateClientControllerMapper,
-    private editClientControllerMapper: EditClientControllerMapper
+    private editClientControllerMapper: EditClientControllerMapper,
+    private checkClientByTaxvatControllerMapper: CheckClientByTaxvatControllerMapper
   ) {}
 
   async getClients(req: FastifyRequest, res: FastifyReply) {
@@ -28,6 +30,25 @@ export class ClientController {
       )
       .catch((error) =>
         this.getClientsControllerMapper.convertErrorResponse(error, res)
+      );
+  }
+
+  async checkClientByTaxvat(req: FastifyRequest, res: FastifyReply) {
+    return this.clientUseCase
+      .checkByTaxvat(
+        this.checkClientByTaxvatControllerMapper.convertRequestModel(req)
+      )
+      .then((response) =>
+        this.checkClientByTaxvatControllerMapper.convertSuccessfullyResponse(
+          res,
+          response
+        )
+      )
+      .catch((error) =>
+        this.checkClientByTaxvatControllerMapper.convertErrorResponse(
+          error,
+          res
+        )
       );
   }
 

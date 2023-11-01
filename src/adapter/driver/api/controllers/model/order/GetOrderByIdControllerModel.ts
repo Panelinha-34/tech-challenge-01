@@ -9,6 +9,7 @@ export const getOrderByIdPathParamsSchema = z.object({
 
 export interface GetOrderByIdControllerResponse {
   id: string;
+  number: string;
   clientId?: string;
   status: string;
   totalPrice: number;
@@ -24,18 +25,11 @@ export interface GetOrderByIdControllerResponse {
     quantity: number;
     annotation?: string;
   }[];
-  products: {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    quantity: number;
-    annotation?: string;
-  }[];
 }
 
 const responseExample: GetOrderByIdControllerResponse = {
   id: "1",
+  number: "1",
   clientId: "1",
   status: "pending",
   totalPrice: 10,
@@ -49,16 +43,6 @@ const responseExample: GetOrderByIdControllerResponse = {
       name: "Combo 1",
       description: "Combo 1",
       price: 10,
-      quantity: 1,
-      annotation: "annotation",
-    },
-  ],
-  products: [
-    {
-      id: "1",
-      name: "Sandwich 1",
-      description: "Sandwich 1",
-      price: 5,
       quantity: 1,
       annotation: "annotation",
     },

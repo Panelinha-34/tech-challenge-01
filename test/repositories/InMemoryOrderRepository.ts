@@ -2,18 +2,39 @@ import { DomainEvents } from "@/core/domain/base/events/DomainEvents";
 import { PaginationParams } from "@/core/domain/base/PaginationParams";
 import { PaginationResponse } from "@/core/domain/base/PaginationResponse";
 import { Order } from "@/core/domain/entities/Order";
+import { OrderStatusEnum } from "@/core/domain/enum/OrderStatusEnum";
 import { IOrderComboItemRepository } from "@/core/domain/repositories/IOrderComboItemRepository";
-import { IOrderProductItemRepository } from "@/core/domain/repositories/IOrderProductItemRepository";
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
 import { OrderStatus } from "@/core/domain/valueObjects/OrderStatus";
 
 export class InMemoryOrderRepository implements IOrderRepository {
   public items: Order[] = [];
 
-  constructor(
-    private orderComboItemRepository: IOrderComboItemRepository,
-    private orderProductItemRepository: IOrderProductItemRepository
-  ) {}
+  constructor(private orderComboItemRepository: IOrderComboItemRepository) {}
+
+  async findManyQueueFormated({
+    page,
+    size,
+  }: PaginationParams): Promise<PaginationResponse<Order>> {
+    const filteredItems = this.items.filter(
+      (p) =>
+        p.status.name === OrderStatusEnum.IN_PREPARATION ||
+        p.status.name === OrderStatusEnum.READY
+    );
+
+    const totalItems = filteredItems.length;
+    const totalPages = Math.ceil(totalItems / size);
+
+    const data = filteredItems.slice((page - 1) * size, page * size);
+
+    return new PaginationResponse<Order>({
+      data,
+      totalItems,
+      currentPage: page,
+      pageSize: size,
+      totalPages,
+    });
+  }
 
   async findMany(
     { page, size }: PaginationParams,
@@ -75,7 +96,6 @@ export class InMemoryOrderRepository implements IOrderRepository {
     this.items.push(order);
 
     this.orderComboItemRepository.createMany(order.combos.getItems());
-    this.orderProductItemRepository.createMany(order.products.getItems());
 
     DomainEvents.dispatchEventsForAggregate(order.id);
 

@@ -1,4 +1,4 @@
-FROM node:lts as base
+FROM node:18 as base
 
 WORKDIR /home/node/app
 
@@ -11,7 +11,6 @@ COPY . .
 
 FROM base as production
 
-RUN npm run build
-CMD ["node", "build/adapter/driver/api/server.js"]
+CMD ["./entrypoint.sh"]
 
 

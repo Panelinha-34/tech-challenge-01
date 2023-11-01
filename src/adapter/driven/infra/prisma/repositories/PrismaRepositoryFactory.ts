@@ -3,10 +3,8 @@ import { PrismaClientRepository } from "./PrismaClientRepository";
 import { PrismaComboProductRepository } from "./PrismaComboProductRepository";
 import { PrismaComboRepository } from "./PrismaComboRepository";
 import { PrismaOrderComboItemRepository } from "./PrismaOrderComboItemRepository";
-import { PrismaOrderProductItemRepository } from "./PrismaOrderProductItemRepository";
 import { PrismaOrderRepository } from "./PrismaOrderRepository";
 import { PrismaProductRepository } from "./PrismaProductRepository";
-import { SessionPrismaRepository } from "./SessionPrismaRepository";
 
 let comboProductRepositoryInstance: PrismaComboProductRepository;
 let comboRepositoryInstance: PrismaComboRepository;
@@ -15,8 +13,6 @@ let clientRepositoryInstance: PrismaClientRepository;
 let orderNotificationsRepository: OrderNotificationsPrismaRepository;
 let orderRepository: PrismaOrderRepository;
 let orderComboItemRepository: PrismaOrderComboItemRepository;
-let orderProductItemRepository: PrismaOrderProductItemRepository;
-let sessionRepositoryInstance: SessionPrismaRepository;
 
 export function makeComboProductRepository() {
   if (!comboProductRepositoryInstance) {
@@ -62,26 +58,9 @@ export function makeOrderComboItemRepository() {
   return orderComboItemRepository;
 }
 
-export function makeOrderProductItemRepository() {
-  if (!orderProductItemRepository) {
-    orderProductItemRepository = new PrismaOrderProductItemRepository();
-  }
-  return orderProductItemRepository;
-}
-
 export function makeOrderRepository() {
   if (!orderRepository) {
-    orderRepository = new PrismaOrderRepository(
-      makeOrderComboItemRepository(),
-      makeOrderProductItemRepository()
-    );
+    orderRepository = new PrismaOrderRepository(makeOrderComboItemRepository());
   }
   return orderRepository;
-}
-
-export function makeSessionRepository() {
-  if (!sessionRepositoryInstance) {
-    sessionRepositoryInstance = new SessionPrismaRepository();
-  }
-  return sessionRepositoryInstance;
 }

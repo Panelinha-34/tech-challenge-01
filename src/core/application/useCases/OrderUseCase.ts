@@ -7,8 +7,6 @@ import { Combo } from "@/core/domain/entities/Combo";
 import { Order } from "@/core/domain/entities/Order";
 import { OrderComboItem } from "@/core/domain/entities/OrderComboItem";
 import { OrderComboItemList } from "@/core/domain/entities/OrderComboItemList";
-import { OrderProductItem } from "@/core/domain/entities/OrderProductItem";
-import { OrderProductItemList } from "@/core/domain/entities/OrderProductItemList";
 import { Product } from "@/core/domain/entities/Product";
 import { OrderStatusEnum } from "@/core/domain/enum/OrderStatusEnum";
 import { PaymentMethodEnum } from "@/core/domain/enum/PaymentMethodEnum";
@@ -87,6 +85,15 @@ export class OrderUseCase implements IOrderUseCase {
     return { paginationResponse };
   }
 
+  async getOrdersQueueFormated({
+    params,
+  }: GetOrdersUseCaseRequestModel): Promise<GetOrdersUseCaseResponseModel> {
+    const paginationResponse =
+      await this.orderRepository.findManyQueueFormated(params);
+
+    return { paginationResponse };
+  }
+
   async getOrderById({
     id,
   }: GetOrderByIdUseCaseRequestModel): Promise<GetOrderByIdUseCaseResponseModel> {
@@ -96,11 +103,6 @@ export class OrderUseCase implements IOrderUseCase {
       throw new ResourceNotFoundError(Order.name);
     }
 
-    const orderProducts = order.products.getItems();
-    const products = await this.productRepository.findManyByIds(
-      orderProducts.map((p) => p.productId.toString())
-    );
-
     const orderCombos = order.combos.getItems();
     const combos = await this.comboRepository.findManyByIds(
       orderCombos.map((c) => c.comboId.toString())
@@ -108,9 +110,7 @@ export class OrderUseCase implements IOrderUseCase {
 
     return {
       order,
-      orderProducts,
       orderCombos,
-      products,
       combos,
     };
   }
@@ -119,7 +119,6 @@ export class OrderUseCase implements IOrderUseCase {
     clientId,
     visitorName,
     combos,
-    products,
     paymentMethod,
     paymentDetails,
     paymentStatus,
@@ -150,12 +149,8 @@ export class OrderUseCase implements IOrderUseCase {
 
     let allProductIds: string[] = [];
 
-    if (products) {
-      allProductIds = products.map((p) => p.id);
-    }
-
     if (combos) {
-      const allComboProductIds = combos
+      allProductIds = combos
         .map((c) => {
           const { sandwichId, dessertId, sideId, drinkId } = c;
 
@@ -163,8 +158,6 @@ export class OrderUseCase implements IOrderUseCase {
         })
         .flat()
         .filter((p): p is string => !!p);
-
-      allProductIds = [...allProductIds, ...allComboProductIds];
     }
 
     const productDetails =
@@ -216,25 +209,10 @@ export class OrderUseCase implements IOrderUseCase {
       }
     }
 
-    const productsTotalPrice =
-      products?.reduce((acc, product) => {
-        const productDetail = productDetails.find(
-          (pd) => pd.id.toString() === product.id
-        );
-
-        if (!productDetail) {
-          throw new ResourceNotFoundError(Product.name);
-        }
-
-        return acc + productDetail.price * product.quantity;
-      }, 0) ?? 0;
-
-    const combosTotalPrice = createdCombos.reduce(
+    const totalPrice = createdCombos.reduce(
       (acc, combo) => acc + combo.calculatedPrice,
       0
     );
-
-    const totalPrice = productsTotalPrice + combosTotalPrice;
 
     const order = new Order({
       status: new OrderStatus({
@@ -252,20 +230,6 @@ export class OrderUseCase implements IOrderUseCase {
       totalPrice,
     });
 
-    const orderProductsToCreate =
-      products?.map(
-        (product) =>
-          new OrderProductItem({
-            productId: new UniqueEntityId(product.id),
-            annotation: product.annotation,
-            orderId: order.id,
-            quantity: product.quantity,
-            totalPrice:
-              (productDetails.find((pd) => pd.id.toString() === product.id)
-                ?.price || 0) * product.quantity,
-          })
-      ) ?? [];
-
     const orderCombosToCreate = createdCombos.map(
       (combo) =>
         new OrderComboItem({
@@ -277,7 +241,6 @@ export class OrderUseCase implements IOrderUseCase {
         })
     );
 
-    order.products = new OrderProductItemList(orderProductsToCreate);
     order.combos = new OrderComboItemList(orderCombosToCreate);
 
     const createdOrder = await this.orderRepository.create(order);

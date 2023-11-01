@@ -23,17 +23,9 @@ CREATE TABLE "clients" (
 );
 
 -- CreateTable
-CREATE TABLE "sessions" (
-    "id" TEXT NOT NULL,
-    "client_id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "orders" (
     "id" TEXT NOT NULL,
+    "number" BIGSERIAL NOT NULL,
     "status" "OrderStatus" NOT NULL,
     "client_id" TEXT,
     "visitor_name" TEXT,
@@ -116,6 +108,7 @@ CREATE TABLE "products" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
     "category" "Category" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
@@ -129,8 +122,8 @@ CREATE UNIQUE INDEX "clients_tax_vat_key" ON "clients"("tax_vat");
 -- CreateIndex
 CREATE UNIQUE INDEX "clients_email_key" ON "clients"("email");
 
--- AddForeignKey
-ALTER TABLE "sessions" ADD CONSTRAINT "sessions_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "orders_number_key" ON "orders"("number");
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "clients"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -146,9 +139,6 @@ ALTER TABLE "order_combo_items" ADD CONSTRAINT "order_combo_items_order_id_fkey"
 
 -- AddForeignKey
 ALTER TABLE "order_combo_items" ADD CONSTRAINT "order_combo_items_combo_id_fkey" FOREIGN KEY ("combo_id") REFERENCES "combos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "order_product_items" ADD CONSTRAINT "order_product_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order_product_items" ADD CONSTRAINT "order_product_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

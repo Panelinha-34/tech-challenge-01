@@ -15,20 +15,13 @@ const orderComboSchema = z.object({
   quantity: z.number(),
 });
 
-const orderProductSchema = z.object({
-  id: z.string(),
-  quantity: z.number(),
-  annotation: z.string().optional(),
-});
-
 export const createOrderPayloadSchema = z.object({
   clientId: z.string().optional(),
   visitorName: z.string().optional(),
   paymentMethod: z.nativeEnum(PaymentMethodEnum),
   paymentStatus: z.nativeEnum(PaymentStatusEnum),
   paymentDetails: z.string().optional(),
-  combos: z.array(orderComboSchema).optional(),
-  products: z.array(orderProductSchema).optional(),
+  combos: z.array(orderComboSchema),
 });
 
 export interface CreateOrderControllerResponse {}
@@ -66,17 +59,6 @@ export const createOrderDocSchema = {
             sideId: { type: "string" },
             drinkId: { type: "string" },
             dessertId: { type: "string" },
-            quantity: { type: "number" },
-            annotation: { type: "string" },
-          },
-        },
-      },
-      products: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            id: { type: "string" },
             quantity: { type: "number" },
             annotation: { type: "string" },
           },

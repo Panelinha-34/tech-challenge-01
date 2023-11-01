@@ -9,10 +9,13 @@ export class InMemoryProductRepository implements IProductRepository {
 
   async findMany(
     { page, size }: PaginationParams,
+    includeInactive: boolean,
     category?: Category
   ): Promise<PaginationResponse<Product>> {
     const filteredItems = this.items.filter((p) =>
-      category ? p.category === category : true
+      category
+        ? p.category === category
+        : true && (includeInactive ? true : p.active)
     );
 
     const totalItems = filteredItems.length;

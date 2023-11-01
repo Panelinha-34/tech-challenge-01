@@ -34,6 +34,7 @@ export class GetOrderByIdControllerMapper
   ): GetOrderByIdControllerResponse {
     return {
       id: model.order.id.toString(),
+      number: model.order.number.toString(),
       status: model.order.status.name,
       clientId: model.order.clientId?.toString(),
       visitorName: model.order.visitorName,
@@ -51,18 +52,6 @@ export class GetOrderByIdControllerMapper
         )!.quantity,
         annotation: model.orderCombos.find(
           (oc) => combo.id.toString() === oc.comboId.toString()
-        )!.annotation,
-      })),
-      products: model.products.map((product) => ({
-        id: product.id.toString(),
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        quantity: model.orderProducts.find(
-          (op) => product.id.toString() === op.productId.toString()
-        )!.quantity,
-        annotation: model.orderProducts.find(
-          (op) => product.id.toString() === op.productId.toString()
         )!.annotation,
       })),
     };

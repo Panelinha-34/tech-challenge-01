@@ -16,7 +16,6 @@ import { ComboRoutes } from "./controllers/routes/ComboRoutes";
 import { OrderNotificationRoutes } from "./controllers/routes/OrderNotificationRoutes";
 import { OrderRoutes } from "./controllers/routes/OrderRoutes";
 import { ProductRoutes } from "./controllers/routes/ProductRoutes";
-import { SessionRoutes } from "./controllers/routes/SessionRoutes";
 import { orderSubscribers } from "./controllers/subscribers/OrderSubscribers";
 
 const SWAGGER_PATH = "/docs-swagger";
@@ -48,7 +47,6 @@ app.register(ClientRoutes, { prefix: "/clients" });
 app.register(ProductRoutes, { prefix: "/products" });
 app.register(ComboRoutes, { prefix: "/combos" });
 app.register(OrderRoutes, { prefix: "/orders" });
-app.register(SessionRoutes, { prefix: "/sessions" });
 app.register(OrderNotificationRoutes, { prefix: "/order-notifications" });
 
 // Subscribers

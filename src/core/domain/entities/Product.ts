@@ -1,5 +1,6 @@
 import { Entity } from "../base/entities/Entity";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
+import { EntityPropValidationError } from "../base/error/EntityPropValidationError";
 import { Optional } from "../base/types/Optional";
 import { Category } from "../valueObjects/Category";
 
@@ -26,6 +27,8 @@ export class Product extends Entity<ProductProps> {
       },
       id
     );
+
+    this.validate();
   }
 
   get name() {
@@ -83,5 +86,26 @@ export class Product extends Entity<ProductProps> {
 
   private touch() {
     this.props.updatedAt = new Date();
+  }
+
+  validate() {
+    if (this.props.name.length < 3) {
+      throw new EntityPropValidationError<Product>(
+        "name",
+        "must be at least 3 characters long"
+      );
+    }
+    if (this.props.description.length < 3) {
+      throw new EntityPropValidationError<Product>(
+        "description",
+        "must be at least 3 characters long"
+      );
+    }
+    if (this.props.price <= 0) {
+      throw new EntityPropValidationError<Product>(
+        "price",
+        "must be greater than 0"
+      );
+    }
   }
 }

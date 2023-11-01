@@ -1,4 +1,4 @@
-import { Entity } from "../base/entities/Entity";
+import { AggregateRoot } from "../base/entities/AggregateRoot";
 import { UniqueEntityId } from "../base/entities/UniqueEntityId";
 import { Optional } from "../base/types/Optional";
 import { Taxvat } from "../valueObjects/Taxvat";
@@ -11,7 +11,7 @@ export interface ClientProps {
   updatedAt?: Date;
 }
 
-export class Client extends Entity<ClientProps> {
+export class Client extends AggregateRoot<ClientProps> {
   constructor(props: Optional<ClientProps, "createdAt">, id?: UniqueEntityId) {
     super(
       {

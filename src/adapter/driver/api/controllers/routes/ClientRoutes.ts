@@ -4,10 +4,12 @@ import { makeClientRepository } from "@/adapter/driven/infra/prisma/repositories
 import { ClientUseCase } from "@/core/application/useCases/ClientUseCase";
 
 import { ClientController } from "../ClientController";
+import { CheckClientByTaxvatControllerMapper } from "../mappers/client/CheckClientByTaxvatControllerMapper";
 import { CreateClientControllerMapper } from "../mappers/client/CreateClientControllerMapper";
 import { EditClientControllerMapper } from "../mappers/client/EditClientControllerMapper";
 import { GetClientByIdControllerMapper } from "../mappers/client/GetClientByIdControllerMapper";
 import { GetClientsControllerMapper } from "../mappers/client/GetClientsControllerMapper";
+import { checkClientByTaxvatDocSchema } from "../model/client/CheckClientByTaxvatControllerModel";
 import { createClientDocSchema } from "../model/client/CreateClientControllerModel";
 import { editClientDocSchema } from "../model/client/EditClientControllerModel";
 import { getClientByIdDocSchema } from "../model/client/GetClientByIdControllerModel";
@@ -20,7 +22,8 @@ export async function ClientRoutes(app: FastifyInstance) {
     new GetClientsControllerMapper(),
     new GetClientByIdControllerMapper(),
     new CreateClientControllerMapper(),
-    new EditClientControllerMapper()
+    new EditClientControllerMapper(),
+    new CheckClientByTaxvatControllerMapper()
   );
 
   app.get("", {
@@ -31,6 +34,11 @@ export async function ClientRoutes(app: FastifyInstance) {
   app.get("/:id", {
     schema: getClientByIdDocSchema,
     handler: clientController.getClientById.bind(clientController),
+  });
+
+  app.get("/check-taxvat", {
+    schema: checkClientByTaxvatDocSchema,
+    handler: clientController.checkClientByTaxvat.bind(clientController),
   });
 
   app.post("", {

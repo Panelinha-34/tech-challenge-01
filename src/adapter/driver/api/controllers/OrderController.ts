@@ -5,6 +5,7 @@ import { IOrderUseCase } from "@/core/application/useCases/IOrderUseCase";
 import { CreateOrderControllerMapper } from "./mappers/order/CreateOrderControllerMapper";
 import { GetOrderByIdControllerMapper } from "./mappers/order/GetOrderByIdControllerMapper";
 import { GetOrdersControllerMapper } from "./mappers/order/GetOrdersControllerMapper";
+import { GetOrdersQueueFormatedControllerMapper } from "./mappers/order/GetOrdersQueueFormatedControllerMapper";
 import { UpdateOrderStatusControllerMapper } from "./mappers/order/UpdateOrderStatusControllerMapper";
 import { GetOrdersControllerResponse } from "./model/order/GetOrdersControllerModel";
 import { UpdateOrderStatusControllerResponse } from "./model/order/UpdateOrderStatusControllerModel";
@@ -13,6 +14,7 @@ export class OrderController {
   constructor(
     private orderUseCase: IOrderUseCase,
     private getOrdersControllerMapper: GetOrdersControllerMapper,
+    private getOrdersQueueFormatedControllerMapper: GetOrdersQueueFormatedControllerMapper,
     private createOrderControllerMapper: CreateOrderControllerMapper,
     private getOrderByIdControllerMapper: GetOrderByIdControllerMapper,
     private updateOrderStatusControllerMapper: UpdateOrderStatusControllerMapper
@@ -32,6 +34,28 @@ export class OrderController {
       )
       .catch((error) =>
         this.getOrdersControllerMapper.convertErrorResponse(error, res)
+      );
+  }
+
+  async getOrdersQueueFormated(
+    req: FastifyRequest,
+    res: FastifyReply
+  ): Promise<GetOrdersControllerResponse> {
+    return this.orderUseCase
+      .getOrdersQueueFormated(
+        this.getOrdersQueueFormatedControllerMapper.convertRequestModel(req)
+      )
+      .then((response) =>
+        this.getOrdersQueueFormatedControllerMapper.convertSuccessfullyResponse(
+          res,
+          response
+        )
+      )
+      .catch((error) =>
+        this.getOrdersQueueFormatedControllerMapper.convertErrorResponse(
+          error,
+          res
+        )
       );
   }
 

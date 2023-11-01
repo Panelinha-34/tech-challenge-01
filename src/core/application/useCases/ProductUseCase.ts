@@ -33,6 +33,7 @@ export class ProductUseCase implements IProductUseCase {
 
   async getProducts({
     params,
+    includeInactive,
     category,
   }: GetProductsUseCaseRequestModel): Promise<GetProductsUseCaseResponseModel> {
     if (
@@ -50,6 +51,7 @@ export class ProductUseCase implements IProductUseCase {
 
     const paginationResponse = await this.productRepository.findMany(
       params,
+      includeInactive,
       productCategory
     );
 

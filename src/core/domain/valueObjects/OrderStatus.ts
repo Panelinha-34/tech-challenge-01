@@ -1,5 +1,6 @@
 import { ValueObject } from "../base/entities/ValueObject";
 import { UnsupportedArgumentValueError } from "../base/error/UnsupportedArgumentValueError";
+import { ValueObjectValidationError } from "../base/error/ValueObjectValidationError";
 import { OrderStatusEnum } from "../enum/OrderStatusEnum";
 
 export interface OrderStatusProps {
@@ -46,11 +47,15 @@ export class OrderStatus extends ValueObject<OrderStatusProps> {
     const newIndex = orderStatusOrder.indexOf(newStatus);
 
     if (currentIndex === -1 || newIndex === -1) {
-      throw new UnsupportedArgumentValueError(OrderStatus.name);
+      throw new ValueObjectValidationError(OrderStatus.name, [
+        "Invalid status transition",
+      ]);
     }
 
     if (newIndex < currentIndex) {
-      throw new UnsupportedArgumentValueError(OrderStatus.name);
+      throw new ValueObjectValidationError(OrderStatus.name, [
+        "Invalid status transition",
+      ]);
     }
   }
 }

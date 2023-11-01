@@ -6,16 +6,11 @@ export interface CreateOrderUseCaseRequestModel {
   paymentMethod: string;
   paymentStatus: string;
   paymentDetails?: string;
-  combos?: {
+  combos: {
     sandwichId?: string;
     sideId?: string;
     drinkId?: string;
     dessertId?: string;
-    quantity: number;
-    annotation?: string;
-  }[];
-  products?: {
-    id: string;
     quantity: number;
     annotation?: string;
   }[];

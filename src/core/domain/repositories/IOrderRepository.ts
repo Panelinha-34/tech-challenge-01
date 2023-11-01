@@ -10,6 +10,10 @@ export interface IOrderRepository {
     clientId?: string
   ): Promise<PaginationResponse<Order>>;
 
+  findManyQueueFormated(
+    params: PaginationParams
+  ): Promise<PaginationResponse<Order>>;
+
   findManyByClientId(
     params: PaginationParams,
     clientId: string

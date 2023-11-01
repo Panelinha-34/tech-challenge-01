@@ -27,7 +27,10 @@ describe("Given the Get Products Use Case", () => {
 
     inMemoryProductRepository.items.push(productToCreate);
 
-    const { paginationResponse } = await sut.getProducts({ params });
+    const { paginationResponse } = await sut.getProducts({
+      params,
+      includeInactive: false,
+    });
 
     const products = paginationResponse.data;
 
@@ -41,7 +44,10 @@ describe("Given the Get Products Use Case", () => {
       inMemoryProductRepository.items.push(makeProduct());
     });
 
-    const { paginationResponse } = await sut.getProducts({ params });
+    const { paginationResponse } = await sut.getProducts({
+      params,
+      includeInactive: false,
+    });
 
     const products = paginationResponse.data;
 

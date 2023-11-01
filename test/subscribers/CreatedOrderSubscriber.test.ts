@@ -8,12 +8,10 @@ import { UpdatedOrderStatusSubscriber } from "@/core/application/useCases/subscr
 import { makeOrder } from "@test/repositories/factories/MakeOrder";
 import { InMemoryOrderComboItemRepository } from "@test/repositories/InMemoryOrderComboRepository";
 import { InMemoryOrderNotificationRepository } from "@test/repositories/InMemoryOrderNotificationRepository";
-import { InMemoryOrderProductItemRepository } from "@test/repositories/InMemoryOrderProductRepository";
 import { InMemoryOrderRepository } from "@test/repositories/InMemoryOrderRepository";
 
 let inMemoryOrderRepository: InMemoryOrderRepository;
 let inMemoryOrderComboItemRepository: InMemoryOrderComboItemRepository;
-let inMemoryOrderProductItemRepository: InMemoryOrderProductItemRepository;
 
 let inMemoryOrderNotificationRepository: InMemoryOrderNotificationRepository;
 let orderNotificationUseCase: IOrderNotificationUseCase;
@@ -31,12 +29,8 @@ describe("UpdatedOrderStatusSubscriber", () => {
 
     inMemoryOrderComboItemRepository = new InMemoryOrderComboItemRepository();
 
-    inMemoryOrderProductItemRepository =
-      new InMemoryOrderProductItemRepository();
-
     inMemoryOrderRepository = new InMemoryOrderRepository(
-      inMemoryOrderComboItemRepository,
-      inMemoryOrderProductItemRepository
+      inMemoryOrderComboItemRepository
     );
   });
 

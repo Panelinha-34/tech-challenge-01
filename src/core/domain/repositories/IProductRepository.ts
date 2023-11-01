@@ -6,6 +6,7 @@ import { Category } from "../valueObjects/Category";
 export interface IProductRepository {
   findMany(
     params: PaginationParams,
+    includeInactive: boolean,
     category?: Category
   ): Promise<PaginationResponse<Product>>;
 

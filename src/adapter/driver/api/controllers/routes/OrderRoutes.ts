@@ -12,10 +12,12 @@ import { OrderUseCase } from "@/core/application/useCases/OrderUseCase";
 import { CreateOrderControllerMapper } from "../mappers/order/CreateOrderControllerMapper";
 import { GetOrderByIdControllerMapper } from "../mappers/order/GetOrderByIdControllerMapper";
 import { GetOrdersControllerMapper } from "../mappers/order/GetOrdersControllerMapper";
+import { GetOrdersQueueFormatedControllerMapper } from "../mappers/order/GetOrdersQueueFormatedControllerMapper";
 import { UpdateOrderStatusControllerMapper } from "../mappers/order/UpdateOrderStatusControllerMapper";
 import { createOrderDocSchema } from "../model/order/CreateOrderControllerModel";
 import { getOrderByIdDocSchema } from "../model/order/GetOrderByIdControllerModel";
 import { getOrdersDocSchema } from "../model/order/GetOrdersControllerModel";
+import { getOrdersQueueFormatedDocSchema } from "../model/order/GetOrdersQueueFormatedControllerModel";
 import { updateOrderStatusDocSchema } from "../model/order/UpdateOrderStatusControllerModel";
 import { OrderController } from "../OrderController";
 
@@ -31,6 +33,7 @@ export async function OrderRoutes(app: FastifyInstance) {
     ),
 
     new GetOrdersControllerMapper(),
+    new GetOrdersQueueFormatedControllerMapper(),
     new CreateOrderControllerMapper(),
     new GetOrderByIdControllerMapper(),
     new UpdateOrderStatusControllerMapper()
@@ -39,6 +42,10 @@ export async function OrderRoutes(app: FastifyInstance) {
   app.get("", {
     schema: getOrdersDocSchema,
     handler: orderController.getOrders.bind(orderController),
+  });
+  app.get("/queue", {
+    schema: getOrdersQueueFormatedDocSchema,
+    handler: orderController.getOrdersQueueFormated.bind(orderController),
   });
   app.get("/:id", {
     schema: getOrderByIdDocSchema,

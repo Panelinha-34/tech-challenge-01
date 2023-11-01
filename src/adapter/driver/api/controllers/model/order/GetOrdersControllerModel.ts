@@ -13,6 +13,7 @@ export const getOrdersQueryParamsSchema = z.object({
 
 export interface GetOrdersResponse {
   id: string;
+  number: string;
   status: string;
   clientId?: string;
   visitorName?: string;
@@ -36,6 +37,7 @@ const responseExample: GetOrdersControllerResponse = {
   data: [
     {
       id: "123",
+      number: "1",
       status: "pending",
       clientId: "123",
       visitorName: "John Doe",
