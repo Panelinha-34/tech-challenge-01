@@ -4,7 +4,9 @@ Repositório do Tech Challenge #01 da FIAP/Alura, no curso SOAT3. Foram utilizad
 
 # Documentação (DDD)
 
-Para realizar a documentação do DDD, criamos um documento no [Notion](https://notion.so) para centralizar e organizar melhor os entregáveis e processos envolvidos, é possível realizar o acesso deste documento clicando [aqui](https://www.notion.so/samirelhassann/Tech-Challenge-Fase-1-2e8703958c88412ba9cdf97b56815442).
+Para realizar a documentação do DDD, criamos um documento no [Notion](https://notion.so) para centralizar e organizar melhor os entregáveis e processos envolvidos, é possível realizar o acesso deste documento clicando [aqui](https://samirelhassann.notion.site/Documenta-o-Tech-Challenge-1-Grupo-34-bf92a1a97de5400abfaef9e0b6bcd0e2?pvs=4)
+
+
 
 # Como rodar a aplicação?
 
