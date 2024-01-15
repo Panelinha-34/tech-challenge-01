@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tech-challenge-api
+  template:
+    metadata:
+      labels:
+        app: tech-challenge-api
+    spec:
+      containers:
+        - name: tech-challenge-api-container
+          image: tech-challenge-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3333
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://docker:ps123@postgres-service:5432/tech-challenge"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tech-challenge-api-service
+spec:
+  selector:
+    app: tech-challenge-api
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3333
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres-container
+          image: bitnami/postgresql
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_USERNAME
+              value: "docker"
+            - name: POSTGRESQL_PASSWORD
+              value: "ps123"
+            - name: POSTGRESQL_DATABASE
+              value: "tech-challenge"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tech-challenge-api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tech-challenge-api-deployment
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
